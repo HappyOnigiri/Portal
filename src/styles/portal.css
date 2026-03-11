@@ -99,6 +99,26 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 20px;
+	flex-wrap: wrap;
+	gap: 1rem;
+	padding: 1rem 1.25rem;
+}
+
+@media (max-width: 480px) {
+	.portal-header {
+		align-items: flex-start;
+	}
+
+	.portal-nav {
+		flex-wrap: wrap;
+	}
+}
+
+.portal-brand {
+	color: var(--accent-cyan);
+	text-decoration: none;
+	letter-spacing: 0.08em;
+	font-weight: 700;
 }
 
 .portal-nav {
