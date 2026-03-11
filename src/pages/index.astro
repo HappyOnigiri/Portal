@@ -2,10 +2,9 @@
 import { getCollection } from "astro:content";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { sortProjectsByTitle } from "../utils/project";
 
 const projectEntries = await getCollection("projects");
-const projects = sortProjectsByTitle(projectEntries.map((entry) => entry.data));
+const projects = projectEntries.map((entry) => entry.data);
 ---
 
 <BaseLayout
