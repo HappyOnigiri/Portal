@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -27,9 +28,10 @@ def _iter_ts_sources(files: list[str]) -> list[str]:
 
 
 def _line_matches(text: str, needle: str) -> list[int]:
+    pattern = re.compile(r"//.*" + re.escape(needle))
     hits: list[int] = []
     for idx, line in enumerate(text.splitlines(), start=1):
-        if needle in line:
+        if pattern.search(line):
             hits.append(idx)
     return hits
 
