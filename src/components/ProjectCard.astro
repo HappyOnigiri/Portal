@@ -1,0 +1,58 @@
+---
+export interface ProjectData {
+	title: string;
+	title_en?: string;
+	description: string;
+	description_en?: string;
+	image?: string;
+	url?: string;
+}
+
+interface Props {
+	project: ProjectData;
+}
+
+const { project } = Astro.props as Props;
+---
+
+{project.url ? (
+	<a class="card card--link" href={project.url} target="_blank" rel="noopener noreferrer">
+		{project.image && (
+			<div class="card-image">
+				<img
+					src={project.image}
+					alt={`${project.title} のサムネイル`}
+					loading="lazy"
+				/>
+			</div>
+		)}
+		<div class="card-content">
+			<h2>{project.title}</h2>
+			{project.title_en && <div class="card-version" lang="en">{project.title_en}</div>}
+			<p>{project.description}</p>
+			{project.description_en && (
+				<p class="card-description-en" lang="en">{project.description_en}</p>
+			)}
+		</div>
+	</a>
+) : (
+	<div class="card">
+		{project.image && (
+			<div class="card-image">
+				<img
+					src={project.image}
+					alt={`${project.title} のサムネイル`}
+					loading="lazy"
+				/>
+			</div>
+		)}
+		<div class="card-content">
+			<h2>{project.title}</h2>
+			{project.title_en && <div class="card-version" lang="en">{project.title_en}</div>}
+			<p>{project.description}</p>
+			{project.description_en && (
+				<p class="card-description-en" lang="en">{project.description_en}</p>
+			)}
+		</div>
+	</div>
+)}
