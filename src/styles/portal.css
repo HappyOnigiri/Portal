@@ -251,6 +251,12 @@ body {
 	letter-spacing: 1px;
 }
 
+.card-description-en {
+	opacity: 0.7;
+	font-size: 0.85rem;
+	margin-top: 8px;
+}
+
 /* Guidelines Page Styles */
 .guidelines-container {
 	max-width: 800px;

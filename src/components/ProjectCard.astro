@@ -28,10 +28,10 @@ const { project } = Astro.props as Props;
 		)}
 		<div class="card-content">
 			<h2>{project.title}</h2>
-			{project.title_en && <div class="card-version">{project.title_en}</div>}
+			{project.title_en && <div class="card-version" lang="en">{project.title_en}</div>}
 			<p>{project.description}</p>
 			{project.description_en && (
-				<p style="opacity: 0.7; font-size: 0.85rem; margin-top: 8px;">{project.description_en}</p>
+				<p class="card-description-en" lang="en">{project.description_en}</p>
 			)}
 		</div>
 	</a>
@@ -48,10 +48,10 @@ const { project } = Astro.props as Props;
 		)}
 		<div class="card-content">
 			<h2>{project.title}</h2>
-			{project.title_en && <div class="card-version">{project.title_en}</div>}
+			{project.title_en && <div class="card-version" lang="en">{project.title_en}</div>}
 			<p>{project.description}</p>
 			{project.description_en && (
-				<p style="opacity: 0.7; font-size: 0.85rem; margin-top: 8px;">{project.description_en}</p>
+				<p class="card-description-en" lang="en">{project.description_en}</p>
 			)}
 		</div>
 	</div>
