@@ -1,43 +1,76 @@
-# Astro Starter Kit: Minimal
+# Portal
 
-```sh
-npm create astro@latest -- --template minimal
+Astro 6 を使用したポータルサイトプロジェクト。
+
+## セットアップ
+
+### 前提条件
+
+- Node.js: `>=22.12.0`
+- npm: 最新バージョン推奨
+
+### インストール
+
+```bash
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 開発コマンド
 
-## 🚀 Project Structure
+### 開発サーバーの起動
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+ローカルサーバーが起動します（通常は `http://localhost:4321`）。
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### ビルド
 
-Any static assets, like images, can be placed in the `public/` directory.
+```bash
+npm run build
+```
 
-## 🧞 Commands
+`dist/` ディレクトリにプロダクション用の成果物が生成されます。
 
-All commands are run from the root of the project, from a terminal:
+### プレビュー
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm run preview
+```
 
-## 👀 Want to learn more?
+ビルドされた成果物をローカルで確認します。
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## ツール
+
+### 静的解析 (Lint)
+
+```bash
+npm run lint
+```
+
+Biome を使用してコードのチェックを行います。
+
+### フォーマット
+
+```bash
+npm run format
+```
+
+Biome を使用してコードを整形します。
+
+### テスト
+
+```bash
+npm run test
+```
+
+Vitest を使用してテストを実行します。
+
+## CI
+
+```bash
+make ci
+```
+
+Lint、テスト、ビルドを一括で実行します。プルリクエストの作成前などに実行してください。
