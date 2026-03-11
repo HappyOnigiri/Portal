@@ -8,15 +8,15 @@ const projects = projectEntries.map((entry) => entry.data);
 ---
 
 <BaseLayout
-	title="Cyber Portfolio | Top"
-	description="アプリと実績を一覧できるポートフォリオトップページ"
+	title="ONIGIRI PORTAL | Top"
+	description="HappyOnigiri's Portfolio"
 >
 
 	<section class="cyber-header">
 		<h1 class="cyber-glitch">ONIGIRI PORTAL</h1>
 	</section>
 
-	<section aria-label="プロジェクト一覧">
+	<section aria-label="Projects">
 		<div class="grid">
 			{projects.map((project) => <ProjectCard project={project} />)}
 		</div>
