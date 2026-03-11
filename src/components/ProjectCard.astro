@@ -16,7 +16,7 @@ const { project } = Astro.props as Props;
 ---
 
 {project.url ? (
-	<a class="card" href={project.url} target="_blank" rel="noopener noreferrer">
+	<a class="card card--link" href={project.url} target="_blank" rel="noopener noreferrer">
 		{project.image && (
 			<div class="card-image">
 				<img
