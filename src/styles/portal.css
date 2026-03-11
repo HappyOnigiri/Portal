@@ -246,9 +246,8 @@ body {
 	font-family: Orbitron, sans-serif;
 	font-size: 0.75rem;
 	color: var(--text-muted);
-	opacity: 0.4;
-	margin-top: auto;
-	align-self: flex-end;
+	opacity: 0.6;
+	margin-bottom: 12px;
 	letter-spacing: 1px;
 }
 

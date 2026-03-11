@@ -3,7 +3,7 @@
   title_en: "MESUGAKI PONG"
   description: "メスガキに煽られながらやるカオスなピンポンゲーム。"
   description_en: "A chaotic PONG game where a cheeky brat taunts you."
-  image: "/thumbnails/mesugaki-pong.png"
+  image: "/images/thumbnails/mesugaki-pong.png"
   url: "https://onigiri-game-portal.vercel.app/mesugaki-pong/"
 
 - id: "quantum-maguro"
@@ -11,5 +11,5 @@
   title_en: "Quantum Maguro"
   description: "回転寿司がテーマの爽快タイピングゲーム！流れてくる寿司をタイプしよう。"
   description_en: "A typing game themed around endless conveyor belt sushi! (Type Japanese using Romaji)"
-  image: "/thumbnails/quantum-maguro.png"
+  image: "/images/thumbnails/quantum-maguro.png"
   url: "https://onigiri-game-portal.vercel.app/quantum-maguro/"
