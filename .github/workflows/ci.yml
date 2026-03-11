@@ -30,8 +30,14 @@ jobs:
       - name: Verify no diff after make ci
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "Working tree has changes after make ci."
+            echo "Error: Working tree has changes after make ci."
+            echo ""
+            echo "Changed files:"
             git status --short
+            echo ""
+            echo "Diff:"
             git diff
+            echo ""
+            echo "Fix: Run 'make ci' locally and commit the generated files."
             exit 1
           fi
