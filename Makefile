@@ -1,7 +1,7 @@
 .PHONY: ci repomix
 
 ci:
-	npm run lint
+	npm run lint -- --write
 	npm run test
 	npm run build
 
