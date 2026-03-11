@@ -52,7 +52,7 @@ body {
 .cyber-container {
 	max-width: 1200px;
 	margin: 0 auto;
-	padding: 60px 20px;
+	padding: 0px 20px 60px;
 	width: 100%;
 	box-sizing: border-box;
 	flex-grow: 1;
@@ -64,12 +64,12 @@ body {
 
 .cyber-header {
 	text-align: center;
-	margin-bottom: 70px;
+	margin-bottom: 40px;
 	position: relative;
 }
 
 .cyber-glitch {
-	font-family: Orbitron, sans-serif;
+	font-family: "Orbitron", sans-serif;
 	font-size: 4rem;
 	font-weight: 900;
 	color: #fff;
@@ -98,10 +98,10 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 20px;
+	margin-bottom: 0;
 	flex-wrap: wrap;
 	gap: 1rem;
-	padding: 1rem 1.25rem;
+	padding: 0;
 }
 
 @media (max-width: 480px) {
