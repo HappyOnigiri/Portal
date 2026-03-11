@@ -10,15 +10,21 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
+		"check": "biome check . --error-on-warnings",
 		"lint": "biome check .",
 		"format": "biome format --write .",
-		"test": "vitest run"
+		"typecheck": "astro sync && tsc --noEmit",
+		"check:ts-rules": "python3 scripts/check_ts_rules.py",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"astro": "^6.0.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.6",
+		"@vitest/coverage-v8": "^4.0.18",
+		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"
 	}
 }
