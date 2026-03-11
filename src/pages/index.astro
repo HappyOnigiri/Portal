@@ -12,13 +12,13 @@ const projects = sortProjectsByTitle(projectEntries.map((entry) => entry.data));
 	title="Cyber Portfolio | Top"
 	description="アプリと実績を一覧できるポートフォリオトップページ"
 >
-	<section class="hero">
-		<h1>Activity Portal</h1>
-		<p>YAMLで管理したプロジェクト情報を静的にレンダリングしています。</p>
+	<section class="cyber-header" style="margin-bottom: 30px;">
+		<h1 class="cyber-glitch" style="font-size: 2.5rem;">Activity Portal</h1>
+		<p class="cyber-subtitle">YAMLで管理したプロジェクト情報を静的にレンダリングしています。</p>
 	</section>
 
 	<section aria-label="プロジェクト一覧">
-		<div class="cards-grid">
+		<div class="grid">
 			{projects.map((project) => <ProjectCard project={project} />)}
 		</div>
 	</section>

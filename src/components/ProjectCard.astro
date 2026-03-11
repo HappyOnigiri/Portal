@@ -18,20 +18,21 @@ const { project } = Astro.props as Props;
 <a class="card" href={project.url} target="_blank" rel="noopener noreferrer">
 	{
 		project.image && (
-			<img
-				class="card-image"
-				src={project.image}
-				alt={`${project.title} のサムネイル`}
-				loading="lazy"
-			/>
+			<div class="card-image">
+				<img
+					src={project.image}
+					alt={`${project.title} のサムネイル`}
+					loading="lazy"
+				/>
+			</div>
 		)
 	}
 	<div class="card-content">
-		<h3 class="card-title">{project.title}</h3>
-		{project.title_en && <p class="card-title-en">{project.title_en}</p>}
-		<p class="card-description">{project.description}</p>
+		<h2>{project.title}</h2>
+		{project.title_en && <div class="card-version">{project.title_en}</div>}
+		<p>{project.description}</p>
 		{project.description_en && (
-			<p class="card-description-en">{project.description_en}</p>
+			<p style="opacity: 0.7; font-size: 0.85rem; margin-top: 8px;">{project.description_en}</p>
 		)}
 	</div>
 </a>

@@ -22,23 +22,53 @@ const { title, description = "個人活動ポートフォリオ" } = Astro.props
 	</head>
 	<body>
 		<div class="cyber-scanlines" aria-hidden="true"></div>
-		<div class="site-shell">
-			<header class="portal-header">
-				<a class="portal-brand" href="/">PORTAL://ACTIVITIES</a>
-				<nav aria-label="グローバルナビゲーション">
-					<ul class="portal-nav">
-						<li><a href="/">Top</a></li>
-						<li><a href="/about">About</a></li>
-					</ul>
-				</nav>
+		<div class="cyber-container">
+			<header class="cyber-header-top">
+				<a class="portal-brand" href="/" style="font-family: Orbitron, sans-serif; font-size: 1.5rem; font-weight: 700; color: #00f0ff; text-decoration: none; text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);">PORTAL://ACTIVITIES</a>
 			</header>
 
 			<main id="main-content" class="portal-main">
 				<slot />
 			</main>
 
-			<footer class="portal-footer">
-				<p>© {new Date().getFullYear()} Cyber Portfolio</p>
+			<footer class="cyber-footer">
+				<div class="footer-content">
+					<div class="footer-info">
+						<p class="copyright">
+							&copy; 2026 HappyOnigiri. All rights reserved.
+						</p>
+						<div class="footer-links">
+							<a
+								href="https://x.com/H_OnigiriWorks"
+								target="_blank"
+								rel="noopener noreferrer"
+								title="X (Twitter)"
+								class="social-link x-link"
+							>
+								<img
+									src="/assets/logos/logo_x.svg"
+									alt="X"
+									width="18"
+									height="18"
+								/>
+							</a>
+							<a
+								href="https://github.com/HappyOnigiri/Portal"
+								target="_blank"
+								rel="noopener noreferrer"
+								title="GitHub"
+								class="social-link github-link"
+							>
+								<img
+									src="/assets/logos/logo_github.svg"
+									alt="GitHub"
+									width="20"
+									height="20"
+								/>
+							</a>
+						</div>
+					</div>
+				</div>
 			</footer>
 		</div>
 	</body>
