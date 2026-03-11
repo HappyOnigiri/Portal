@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { title, description = "個人活動ポートフォリオ" } = Astro.props as Props;
+const currentYear = new Date().getFullYear();
 ---
 
 <!doctype html>
@@ -41,7 +42,7 @@ const { title, description = "個人活動ポートフォリオ" } = Astro.props
 				<div class="footer-content">
 					<div class="footer-info">
 						<p class="copyright">
-							&copy; 2026 HappyOnigiri. All rights reserved.
+							&copy; {currentYear} HappyOnigiri. All rights reserved.
 						</p>
 						<div class="footer-links">
 							<a
