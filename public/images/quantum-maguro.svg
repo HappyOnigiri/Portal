@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Quantum Maguro</title>
+  <desc id="desc">Neon style placeholder thumbnail for Quantum Maguro.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="1" y2="0">
+      <stop offset="0%" stop-color="#07051a"/>
+      <stop offset="100%" stop-color="#0f3458"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <ellipse cx="600" cy="338" rx="300" ry="140" fill="none" stroke="#19f7ff" stroke-width="4"/>
+  <ellipse cx="600" cy="338" rx="210" ry="95" fill="none" stroke="#ff3de1" stroke-width="4"/>
+  <path d="M360 350c120-90 360-90 480 0-120 90-360 90-480 0z" fill="none" stroke="#e8e5ff" stroke-width="5"/>
+  <circle cx="495" cy="332" r="10" fill="#19f7ff"/>
+  <text x="600" y="130" fill="#e8e5ff" text-anchor="middle" font-family="sans-serif" font-size="56">Quantum Maguro</text>
+</svg>

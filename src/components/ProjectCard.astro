@@ -1,0 +1,37 @@
+---
+export interface ProjectData {
+	title: string;
+	title_en?: string;
+	description: string;
+	description_en?: string;
+	image?: string;
+	url: string;
+}
+
+interface Props {
+	project: ProjectData;
+}
+
+const { project } = Astro.props as Props;
+---
+
+<a class="card" href={project.url} target="_blank" rel="noopener noreferrer">
+	{
+		project.image && (
+			<img
+				class="card-image"
+				src={project.image}
+				alt={`${project.title} のサムネイル`}
+				loading="lazy"
+			/>
+		)
+	}
+	<div class="card-content">
+		<h3 class="card-title">{project.title}</h3>
+		{project.title_en && <p class="card-title-en">{project.title_en}</p>}
+		<p class="card-description">{project.description}</p>
+		{project.description_en && (
+			<p class="card-description-en">{project.description_en}</p>
+		)}
+	</div>
+</a>

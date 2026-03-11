@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Mesugaki Pong</title>
+  <desc id="desc">Neon style placeholder thumbnail for Mesugaki Pong.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a1f"/>
+      <stop offset="100%" stop-color="#25063d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="515" fill="none" stroke="#19f7ff" stroke-width="6"/>
+  <rect x="240" y="260" width="24" height="160" fill="#19f7ff"/>
+  <rect x="936" y="260" width="24" height="160" fill="#ff3de1"/>
+  <circle cx="600" cy="338" r="18" fill="#e8e5ff"/>
+  <text x="600" y="130" fill="#e8e5ff" text-anchor="middle" font-family="sans-serif" font-size="56">Mesugaki Pong</text>
+</svg>

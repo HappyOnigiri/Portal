@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "../components/ProjectCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sortProjectsByTitle } from "../utils/project";
+
+const projectEntries = await getCollection("projects");
+const projects = sortProjectsByTitle(projectEntries.map((entry) => entry.data));
+---
+
+<BaseLayout
+	title="Cyber Portfolio | Top"
+	description="アプリと実績を一覧できるポートフォリオトップページ"
+>
+	<section class="hero">
+		<h1>Activity Portal</h1>
+		<p>YAMLで管理したプロジェクト情報を静的にレンダリングしています。</p>
+	</section>
+
+	<section aria-label="プロジェクト一覧">
+		<div class="cards-grid">
+			{projects.map((project) => <ProjectCard project={project} />)}
+		</div>
+	</section>
+</BaseLayout>
