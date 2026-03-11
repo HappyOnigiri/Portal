@@ -34,8 +34,6 @@ reviews:
       enabled: false
     shellcheck:
       enabled: false
-    ast-grep:
-      enabled: false
     biome:
       enabled: true
     eslint:
