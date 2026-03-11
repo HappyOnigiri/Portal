@@ -61,9 +61,20 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 1rem;
 	padding: 1rem 1.25rem;
 	margin-bottom: 1.5rem;
+}
+
+@media (max-width: 480px) {
+	.portal-header {
+		align-items: flex-start;
+	}
+
+	.portal-nav {
+		flex-wrap: wrap;
+	}
 }
 
 .portal-brand {
