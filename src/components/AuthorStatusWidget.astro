@@ -1,0 +1,127 @@
+---
+const mockData = {
+	linesOfCode: 12345,
+	commits: 456,
+	mergedPRs: 78,
+	ciRuns: 890,
+	languages: [
+		{ id: "TypeScript", label: "TypeScript", value: 60, color: "#3178c6" },
+		{ id: "Astro", label: "Astro", value: 20, color: "#ff5a03" },
+		{ id: "CSS", label: "CSS", value: 10, color: "#563d7c" },
+		{ id: "Other", label: "Other", value: 10, color: "#ededed" },
+	],
+	aiUsage: [
+		{ id: "Claude", label: "Claude", value: 50, color: "#d97757" },
+		{ id: "GPT-4o", label: "GPT-4o", value: 30, color: "#10a37f" },
+		{ id: "Gemini", label: "Gemini", value: 20, color: "#1a73e8" },
+	],
+	aiTokens: 1234567,
+};
+
+// 数値のフォーマット
+const formatNumber = (num: number) =>
+	new Intl.NumberFormat("ja-JP").format(num);
+---
+
+<div class="w-full max-w-[1160px] mx-auto bg-[#141623]/80 border border-[#2dd4bf]/30 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.1)] overflow-hidden backdrop-blur-sm text-sm sm:text-base font-mono">
+	<div class="p-4 border-b border-[#2dd4bf]/30 bg-[#0d0e15]/50 flex items-center justify-between">
+		<h2 class="text-base font-bold text-[#e2e8f0] m-0 flex items-center gap-2 font-[Orbitron]">
+			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+			AUTHOR_STATUS_REPORT
+		</h2>
+		<div class="text-xs text-[#00f0ff] animate-pulse font-[Orbitron]">
+			[ SYSTEM_ONLINE ]
+		</div>
+	</div>
+
+	<div class="p-6 overflow-x-auto">
+		<table class="w-full border-collapse">
+			<tbody class="text-[#e2e8f0]">
+				{/* 1. Lines of Code */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-xs sm:text-sm">Lines of Code</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.linesOfCode)}</td>
+				</tr>
+				
+				{/* 2. Commits */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#ff003c]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] text-xs sm:text-sm">Commits</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.commits)}</td>
+				</tr>
+
+				{/* 3. Merged PRs */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-xs sm:text-sm">Merged PRs</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.mergedPRs)}</td>
+				</tr>
+
+				{/* 4. CI Runs */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] text-xs sm:text-sm">CI Runs</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.ciRuns)}</td>
+				</tr>
+
+				{/* 5. AI Tokens */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-xs sm:text-sm">AI Tokens Used</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.aiTokens)}</td>
+				</tr>
+
+				{/* 6. Languages */}
+				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] align-top text-xs sm:text-sm">Languages</td>
+					<td class="py-4 px-2">
+						<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
+							{mockData.languages.map((lang) => (
+								<div 
+									style={`width: ${lang.value}%; background-color: ${lang.color}; box-shadow: 0 0 12px ${lang.color}, inset 0 0 4px rgba(255,255,255,0.3);`} 
+									title={`${lang.label} ${lang.value}%`}
+									class="h-full relative z-10"
+								></div>
+							))}
+						</div>
+						<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
+							{mockData.languages.map((lang) => (
+								<div class="flex items-center text-xs">
+									<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${lang.color}; color: ${lang.color}`}></span>
+									<span class="text-[#94a3b8] mr-1.5">{lang.label}</span>
+									<span class="font-bold text-[#e2e8f0]">{lang.value}%</span>
+								</div>
+							))}
+						</div>
+					</td>
+				</tr>
+
+				{/* 7. AI Usage */}
+				<tr class="hover:bg-[#ff003c]/5 transition-colors group">
+					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] align-top text-xs sm:text-sm">AI Usage</td>
+					<td class="py-4 px-2">
+						<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
+							{mockData.aiUsage.map((ai) => (
+								<div 
+									style={`width: ${ai.value}%; background-color: ${ai.color}; box-shadow: 0 0 12px ${ai.color}, inset 0 0 4px rgba(255,255,255,0.3);`} 
+									title={`${ai.label} ${ai.value}%`}
+									class="h-full relative z-10"
+								></div>
+							))}
+						</div>
+						<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
+							{mockData.aiUsage.map((ai) => (
+								<div class="flex items-center text-xs">
+									<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${ai.color}; color: ${ai.color}`}></span>
+									<span class="text-[#94a3b8] mr-1.5">{ai.label}</span>
+									<span class="font-bold text-[#e2e8f0]">{ai.value}%</span>
+								</div>
+							))}
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="p-3 bg-[#0d0e15]/30 border-t border-[#2dd4bf]/10 text-xs text-[#94a3b8] flex justify-between font-mono">
+		<span>TERMINAL_ID: ONIGIRI-01</span>
+		<span class="animate-pulse">_</span>
+	</div>
+</div>

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import AuthorStatusWidget from "../components/AuthorStatusWidget.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -16,9 +17,13 @@ const projects = projectEntries.map((entry) => entry.data);
 		<h1 class="cyber-glitch">ONIGIRI PORTAL</h1>
 	</section>
 
-	<section aria-label="Projects">
+	<section aria-label="Projects" style="margin-bottom: 3rem;">
 		<div class="grid">
 			{projects.map((project) => <ProjectCard project={project} />)}
 		</div>
+	</section>
+
+	<section aria-label="Author Status" style="margin-bottom: 3rem;">
+		<AuthorStatusWidget />
 	</section>
 </BaseLayout>
