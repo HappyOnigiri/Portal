@@ -6,11 +6,13 @@ describe("sortProjectsByTitle", () => {
 	it("タイトル昇順で並び替える", () => {
 		const projects: Project[] = [
 			{
+				id: "quantum-maguro",
 				title: "Quantum Maguro",
 				description: "B",
 				url: "https://example.com/b",
 			},
 			{
+				id: "mesugaki-pong",
 				title: "Mesugaki Pong",
 				description: "A",
 				url: "https://example.com/a",
@@ -28,11 +30,13 @@ describe("sortProjectsByTitle", () => {
 	it("元配列を破壊しない", () => {
 		const projects: Project[] = [
 			{
+				id: "b",
 				title: "B",
 				description: "B",
 				url: "https://example.com/b",
 			},
 			{
+				id: "a",
 				title: "A",
 				description: "A",
 				url: "https://example.com/a",
