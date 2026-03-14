@@ -158,7 +158,7 @@ function main(): void {
 		try {
 			execFileSync("gh", ["repo", "clone", repoArg, tmpDir], { stdio: "inherit" });
 		} catch {
-			rmSync(tmpDir, { recursive: true });
+			rmSync(tmpDir, { recursive: true, force: true });
 			console.error(
 				`Error: リポジトリ "${repoArg}" が見つかりません。\n` +
 					`  - owner/name の形式で指定してください\n` +
@@ -246,7 +246,7 @@ function main(): void {
 		}
 	} finally {
 		if (tmpDir) {
-			rmSync(tmpDir, { recursive: true });
+			rmSync(tmpDir, { recursive: true, force: true });
 			console.error(`Cleaned up ${tmpDir}`);
 		}
 	}
