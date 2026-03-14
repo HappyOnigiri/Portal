@@ -36,8 +36,8 @@ jobs:
       - name: Collect metrics (dry run)
         id: collect
         run: |
-          if [ -n "${{ inputs.repo }}" ]; then
-            RESULT=$(npm run collect-metrics -- --dry-run --repo "${{ inputs.repo }}")
+          if [ -n "$REPO_INPUT" ]; then
+            RESULT=$(npm run collect-metrics -- --dry-run --repo "$REPO_INPUT")
           else
             RESULT=$(npm run collect-metrics -- --dry-run)
           fi
@@ -46,6 +46,7 @@ jobs:
           echo "EOF" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO_INPUT: ${{ inputs.repo }}
 
       - name: Write summary
         run: |
