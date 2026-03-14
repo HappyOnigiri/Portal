@@ -151,7 +151,17 @@ function main(): void {
 	if (repoArg) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
 		console.error(`Cloning ${repoArg} into ${tmpDir}...`);
-		execSync(`gh repo clone ${repoArg} ${tmpDir}`, { stdio: "inherit" });
+		try {
+			execSync(`gh repo clone ${repoArg} ${tmpDir}`, { stdio: "inherit" });
+		} catch {
+			rmSync(tmpDir, { recursive: true });
+			console.error(
+				`Error: リポジトリ "${repoArg}" が見つかりません。\n` +
+					`  - owner/name の形式で指定してください\n` +
+					`  - リポジトリへのアクセス権があるか確認してください`,
+			);
+			process.exit(1);
+		}
 		repoDir = tmpDir;
 	}
 
