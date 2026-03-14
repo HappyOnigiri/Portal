@@ -48,7 +48,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain)" ]; then
+          if ! git diff --quiet -- src/data/author-status.json; then
             git add src/data/author-status.json
             git commit -m "chore: update repository metrics [skip ci]"
             git push origin main
