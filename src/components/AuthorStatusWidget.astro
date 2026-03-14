@@ -1,26 +1,22 @@
 ---
-const mockData = {
-	linesOfCode: 12345,
-	commits: 456,
-	mergedPRs: 78,
-	ciRuns: 890,
-	languages: [
-		{ id: "TypeScript", label: "TypeScript", value: 60, color: "#3178c6" },
-		{ id: "Astro", label: "Astro", value: 20, color: "#ff5a03" },
-		{ id: "CSS", label: "CSS", value: 10, color: "#563d7c" },
-		{ id: "Other", label: "Other", value: 10, color: "#ededed" },
-	],
-	aiUsage: [
-		{ id: "Claude", label: "Claude", value: 50, color: "#d97757" },
-		{ id: "GPT-4o", label: "GPT-4o", value: 30, color: "#10a37f" },
-		{ id: "Gemini", label: "Gemini", value: 20, color: "#1a73e8" },
-	],
-	aiTokens: 1234567,
-};
+import statusData from "../data/author-status.json";
+
+const showAiSections: boolean = false;
 
 // 数値のフォーマット
 const formatNumber = (num: number) =>
 	new Intl.NumberFormat("ja-JP").format(num);
+
+const lastSync = statusData.lastUpdated
+	? new Date(statusData.lastUpdated).toLocaleString("ja-JP", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			timeZone: "Asia/Tokyo",
+		})
+	: "---";
 ---
 
 <div class="w-full max-w-[1160px] mx-auto bg-[#141623]/80 border border-[#2dd4bf]/30 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.1)] overflow-hidden backdrop-blur-sm text-sm sm:text-base font-mono">
@@ -40,48 +36,50 @@ const formatNumber = (num: number) =>
 				{/* 1. Lines of Code */}
 				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
 					<td class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-xs sm:text-sm">Lines of Code</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.linesOfCode)}</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.linesOfCode)}</td>
 				</tr>
-				
+
 				{/* 2. Commits */}
 				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#ff003c]/5 transition-colors group">
 					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] text-xs sm:text-sm">Commits</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.commits)}</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.commits)}</td>
 				</tr>
 
 				{/* 3. Merged PRs */}
 				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
 					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-xs sm:text-sm">Merged PRs</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.mergedPRs)}</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.mergedPRs)}</td>
 				</tr>
 
 				{/* 4. CI Runs */}
 				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
 					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] text-xs sm:text-sm">CI Runs</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.ciRuns)}</td>
+					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.ciRuns)}</td>
 				</tr>
 
-				{/* 5. AI Tokens */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-xs sm:text-sm">AI Tokens Used</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(mockData.aiTokens)}</td>
-				</tr>
+				{/* 5. AI Tokens (hidden) */}
+				{showAiSections && (
+					<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
+						<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-xs sm:text-sm">AI Tokens Used</td>
+						<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.aiTokens)}</td>
+					</tr>
+				)}
 
 				{/* 6. Languages */}
 				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
 					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] align-top text-xs sm:text-sm">Languages</td>
 					<td class="py-4 px-2">
 						<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
-							{mockData.languages.map((lang) => (
-								<div 
-									style={`width: ${lang.value}%; background-color: ${lang.color}; box-shadow: 0 0 12px ${lang.color}, inset 0 0 4px rgba(255,255,255,0.3);`} 
+							{statusData.languages.map((lang) => (
+								<div
+									style={`width: ${lang.value}%; background-color: ${lang.color}; box-shadow: 0 0 12px ${lang.color}, inset 0 0 4px rgba(255,255,255,0.3);`}
 									title={`${lang.label} ${lang.value}%`}
 									class="h-full relative z-10"
 								></div>
 							))}
 						</div>
 						<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
-							{mockData.languages.map((lang) => (
+							{statusData.languages.map((lang) => (
 								<div class="flex items-center text-xs">
 									<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${lang.color}; color: ${lang.color}`}></span>
 									<span class="text-[#94a3b8] mr-1.5">{lang.label}</span>
@@ -92,36 +90,38 @@ const formatNumber = (num: number) =>
 					</td>
 				</tr>
 
-				{/* 7. AI Usage */}
-				<tr class="hover:bg-[#ff003c]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] align-top text-xs sm:text-sm">AI Usage</td>
-					<td class="py-4 px-2">
-						<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
-							{mockData.aiUsage.map((ai) => (
-								<div 
-									style={`width: ${ai.value}%; background-color: ${ai.color}; box-shadow: 0 0 12px ${ai.color}, inset 0 0 4px rgba(255,255,255,0.3);`} 
-									title={`${ai.label} ${ai.value}%`}
-									class="h-full relative z-10"
-								></div>
-							))}
-						</div>
-						<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
-							{mockData.aiUsage.map((ai) => (
-								<div class="flex items-center text-xs">
-									<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${ai.color}; color: ${ai.color}`}></span>
-									<span class="text-[#94a3b8] mr-1.5">{ai.label}</span>
-									<span class="font-bold text-[#e2e8f0]">{ai.value}%</span>
-								</div>
-							))}
-						</div>
-					</td>
-				</tr>
+				{/* 7. AI Usage (hidden) */}
+				{showAiSections && (
+					<tr class="hover:bg-[#ff003c]/5 transition-colors group">
+						<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] align-top text-xs sm:text-sm">AI Usage</td>
+						<td class="py-4 px-2">
+							<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
+								{statusData.aiUsage.map((ai) => (
+									<div
+										style={`width: ${ai.value}%; background-color: ${ai.color}; box-shadow: 0 0 12px ${ai.color}, inset 0 0 4px rgba(255,255,255,0.3);`}
+										title={`${ai.label} ${ai.value}%`}
+										class="h-full relative z-10"
+									></div>
+								))}
+							</div>
+							<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
+								{statusData.aiUsage.map((ai) => (
+									<div class="flex items-center text-xs">
+										<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${ai.color}; color: ${ai.color}`}></span>
+										<span class="text-[#94a3b8] mr-1.5">{ai.label}</span>
+										<span class="font-bold text-[#e2e8f0]">{ai.value}%</span>
+									</div>
+								))}
+							</div>
+						</td>
+					</tr>
+				)}
 			</tbody>
 		</table>
 	</div>
-	
+
 	<div class="p-3 bg-[#0d0e15]/30 border-t border-[#2dd4bf]/10 text-xs text-[#94a3b8] flex justify-between font-mono">
 		<span>TERMINAL_ID: ONIGIRI-01</span>
-		<span class="animate-pulse">_</span>
+		<span>LAST_SYNC: {lastSync}</span>
 	</div>
 </div>
