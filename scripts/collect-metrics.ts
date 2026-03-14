@@ -156,7 +156,9 @@ function main(): void {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
 		console.error(`Cloning ${repoArg} into ${tmpDir}...`);
 		try {
-			execFileSync("gh", ["repo", "clone", repoArg, tmpDir], { stdio: "inherit" });
+			execFileSync("gh", ["repo", "clone", repoArg, tmpDir], {
+				stdio: "inherit",
+			});
 		} catch {
 			rmSync(tmpDir, { recursive: true, force: true });
 			console.error(
@@ -204,7 +206,17 @@ function main(): void {
 		try {
 			const prOutput = execFileSync(
 				"gh",
-				["pr", "list", ...repoFlags, "--state", "merged", "--json", "number", "--limit", "9999"],
+				[
+					"pr",
+					"list",
+					...repoFlags,
+					"--state",
+					"merged",
+					"--json",
+					"number",
+					"--limit",
+					"9999",
+				],
 				{ encoding: "utf-8" },
 			);
 			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
@@ -216,7 +228,15 @@ function main(): void {
 		try {
 			const runOutput = execFileSync(
 				"gh",
-				["run", "list", ...repoFlags, "--json", "databaseId", "--limit", "9999"],
+				[
+					"run",
+					"list",
+					...repoFlags,
+					"--json",
+					"databaseId",
+					"--limit",
+					"9999",
+				],
 				{ encoding: "utf-8" },
 			);
 			ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
