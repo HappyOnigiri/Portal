@@ -1,4 +1,4 @@
-.PHONY: ci check-ts-rules build run-dev repomix
+.PHONY: ci check-ts-rules build run-dev repomix collect collect-dry-run
 
 check-ts-rules:
 	python3 scripts/check_ts_rules.py
@@ -19,3 +19,9 @@ build:
 repomix:
 	@mkdir -p tmp/repomix
 	npx repomix --output tmp/repomix/repomix-output.txt
+
+collect:
+	npm run collect-metrics
+
+collect-dry-run:
+	npm run collect-metrics -- --dry-run
