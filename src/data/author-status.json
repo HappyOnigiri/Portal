@@ -1,47 +1,47 @@
 {
-  "linesOfCode": 8587,
-  "commits": 77,
-  "mergedPRs": 0,
-  "ciRuns": 0,
-  "lastUpdated": "2026-03-14T22:57:41.114Z",
-  "languages": [
-    {
-      "id": "TypeScript",
-      "label": "TypeScript",
-      "value": 4,
-      "color": "#3178c6"
-    },
-    {
-      "id": "Astro",
-      "label": "Astro",
-      "value": 3,
-      "color": "#ff5a03"
-    },
-    {
-      "id": "CSS",
-      "label": "CSS",
-      "value": 6,
-      "color": "#563d7c"
-    },
-    {
-      "id": "Python",
-      "label": "Python",
-      "value": 1,
-      "color": "#3572A5"
-    },
-    {
-      "id": "YAML",
-      "label": "YAML",
-      "value": 3,
-      "color": "#cb171e"
-    },
-    {
-      "id": "Other",
-      "label": "Other",
-      "value": 83,
-      "color": "#ededed"
-    }
-  ],
-  "aiUsage": [],
-  "aiTokens": 0
+	"linesOfCode": 8587,
+	"commits": 77,
+	"mergedPRs": 0,
+	"ciRuns": 0,
+	"lastUpdated": "2026-03-14T22:57:41.114Z",
+	"languages": [
+		{
+			"id": "TypeScript",
+			"label": "TypeScript",
+			"value": 4,
+			"color": "#3178c6"
+		},
+		{
+			"id": "Astro",
+			"label": "Astro",
+			"value": 3,
+			"color": "#ff5a03"
+		},
+		{
+			"id": "CSS",
+			"label": "CSS",
+			"value": 6,
+			"color": "#563d7c"
+		},
+		{
+			"id": "Python",
+			"label": "Python",
+			"value": 1,
+			"color": "#3572A5"
+		},
+		{
+			"id": "YAML",
+			"label": "YAML",
+			"value": 3,
+			"color": "#cb171e"
+		},
+		{
+			"id": "Other",
+			"label": "Other",
+			"value": 83,
+			"color": "#ededed"
+		}
+	],
+	"aiUsage": [],
+	"aiTokens": 0
 }
