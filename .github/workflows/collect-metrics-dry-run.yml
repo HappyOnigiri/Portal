@@ -2,6 +2,11 @@ name: Collect Metrics (Dry Run)
 
 on:
   workflow_dispatch:
+    inputs:
+      repo:
+        description: "対象リポジトリ (例: owner/name)。空欄で自リポジトリ"
+        required: false
+        default: ""
 
 jobs:
   collect:
@@ -31,7 +36,11 @@ jobs:
       - name: Collect metrics (dry run)
         id: collect
         run: |
-          RESULT=$(npm run collect-metrics -- --dry-run)
+          if [ -n "${{ inputs.repo }}" ]; then
+            RESULT=$(npm run collect-metrics -- --dry-run --repo "${{ inputs.repo }}")
+          else
+            RESULT=$(npm run collect-metrics -- --dry-run)
+          fi
           echo "result<<EOF" >> "$GITHUB_OUTPUT"
           echo "$RESULT" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"

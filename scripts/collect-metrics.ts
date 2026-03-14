@@ -1,8 +1,23 @@
 import { execSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { extname, resolve } from "node:path";
+import {
+	existsSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { extname, join, resolve } from "node:path";
+import { parseArgs } from "node:util";
 
-const isDryRun = process.argv.includes("--dry-run");
+const { values: args } = parseArgs({
+	options: {
+		"dry-run": { type: "boolean", default: false },
+		repo: { type: "string" },
+	},
+});
+const isDryRun = args["dry-run"] ?? false;
+const repoArg = args.repo; // e.g. "HappyOnigiri/Refix"
 
 interface LanguageGroup {
 	id: string;
@@ -43,8 +58,8 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 	{ id: "Other", label: "Other", exts: [], color: "#ededed" },
 ];
 
-function getExcludedPatterns(): string[] {
-	const gitattributesPath = resolve(process.cwd(), ".gitattributes");
+function getExcludedPatterns(repoDir: string): string[] {
+	const gitattributesPath = resolve(repoDir, ".gitattributes");
 	if (!existsSync(gitattributesPath)) return [];
 	const content = readFileSync(gitattributesPath, "utf-8");
 	const patterns: string[] = [];
@@ -76,9 +91,9 @@ function isExcluded(filePath: string, patterns: string[]): boolean {
 	return patterns.some((p) => patternToRegex(p).test(filePath));
 }
 
-function countFileLines(filePath: string): number {
+function countFileLines(repoDir: string, filePath: string): number {
 	try {
-		const content = readFileSync(filePath, "utf-8");
+		const content = readFileSync(join(repoDir, filePath), "utf-8");
 		return content.split("\n").length;
 	} catch {
 		return 0;
@@ -130,68 +145,96 @@ function calcLanguages(
 }
 
 function main(): void {
-	const excludedPatterns = getExcludedPatterns();
+	let repoDir = process.cwd();
+	let tmpDir: string | undefined;
 
-	const allFiles = execSync("git ls-files", { encoding: "utf-8" })
-		.trim()
-		.split("\n")
-		.filter((f) => f.length > 0)
-		.filter((f) => !isExcluded(f, excludedPatterns));
-
-	const extLines = new Map<string, number>();
-	let totalLines = 0;
-
-	for (const file of allFiles) {
-		const lines = countFileLines(file);
-		const ext = extname(file).toLowerCase();
-		extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
-		totalLines += lines;
+	if (repoArg) {
+		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
+		console.error(`Cloning ${repoArg} into ${tmpDir}...`);
+		execSync(`gh repo clone ${repoArg} ${tmpDir}`, { stdio: "inherit" });
+		repoDir = tmpDir;
 	}
 
-	const commits = Number(
-		execSync("git rev-list --count HEAD", { encoding: "utf-8" }).trim(),
-	);
+	const repoFlag = repoArg ? `-R ${repoArg}` : "";
 
-	let mergedPRs = 0;
 	try {
-		const prOutput = execSync(
-			"gh pr list --state merged --json number --limit 9999",
-			{ encoding: "utf-8" },
-		);
-		mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
-	} catch (err) {
-		console.error("Warning: Failed to get merged PRs count:", err);
-	}
+		const excludedPatterns = getExcludedPatterns(repoDir);
 
-	let ciRuns = 0;
-	try {
-		const runOutput = execSync("gh run list --json databaseId --limit 9999", {
+		const allFiles = execSync("git ls-files", {
 			encoding: "utf-8",
-		});
-		ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
-	} catch (err) {
-		console.error("Warning: Failed to get CI runs count:", err);
-	}
+			cwd: repoDir,
+		})
+			.trim()
+			.split("\n")
+			.filter((f) => f.length > 0)
+			.filter((f) => !isExcluded(f, excludedPatterns));
 
-	const languages = calcLanguages(extLines, totalLines);
+		const extLines = new Map<string, number>();
+		let totalLines = 0;
 
-	const result: MetricsResult = {
-		linesOfCode: totalLines,
-		commits,
-		mergedPRs,
-		ciRuns,
-		lastUpdated: new Date().toISOString(),
-		languages,
-		aiUsage: [],
-		aiTokens: 0,
-	};
+		for (const file of allFiles) {
+			const lines = countFileLines(repoDir, file);
+			const ext = extname(file).toLowerCase();
+			extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
+			totalLines += lines;
+		}
 
-	if (isDryRun) {
-		process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-	} else {
-		const outputPath = resolve(process.cwd(), "src/data/author-status.json");
-		writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
-		console.log(`Written to ${outputPath}`);
+		const commits = Number(
+			execSync("git rev-list --count HEAD", {
+				encoding: "utf-8",
+				cwd: repoDir,
+			}).trim(),
+		);
+
+		let mergedPRs = 0;
+		try {
+			const prOutput = execSync(
+				`gh pr list ${repoFlag} --state merged --json number --limit 9999`,
+				{ encoding: "utf-8" },
+			);
+			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
+		} catch (err) {
+			console.error("Warning: Failed to get merged PRs count:", err);
+		}
+
+		let ciRuns = 0;
+		try {
+			const runOutput = execSync(
+				`gh run list ${repoFlag} --json databaseId --limit 9999`,
+				{
+					encoding: "utf-8",
+				},
+			);
+			ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
+		} catch (err) {
+			console.error("Warning: Failed to get CI runs count:", err);
+		}
+
+		const languages = calcLanguages(extLines, totalLines);
+
+		const result: MetricsResult = {
+			linesOfCode: totalLines,
+			commits,
+			mergedPRs,
+			ciRuns,
+			lastUpdated: new Date().toISOString(),
+			languages,
+			aiUsage: [],
+			aiTokens: 0,
+		};
+
+		if (isDryRun) {
+			process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+		} else {
+			const outputPath = resolve(process.cwd(), "src/data/author-status.json");
+			writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
+			console.log(`Written to ${outputPath}`);
+		}
+	} finally {
+		if (tmpDir) {
+			rmSync(tmpDir, { recursive: true });
+			console.error(`Cleaned up ${tmpDir}`);
+		}
 	}
 }
 
