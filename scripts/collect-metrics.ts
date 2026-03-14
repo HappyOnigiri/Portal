@@ -98,6 +98,7 @@ function isExcluded(filePath: string, patterns: string[]): boolean {
 function countFileLines(repoDir: string, filePath: string): number {
 	try {
 		const content = readFileSync(join(repoDir, filePath), "utf-8");
+		if (content.length === 0) return 0;
 		return content.trimEnd().split("\n").length;
 	} catch {
 		return 0;
