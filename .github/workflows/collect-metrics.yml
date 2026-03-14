@@ -35,13 +35,14 @@ jobs:
 
       - name: Collect metrics
         run: |
-          if [ -n "${{ inputs.repo }}" ]; then
-            npm run collect-metrics -- --repo "${{ inputs.repo }}"
+          if [ -n "$INPUT_REPO" ]; then
+            npm run collect-metrics -- --repo "$INPUT_REPO"
           else
             npm run collect-metrics
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          INPUT_REPO: ${{ inputs.repo }}
 
       - name: Commit and push if changed
         run: |
