@@ -93,6 +93,7 @@ function patternToRegex(pattern: string): RegExp {
 		.replace(/\*\*/g, "DOUBLESTAR")
 		.replace(/\*/g, "[^/]*")
 		.replace(/\?/g, "[^/]")
+		.replace(/\/DOUBLESTAR\//g, "/(?:[^/]+/)*")
 		.replace(/DOUBLESTAR/g, ".*");
 	return new RegExp(`(^|/)${regexStr}($|/)`);
 }
