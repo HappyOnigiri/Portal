@@ -70,9 +70,15 @@ function getExcludedPatterns(repoDir: string): string[] {
 	for (const line of content.split("\n")) {
 		const trimmed = line.trim();
 		if (!trimmed || trimmed.startsWith("#")) continue;
+		const attrs = trimmed.split(/\s+/).slice(1);
 		if (
-			trimmed.includes("linguist-generated") ||
-			trimmed.includes("linguist-vendored")
+			attrs.some(
+				(a) =>
+					a === "linguist-generated" ||
+					a === "linguist-generated=true" ||
+					a === "linguist-vendored" ||
+					a === "linguist-vendored=true",
+			)
 		) {
 			const pattern = trimmed.split(/\s+/)[0];
 			if (pattern) patterns.push(pattern);
