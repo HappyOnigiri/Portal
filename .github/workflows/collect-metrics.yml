@@ -2,6 +2,11 @@ name: Collect Metrics
 
 on:
   workflow_dispatch:
+    inputs:
+      repo:
+        description: "対象リポジトリ (例: owner/name)。空欄で自リポジトリ"
+        required: false
+        default: ""
 
 jobs:
   collect:
@@ -29,7 +34,12 @@ jobs:
         run: npm ci
 
       - name: Collect metrics
-        run: npm run collect-metrics
+        run: |
+          if [ -n "${{ inputs.repo }}" ]; then
+            npm run collect-metrics -- --repo "${{ inputs.repo }}"
+          else
+            npm run collect-metrics
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
