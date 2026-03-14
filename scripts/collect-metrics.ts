@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import {
 	existsSync,
 	mkdtempSync,
@@ -18,6 +18,10 @@ const { values: args } = parseArgs({
 });
 const isDryRun = args["dry-run"] ?? false;
 const repoArg = args.repo; // e.g. "HappyOnigiri/Refix"
+if (repoArg && !/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repoArg)) {
+	console.error(`Error: --repo must be in "owner/name" format`);
+	process.exit(1);
+}
 
 interface LanguageGroup {
 	id: string;
@@ -152,7 +156,7 @@ function main(): void {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
 		console.error(`Cloning ${repoArg} into ${tmpDir}...`);
 		try {
-			execSync(`gh repo clone ${repoArg} ${tmpDir}`, { stdio: "inherit" });
+			execFileSync("gh", ["repo", "clone", repoArg, tmpDir], { stdio: "inherit" });
 		} catch {
 			rmSync(tmpDir, { recursive: true });
 			console.error(
@@ -165,7 +169,7 @@ function main(): void {
 		repoDir = tmpDir;
 	}
 
-	const repoFlag = repoArg ? `-R ${repoArg}` : "";
+	const repoFlags = repoArg ? ["-R", repoArg] : [];
 
 	try {
 		const excludedPatterns = getExcludedPatterns(repoDir);
@@ -198,8 +202,9 @@ function main(): void {
 
 		let mergedPRs = 0;
 		try {
-			const prOutput = execSync(
-				`gh pr list ${repoFlag} --state merged --json number --limit 9999`,
+			const prOutput = execFileSync(
+				"gh",
+				["pr", "list", ...repoFlags, "--state", "merged", "--json", "number", "--limit", "9999"],
 				{ encoding: "utf-8" },
 			);
 			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
@@ -209,11 +214,10 @@ function main(): void {
 
 		let ciRuns = 0;
 		try {
-			const runOutput = execSync(
-				`gh run list ${repoFlag} --json databaseId --limit 9999`,
-				{
-					encoding: "utf-8",
-				},
+			const runOutput = execFileSync(
+				"gh",
+				["run", "list", ...repoFlags, "--json", "databaseId", "--limit", "9999"],
+				{ encoding: "utf-8" },
 			);
 			ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
 		} catch (err) {
