@@ -514,7 +514,10 @@ async function collectSingleRepo(
 			}
 		}
 
-		const authorFlags = author?.emails?.flatMap((e) => ["--author", e]) ?? [];
+		const authorFlags = [
+			...(author?.emails ?? []).flatMap((e) => ["--author", e]),
+			...(author?.names ?? []).flatMap((n) => ["--author", n]),
+		];
 		const commits = Number(
 			execSync(
 				`git rev-list --count HEAD${authorFlags.length > 0 ? ` ${authorFlags.join(" ")}` : ""}`,
