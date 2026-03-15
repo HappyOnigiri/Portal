@@ -353,7 +353,7 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 					"--limit",
 					"9999",
 				],
-				{ encoding: "utf-8" },
+				{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
 			);
 			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
 		} catch {
