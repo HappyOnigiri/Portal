@@ -12,7 +12,9 @@
 		"astro": "astro",
 		"check": "biome check . --error-on-warnings",
 		"lint": "biome check .",
-		"format": "biome format --write .",
+		"format": "biome format --write . && npm run format:astro",
+		"format:astro": "prettier --write \"**/*.astro\"",
+		"format:astro:check": "prettier --check \"**/*.astro\"",
 		"typecheck": "astro sync && tsc --noEmit",
 		"check:ts-rules": "python3 scripts/check_ts_rules.py",
 		"test": "vitest run",
@@ -34,6 +36,8 @@
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@vitest/coverage-v8": "^4.0.18",
+		"prettier": "^3.8.1",
+		"prettier-plugin-astro": "^0.14.1",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"
 	}
