@@ -33,6 +33,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify GitHub token
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::GH_TOKEN is not set. Configure the 'GH_TOKEN' secret in repository settings."
+            echo "Required permissions: pull-requests (read), actions (read)"
+            exit 1
+          fi
+          echo "::group::gh auth status"
+          gh auth status
+          echo "::endgroup::"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Collect metrics (dry run)
         id: collect
         run: |
