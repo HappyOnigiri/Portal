@@ -180,6 +180,16 @@ function loadConfig(): PortalConfig {
 			);
 			process.exit(1);
 		}
+		if ("alias" in item) {
+			const aliasVal = (item as { alias: unknown }).alias;
+			if (typeof aliasVal !== "string") {
+				console.error(
+					'Error: "alias" は文字列である必要があります:',
+					aliasVal,
+				);
+				process.exit(1);
+			}
+		}
 	}
 
 	return parsed as PortalConfig;
