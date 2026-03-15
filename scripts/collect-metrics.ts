@@ -123,18 +123,27 @@ function loadConfig(): PortalConfig {
 
 	let rawYaml: string | undefined;
 
-	if (process.env.PORTAL_CONFIG) {
+	if (process.env.PORTAL_CONFIG !== undefined) {
+		if (process.env.PORTAL_CONFIG.trim() === "") {
+			console.error("Error: PORTAL_CONFIG が空文字です。有効な YAML を設定してください");
+			process.exit(1);
+		}
 		rawYaml = process.env.PORTAL_CONFIG;
 		console.error("Config: PORTAL_CONFIG 環境変数から読み込み");
 	} else {
 		const localPath = resolve(process.cwd(), ".portal.yaml");
 		if (existsSync(localPath)) {
-			rawYaml = readFileSync(localPath, "utf-8");
+			const content = readFileSync(localPath, "utf-8");
+			if (content.trim() === "") {
+				console.error("Error: .portal.yaml が空ファイルです。有効な YAML を記述してください");
+				process.exit(1);
+			}
+			rawYaml = content;
 			console.error("Config: .portal.yaml から読み込み");
 		}
 	}
 
-	if (!rawYaml) {
+	if (rawYaml === undefined) {
 		console.error("Config: 設定なし → self のみ（フォールバック）");
 		return defaultConfig;
 	}
