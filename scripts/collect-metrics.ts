@@ -142,8 +142,8 @@ function loadConfig(): PortalConfig {
 	let parsed: unknown;
 	try {
 		parsed = parseYaml(rawYaml);
-	} catch (err) {
-		console.error("Error: YAML パース失敗:", err);
+	} catch {
+		console.error("Error: YAML パース失敗");
 		process.exit(1);
 	}
 
@@ -158,17 +158,17 @@ function loadConfig(): PortalConfig {
 	}
 
 	const repos = (parsed as { repositories: unknown[] }).repositories;
-	for (const item of repos) {
+	for (let index = 0; index < repos.length; index++) {
+		const item = repos[index];
 		if (typeof item !== "object" || item === null || !("repo" in item)) {
 			console.error(
-				'Error: 各 repositories エントリに "repo" が必要です:',
-				item,
+				`Error: repositories[${index}] に "repo" が必要です`,
 			);
 			process.exit(1);
 		}
 		const repoVal = (item as { repo: unknown }).repo;
 		if (typeof repoVal !== "string") {
-			console.error('Error: "repo" は文字列である必要があります:', repoVal);
+			console.error(`Error: repositories[${index}] の "repo" は文字列である必要があります`);
 			process.exit(1);
 		}
 		if (
@@ -176,14 +176,14 @@ function loadConfig(): PortalConfig {
 			!/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repoVal)
 		) {
 			console.error(
-				`Error: "repo" は "self" または "owner/name" の形式にしてください: ${repoVal}`,
+				`Error: repositories[${index}] の "repo" は "self" または "owner/name" の形式にしてください`,
 			);
 			process.exit(1);
 		}
 		if ("alias" in item) {
 			const aliasVal = (item as { alias: unknown }).alias;
 			if (typeof aliasVal !== "string") {
-				console.error('Error: "alias" は文字列である必要があります:', aliasVal);
+				console.error(`Error: repositories[${index}] の "alias" は文字列である必要があります`);
 				process.exit(1);
 			}
 		}
