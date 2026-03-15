@@ -310,7 +310,7 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 		console.error(`[${displayName}] Cloning into ${tmpDir}...`);
 		try {
 			execFileSync("gh", ["repo", "clone", config.repo, tmpDir], {
-				stdio: config.alias ? "pipe" : "inherit",
+				stdio: config.alias ? "ignore" : "inherit",
 			});
 		} catch {
 			rmSync(tmpDir, { recursive: true, force: true });
