@@ -20,114 +20,184 @@ const lastSync = statusData.lastUpdated
 	: "---";
 ---
 
-<div class="w-full max-w-[1160px] mx-auto bg-[#141623]/80 border border-[#2dd4bf]/30 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.1)] overflow-hidden backdrop-blur-sm text-sm sm:text-base font-mono">
+<div
+	class="w-full max-w-[1160px] mx-auto bg-[#141623]/80 border border-[#2dd4bf]/30 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.1)] overflow-hidden backdrop-blur-sm text-sm sm:text-base font-mono"
+>
 	<div class="p-6 border-b border-[#2dd4bf]/20">
 		<div class="profile-header">
-			<img src="/images/avatar.jpg" alt="HappyOnigiri avatar" class="profile-avatar" />
+			<img
+				src="/images/avatar.jpg"
+				alt="HappyOnigiri avatar"
+				class="profile-avatar"
+			/>
 			<div>
 				<p class="profile-name">HappyOnigiri</p>
 				<p class="profile-bio">
 					思いつきでドリブン開発をしています。<br />
-					ジャンルは問わず「面白そう」「あったら便利そう」と思ったものを形にしています。<br />
-					感想・質問・雑談など <a href="https://x.com/H_OnigiriWorks" class="profile-link" target="_blank" rel="noopener noreferrer">X</a> でお気軽にどうぞ！
+					ジャンルは問わず「面白そう」「あったら便利そう」と思ったものを形にしています。<br
+					/>
+					感想・質問・雑談など <a
+						href="https://x.com/H_OnigiriWorks"
+						class="profile-link"
+						target="_blank"
+						rel="noopener noreferrer">X</a
+					> でお気軽にどうぞ！
 				</p>
 			</div>
 		</div>
 	</div>
 
 	<div class="px-6 pt-5 pb-1 flex items-baseline justify-between">
-		<h2 class="section-heading" style="margin-bottom: 0;">Development Status</h2>
-		<span class="text-xs text-[#94a3b8] font-mono">Last Updated: {lastSync}</span>
+		<h2 class="section-heading" style="margin-bottom: 0;">
+			Development Status
+		</h2>
+		<span class="text-xs text-[#94a3b8] font-mono"
+			>Last Updated: {lastSync}</span
+		>
 	</div>
 
 	<div class="p-6 overflow-x-auto">
 		<table class="w-full border-collapse">
 			<tbody class="text-[#e2e8f0]">
 				{/* 1. Lines of Code */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-sm sm:text-base">Lines of Code</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.linesOfCode)}</td>
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-sm sm:text-base"
+						>Lines of Code</td
+					>
+					<td class="py-4 px-2 font-bold text-right sm:text-left"
+						>{formatNumber(statusData.linesOfCode)}</td
+					>
 				</tr>
 
 				{/* 2. Commits */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#ff003c]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] text-sm sm:text-base">Commits</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.commits)}</td>
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#ff003c]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] text-sm sm:text-base"
+						>Commits</td
+					>
+					<td class="py-4 px-2 font-bold text-right sm:text-left"
+						>{formatNumber(statusData.commits)}</td
+					>
 				</tr>
 
 				{/* 3. Merged PRs */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-sm sm:text-base">Merged PRs</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.mergedPRs)}</td>
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-sm sm:text-base"
+						>Merged PRs</td
+					>
+					<td class="py-4 px-2 font-bold text-right sm:text-left"
+						>{formatNumber(statusData.mergedPRs)}</td
+					>
 				</tr>
 
 				{/* 4. CI Runs */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] text-sm sm:text-base">CI Runs</td>
-					<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.ciRuns)}</td>
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] text-sm sm:text-base"
+						>CI Runs</td
+					>
+					<td class="py-4 px-2 font-bold text-right sm:text-left"
+						>{formatNumber(statusData.ciRuns)}</td
+					>
 				</tr>
 
 				{/* 5. AI Tokens (hidden) */}
-				{showAiSections && (
-					<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
-						<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-sm sm:text-base">AI Tokens Used</td>
-						<td class="py-4 px-2 font-bold text-right sm:text-left">{formatNumber(statusData.aiTokens)}</td>
-					</tr>
-				)}
+				{
+					showAiSections && (
+						<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group">
+							<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#b534ff] text-sm sm:text-base">
+								AI Tokens Used
+							</td>
+							<td class="py-4 px-2 font-bold text-right sm:text-left">
+								{formatNumber(statusData.aiTokens)}
+							</td>
+						</tr>
+					)
+				}
 
 				{/* 6. Languages */}
-				<tr class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
-					<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] align-top text-sm sm:text-base">Languages</td>
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] group-hover:text-[#00f0ff] align-top text-sm sm:text-base"
+						>Languages</td
+					>
 					<td class="py-4 px-2">
-						<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
-							{statusData.languages.map((lang) => (
-								<div
-									style={`width: ${lang.value}%; background-color: ${lang.color};`}
-									title={`${lang.label} ${lang.value}%`}
-									class="h-full relative z-10"
-								></div>
-							))}
+						<div
+							class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20"
+						>
+							{
+								statusData.languages.map((lang) => (
+									<div
+										style={`width: ${lang.value}%; background-color: ${lang.color};`}
+										title={`${lang.label} ${lang.value}%`}
+										class="h-full relative z-10"
+									/>
+								))
+							}
 						</div>
 						<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
-							{statusData.languages.map((lang) => (
-								<div class="flex items-center text-xs">
-									<span class="w-2.5 h-2.5 rounded-full mr-2" style={`background-color: ${lang.color};`}></span>
-									<span class="text-[#94a3b8] mr-1.5">{lang.label}</span>
-									<span class="font-bold text-[#e2e8f0]">{lang.value}%</span>
-								</div>
-							))}
+							{
+								statusData.languages.map((lang) => (
+									<div class="flex items-center text-xs">
+										<span
+											class="w-2.5 h-2.5 rounded-full mr-2"
+											style={`background-color: ${lang.color};`}
+										/>
+										<span class="text-[#94a3b8] mr-1.5">{lang.label}</span>
+										<span class="font-bold text-[#e2e8f0]">{lang.value}%</span>
+									</div>
+								))
+							}
 						</div>
 					</td>
 				</tr>
 
 				{/* 7. AI Usage (hidden) */}
-				{showAiSections && (
-					<tr class="hover:bg-[#ff003c]/5 transition-colors group">
-						<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] align-top text-sm sm:text-base">AI Usage</td>
-						<td class="py-4 px-2">
-							<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
-								{statusData.aiUsage.map((ai) => (
-									<div
-										style={`width: ${ai.value}%; background-color: ${ai.color}; box-shadow: 0 0 12px ${ai.color}, inset 0 0 4px rgba(255,255,255,0.3);`}
-										title={`${ai.label} ${ai.value}%`}
-										class="h-full relative z-10"
-									></div>
-								))}
-							</div>
-							<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
-								{statusData.aiUsage.map((ai) => (
-									<div class="flex items-center text-xs">
-										<span class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]" style={`background-color: ${ai.color}; color: ${ai.color}`}></span>
-										<span class="text-[#94a3b8] mr-1.5">{ai.label}</span>
-										<span class="font-bold text-[#e2e8f0]">{ai.value}%</span>
-									</div>
-								))}
-							</div>
-						</td>
-					</tr>
-				)}
+				{
+					showAiSections && (
+						<tr class="hover:bg-[#ff003c]/5 transition-colors group">
+							<td class="py-4 px-2 text-[#94a3b8] group-hover:text-[#ff003c] align-top text-sm sm:text-base">
+								AI Usage
+							</td>
+							<td class="py-4 px-2">
+								<div class="flex h-4 w-full rounded-sm overflow-visible mb-3 bg-[#141623] border border-[#2dd4bf]/20">
+									{statusData.aiUsage.map((ai) => (
+										<div
+											style={`width: ${ai.value}%; background-color: ${ai.color}; box-shadow: 0 0 12px ${ai.color}, inset 0 0 4px rgba(255,255,255,0.3);`}
+											title={`${ai.label} ${ai.value}%`}
+											class="h-full relative z-10"
+										/>
+									))}
+								</div>
+								<div class="flex flex-wrap gap-x-4 gap-y-2 mt-4">
+									{statusData.aiUsage.map((ai) => (
+										<div class="flex items-center text-xs">
+											<span
+												class="w-2.5 h-2.5 rounded-full mr-2 shadow-[0_0_10px_currentColor]"
+												style={`background-color: ${ai.color}; color: ${ai.color}`}
+											/>
+											<span class="text-[#94a3b8] mr-1.5">{ai.label}</span>
+											<span class="font-bold text-[#e2e8f0]">{ai.value}%</span>
+										</div>
+									))}
+								</div>
+							</td>
+						</tr>
+					)
+				}
 			</tbody>
 		</table>
 	</div>
-
 </div>
