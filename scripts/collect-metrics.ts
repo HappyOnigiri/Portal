@@ -312,9 +312,21 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
 		console.error(`[${displayName}] Cloning into ${tmpDir}...`);
 		try {
-			execFileSync("gh", ["repo", "clone", config.repo, tmpDir], {
-				stdio: config.alias ? "ignore" : "inherit",
-			});
+			execFileSync(
+				"gh",
+				[
+					"repo",
+					"clone",
+					config.repo,
+					tmpDir,
+					"--",
+					"--filter=tree:0",
+					"--single-branch",
+				],
+				{
+					stdio: config.alias ? "ignore" : "inherit",
+				},
+			);
 		} catch {
 			rmSync(tmpDir, { recursive: true, force: true });
 			console.error(
