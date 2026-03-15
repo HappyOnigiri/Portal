@@ -1,33 +1,39 @@
 {
-	"linesOfCode": 2104,
-	"commits": 85,
-	"mergedPRs": 14,
-	"ciRuns": 66,
-	"lastUpdated": "2026-03-15T03:33:28.587Z",
+	"linesOfCode": 3997867,
+	"commits": 3089,
+	"mergedPRs": 442,
+	"ciRuns": 1795,
+	"lastUpdated": "2026-03-15T08:28:50.357Z",
 	"languages": [
 		{
 			"id": "TypeScript",
 			"label": "TypeScript",
-			"value": 52,
+			"value": 47,
 			"color": "#3178c6"
-		},
-		{
-			"id": "Astro",
-			"label": "Astro",
-			"value": 37,
-			"color": "#ff5a03"
 		},
 		{
 			"id": "Python",
 			"label": "Python",
-			"value": 9,
+			"value": 25,
 			"color": "#3572A5"
 		},
 		{
 			"id": "JavaScript",
 			"label": "JavaScript",
-			"value": 2,
+			"value": 22,
 			"color": "#f1e05a"
+		},
+		{
+			"id": "Go",
+			"label": "Go",
+			"value": 3,
+			"color": "#00ADD8"
+		},
+		{
+			"id": "Ruby",
+			"label": "Ruby",
+			"value": 3,
+			"color": "#701516"
 		}
 	],
 	"aiUsage": [],
