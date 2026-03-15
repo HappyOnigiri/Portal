@@ -1,0 +1,10 @@
+{
+	"packages": {
+		".": {
+			"release-type": "node",
+			"package-name": "workspace",
+			"changelog-path": "CHANGELOG.md",
+			"bump-minor-pre-major": true
+		}
+	}
+}
