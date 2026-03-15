@@ -2,6 +2,15 @@
 # CI: PORTAL_CONFIG シークレットに YAML を登録
 # ローカル: .portal.yaml にコピーして使用
 
+# Author フィルタ（省略時は全コードを集計）
+# author:
+#   emails:
+#     - you@example.com
+#     - 12345+you@users.noreply.github.com  # GitHub の noreply アドレス
+#   names:              # email が使えない場合のフォールバック（任意）
+#     - "Your Name"
+#   github: "your-github-username"  # PR フィルタ用（任意）
+
 repositories:
   # 自リポジトリ
   - repo: self
