@@ -578,6 +578,7 @@ async function collectSingleRepo(
 			console.error(`[${displayName}] Warning: Failed to get merged PRs count`);
 		}
 
+		const runAuthorFlags = author?.github ? ["--user", author.github] : [];
 		let ciRuns = 0;
 		try {
 			const runOutput = execFileSync(
@@ -586,6 +587,7 @@ async function collectSingleRepo(
 					"run",
 					"list",
 					...repoFlags,
+					...runAuthorFlags,
 					"--json",
 					"databaseId",
 					"--limit",
