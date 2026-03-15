@@ -9,18 +9,21 @@ import {
 import { tmpdir } from "node:os";
 import { extname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
+import { parse as parseYaml } from "yaml";
 
 const { values: args } = parseArgs({
 	options: {
 		"dry-run": { type: "boolean", default: false },
-		repo: { type: "string" },
 	},
 });
 const isDryRun = args["dry-run"] ?? false;
-const repoArg = args.repo; // e.g. "HappyOnigiri/Refix"
-if (repoArg && !/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repoArg)) {
-	console.error(`Error: --repo must be in "owner/name" format`);
-	process.exit(1);
+
+interface RepoConfig {
+	repo: string; // "owner/name" or "self"
+	alias?: string;
+}
+interface PortalConfig {
+	repositories: RepoConfig[];
 }
 
 interface LanguageGroup {
@@ -46,6 +49,14 @@ interface MetricsResult {
 	languages: LanguageResult[];
 	aiUsage: LanguageResult[];
 	aiTokens: number;
+}
+
+interface SingleRepoMetrics {
+	linesOfCode: number;
+	commits: number;
+	mergedPRs: number;
+	ciRuns: number;
+	extLines: Map<string, number>;
 }
 
 const LANGUAGE_GROUPS: LanguageGroup[] = [
@@ -106,6 +117,73 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 	{ id: "Vue", label: "Vue", exts: [".vue"], color: "#41b883" },
 	{ id: "Svelte", label: "Svelte", exts: [".svelte"], color: "#ff3e00" },
 ];
+
+function loadConfig(): PortalConfig {
+	const defaultConfig: PortalConfig = { repositories: [{ repo: "self" }] };
+
+	let rawYaml: string | undefined;
+
+	if (process.env.PORTAL_CONFIG) {
+		rawYaml = process.env.PORTAL_CONFIG;
+		console.error("Config: PORTAL_CONFIG 環境変数から読み込み");
+	} else {
+		const localPath = resolve(process.cwd(), ".portal.yaml");
+		if (existsSync(localPath)) {
+			rawYaml = readFileSync(localPath, "utf-8");
+			console.error("Config: .portal.yaml から読み込み");
+		}
+	}
+
+	if (!rawYaml) {
+		console.error("Config: 設定なし → self のみ（フォールバック）");
+		return defaultConfig;
+	}
+
+	let parsed: unknown;
+	try {
+		parsed = parseYaml(rawYaml);
+	} catch (err) {
+		console.error("Error: YAML パース失敗:", err);
+		process.exit(1);
+	}
+
+	if (
+		typeof parsed !== "object" ||
+		parsed === null ||
+		!("repositories" in parsed) ||
+		!Array.isArray((parsed as { repositories: unknown }).repositories)
+	) {
+		console.error('Error: 設定に "repositories" 配列が必要です');
+		process.exit(1);
+	}
+
+	const repos = (parsed as { repositories: unknown[] }).repositories;
+	for (const item of repos) {
+		if (typeof item !== "object" || item === null || !("repo" in item)) {
+			console.error(
+				'Error: 各 repositories エントリに "repo" が必要です:',
+				item,
+			);
+			process.exit(1);
+		}
+		const repoVal = (item as { repo: unknown }).repo;
+		if (typeof repoVal !== "string") {
+			console.error('Error: "repo" は文字列である必要があります:', repoVal);
+			process.exit(1);
+		}
+		if (
+			repoVal !== "self" &&
+			!/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repoVal)
+		) {
+			console.error(
+				`Error: "repo" は "self" または "owner/name" の形式にしてください: ${repoVal}`,
+			);
+			process.exit(1);
+		}
+	}
+
+	return parsed as PortalConfig;
+}
 
 function getExcludedPatterns(repoDir: string): string[] {
 	const gitattributesPath = resolve(repoDir, ".gitattributes");
@@ -195,30 +273,34 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 		.map(({ id, label, value, color }) => ({ id, label, value, color }));
 }
 
-function main(): void {
+function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
+	const displayName = config.alias ?? config.repo;
+	const isSelf = config.repo === "self";
 	let repoDir = process.cwd();
 	let tmpDir: string | undefined;
 
-	if (repoArg) {
+	if (!isSelf) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
-		console.error(`Cloning ${repoArg} into ${tmpDir}...`);
+		console.error(`[${displayName}] Cloning into ${tmpDir}...`);
 		try {
-			execFileSync("gh", ["repo", "clone", repoArg, tmpDir], {
-				stdio: "inherit",
+			execFileSync("gh", ["repo", "clone", config.repo, tmpDir], {
+				stdio: config.alias ? "pipe" : "inherit",
 			});
 		} catch {
 			rmSync(tmpDir, { recursive: true, force: true });
 			console.error(
-				`Error: リポジトリ "${repoArg}" が見つかりません。\n` +
+				`Error: リポジトリ "${displayName}" が見つかりません。\n` +
 					`  - owner/name の形式で指定してください\n` +
 					`  - リポジトリへのアクセス権があるか確認してください`,
 			);
 			process.exit(1);
 		}
 		repoDir = tmpDir;
+	} else {
+		console.error(`[${displayName}] カレントディレクトリを使用`);
 	}
 
-	const repoFlags = repoArg ? ["-R", repoArg] : [];
+	const repoFlags = isSelf ? [] : ["-R", config.repo];
 
 	try {
 		const excludedPatterns = getExcludedPatterns(repoDir);
@@ -268,7 +350,10 @@ function main(): void {
 			);
 			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
 		} catch (err) {
-			console.error("Warning: Failed to get merged PRs count:", err);
+			console.error(
+				`[${displayName}] Warning: Failed to get merged PRs count:`,
+				err,
+			);
 		}
 
 		let ciRuns = 0;
@@ -284,38 +369,92 @@ function main(): void {
 					"--limit",
 					"9999",
 				],
-				{ encoding: "utf-8" },
+				{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
 			);
 			ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
 		} catch (err) {
-			console.error("Warning: Failed to get CI runs count:", err);
+			const stderr =
+				err instanceof Error && "stderr" in err
+					? String((err as NodeJS.ErrnoException & { stderr: unknown }).stderr)
+					: "";
+			if (!stderr.includes("HTTP 403")) {
+				console.error(
+					`[${displayName}] Warning: Failed to get CI runs count:`,
+					err,
+				);
+			}
 		}
 
-		const languages = calcLanguages(extLines);
+		console.error(
+			`[${displayName}] LOC=${totalLines}, commits=${commits}, PRs=${mergedPRs}, CI=${ciRuns}`,
+		);
 
-		const result: MetricsResult = {
-			linesOfCode: totalLines,
-			commits,
-			mergedPRs,
-			ciRuns,
-			lastUpdated: new Date().toISOString(),
-			languages,
-			aiUsage: [],
-			aiTokens: 0,
-		};
-
-		if (isDryRun) {
-			process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-		} else {
-			const outputPath = resolve(process.cwd(), "src/data/author-status.json");
-			writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
-			console.log(`Written to ${outputPath}`);
-		}
+		return { linesOfCode: totalLines, commits, mergedPRs, ciRuns, extLines };
 	} finally {
 		if (tmpDir) {
 			rmSync(tmpDir, { recursive: true, force: true });
-			console.error(`Cleaned up ${tmpDir}`);
+			console.error(`[${displayName}] Cleaned up ${tmpDir}`);
 		}
+	}
+}
+
+function aggregateMetrics(results: SingleRepoMetrics[]): {
+	linesOfCode: number;
+	commits: number;
+	mergedPRs: number;
+	ciRuns: number;
+	extLines: Map<string, number>;
+} {
+	const merged = {
+		linesOfCode: 0,
+		commits: 0,
+		mergedPRs: 0,
+		ciRuns: 0,
+		extLines: new Map<string, number>(),
+	};
+
+	for (const r of results) {
+		merged.linesOfCode += r.linesOfCode;
+		merged.commits += r.commits;
+		merged.mergedPRs += r.mergedPRs;
+		merged.ciRuns += r.ciRuns;
+		for (const [ext, lines] of r.extLines) {
+			merged.extLines.set(ext, (merged.extLines.get(ext) ?? 0) + lines);
+		}
+	}
+
+	return merged;
+}
+
+function main(): void {
+	const config = loadConfig();
+
+	const results: SingleRepoMetrics[] = [];
+	for (const repoConfig of config.repositories) {
+		const metrics = collectSingleRepo(repoConfig);
+		results.push(metrics);
+	}
+
+	const aggregated = aggregateMetrics(results);
+	const languages = calcLanguages(aggregated.extLines);
+
+	const result: MetricsResult = {
+		linesOfCode: aggregated.linesOfCode,
+		commits: aggregated.commits,
+		mergedPRs: aggregated.mergedPRs,
+		ciRuns: aggregated.ciRuns,
+		lastUpdated: new Date().toISOString(),
+		languages,
+		aiUsage: [],
+		aiTokens: 0,
+	};
+
+	if (isDryRun) {
+		process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+	} else {
+		const outputPath = resolve(process.cwd(), "src/data/author-status.json");
+		writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`);
+		console.log(`Written to ${outputPath}`);
 	}
 }
 
