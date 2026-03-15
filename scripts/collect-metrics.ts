@@ -165,14 +165,14 @@ function loadConfig(): PortalConfig {
 	for (let index = 0; index < repos.length; index++) {
 		const item = repos[index];
 		if (typeof item !== "object" || item === null || !("repo" in item)) {
-			console.error(
-				`Error: repositories[${index}] に "repo" が必要です`,
-			);
+			console.error(`Error: repositories[${index}] に "repo" が必要です`);
 			process.exit(1);
 		}
 		const repoVal = (item as { repo: unknown }).repo;
 		if (typeof repoVal !== "string") {
-			console.error(`Error: repositories[${index}] の "repo" は文字列である必要があります`);
+			console.error(
+				`Error: repositories[${index}] の "repo" は文字列である必要があります`,
+			);
 			process.exit(1);
 		}
 		if (
@@ -187,7 +187,9 @@ function loadConfig(): PortalConfig {
 		if ("alias" in item) {
 			const aliasVal = (item as { alias: unknown }).alias;
 			if (typeof aliasVal !== "string") {
-				console.error(`Error: repositories[${index}] の "alias" は文字列である必要があります`);
+				console.error(
+					`Error: repositories[${index}] の "alias" は文字列である必要があります`,
+				);
 				process.exit(1);
 			}
 		}
