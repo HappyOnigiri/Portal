@@ -20,6 +20,7 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 .envrc
+.portal.yaml
 
 # macOS-specific files
 .DS_Store
