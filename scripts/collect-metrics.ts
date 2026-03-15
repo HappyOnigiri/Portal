@@ -187,10 +187,12 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 			label: g.label,
 			value: floors[i],
 			color: g.color,
+			rawPct: rawPcts[i],
 		}))
 		.filter((g) => g.value > 0)
-		.sort((a, b) => b.value - a.value)
-		.slice(0, 10);
+		.sort((a, b) => b.rawPct - a.rawPct)
+		.slice(0, 10)
+		.map(({ id, label, value, color }) => ({ id, label, value, color }));
 }
 
 function main(): void {
