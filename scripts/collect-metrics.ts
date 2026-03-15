@@ -333,7 +333,10 @@ async function buildAuthorShas(
 				.split("\n")
 				.filter((s) => s.length > 0),
 		);
-	} catch {
+	} catch (err) {
+		console.error(
+			`Warning: git log failed in ${repoDir}: ${err instanceof Error ? err.message : err}`,
+		);
 		return new Set();
 	}
 }
@@ -360,7 +363,10 @@ async function blameFileLines(
 		}
 
 		return lineCount;
-	} catch {
+	} catch (err) {
+		console.error(
+			`Warning: git blame failed for ${filePath} in ${repoDir}: ${err instanceof Error ? err.message : err}`,
+		);
 		return 0;
 	}
 }
