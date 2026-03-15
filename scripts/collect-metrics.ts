@@ -314,8 +314,11 @@ function countFileLines(repoDir: string, filePath: string): number {
 	}
 }
 
-function escapeGitRegexLiteral(value: string): string {
-	return `^${value.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&")}$`;
+function escapeGitAuthorPattern(value: string): string {
+	// git log --author はパターンを正規表現として解釈する。
+	// [ と ] は文字クラスを形成するため、[bot] が意図しない文字クラスになる。
+	// アンカリング（^...$）は "Name <email>" 形式全体に適用されるため使用しない。
+	return value.replace(/\[/g, "\\[").replace(/\]/g, "\\]");
 }
 
 async function buildAuthorShas(
@@ -325,11 +328,11 @@ async function buildAuthorShas(
 	const authorFlags = [
 		...(author.emails ?? []).flatMap((e) => [
 			"--author",
-			escapeGitRegexLiteral(e),
+			escapeGitAuthorPattern(e),
 		]),
 		...(author.names ?? []).flatMap((n) => [
 			"--author",
-			escapeGitRegexLiteral(n),
+			escapeGitAuthorPattern(n),
 		]),
 	];
 	if (authorFlags.length === 0) return new Set();
@@ -456,7 +459,11 @@ async function collectSingleRepo(
 	const useBlame =
 		author !== undefined &&
 		((author.emails?.length ?? 0) > 0 || (author.names?.length ?? 0) > 0);
-	const cloneFilter = useBlame ? "--filter=blob:none" : "--filter=tree:0";
+	// useBlame=true の場合は git blame が全履歴を参照するためフルクローンが必要。
+	// partial clone (--filter=blob:none 等) では過去のblobが存在せず blame が失敗する。
+	const cloneArgs = useBlame
+		? ["--single-branch"]
+		: ["--filter=tree:0", "--single-branch"];
 
 	if (!isSelf) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
@@ -464,15 +471,7 @@ async function collectSingleRepo(
 		try {
 			execFileSync(
 				"gh",
-				[
-					"repo",
-					"clone",
-					config.repo,
-					tmpDir,
-					"--",
-					cloneFilter,
-					"--single-branch",
-				],
+				["repo", "clone", config.repo, tmpDir, "--", ...cloneArgs],
 				{
 					stdio: config.alias ? "ignore" : "inherit",
 				},
@@ -540,11 +539,11 @@ async function collectSingleRepo(
 		const authorFlags = [
 			...(author?.emails ?? []).flatMap((e) => [
 				"--author",
-				escapeGitRegexLiteral(e),
+				escapeGitAuthorPattern(e),
 			]),
 			...(author?.names ?? []).flatMap((n) => [
 				"--author",
-				escapeGitRegexLiteral(n),
+				escapeGitAuthorPattern(n),
 			]),
 		];
 		const commits = Number(
