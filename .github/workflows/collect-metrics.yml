@@ -2,11 +2,6 @@ name: Collect Metrics
 
 on:
   workflow_dispatch:
-    inputs:
-      repo:
-        description: "対象リポジトリ (例: owner/name)。空欄で自リポジトリ"
-        required: false
-        default: ""
 
 jobs:
   collect:
@@ -55,15 +50,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Collect metrics
-        run: |
-          if [ -n "$INPUT_REPO" ]; then
-            npm run collect-metrics -- --repo "$INPUT_REPO"
-          else
-            npm run collect-metrics
-          fi
+        run: npm run collect-metrics
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          INPUT_REPO: ${{ inputs.repo }}
+          PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
 
       - name: Format
         run: npx biome format --write .

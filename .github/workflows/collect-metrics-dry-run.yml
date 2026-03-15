@@ -2,11 +2,6 @@ name: Collect Metrics (Dry Run)
 
 on:
   workflow_dispatch:
-    inputs:
-      repo:
-        description: "対象リポジトリ (例: owner/name)。空欄で自リポジトリ"
-        required: false
-        default: ""
 
 jobs:
   collect:
@@ -49,17 +44,13 @@ jobs:
       - name: Collect metrics (dry run)
         id: collect
         run: |
-          if [ -n "$REPO_INPUT" ]; then
-            RESULT=$(npm run collect-metrics -- --dry-run --repo "$REPO_INPUT")
-          else
-            RESULT=$(npm run collect-metrics -- --dry-run)
-          fi
+          RESULT=$(npm run collect-metrics -- --dry-run)
           echo "result<<EOF" >> "$GITHUB_OUTPUT"
           echo "$RESULT" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          REPO_INPUT: ${{ inputs.repo }}
+          PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
 
       - name: Write summary
         run: |
