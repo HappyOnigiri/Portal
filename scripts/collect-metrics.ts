@@ -118,6 +118,9 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 	{ id: "Svelte", label: "Svelte", exts: [".svelte"], color: "#ff3e00" },
 ];
 
+/** ソースコードとしてカウントする拡張子（画像・lock・バイナリを除外） */
+const SOURCE_EXTS = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
+
 function loadConfig(): PortalConfig {
 	const defaultConfig: PortalConfig = { repositories: [{ repo: "self" }] };
 
@@ -344,8 +347,9 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 		let totalLines = 0;
 
 		for (const file of allFiles) {
-			const lines = countFileLines(repoDir, file);
 			const ext = extname(file).toLowerCase();
+			if (!SOURCE_EXTS.has(ext)) continue;
+			const lines = countFileLines(repoDir, file);
 			extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
 			totalLines += lines;
 		}
