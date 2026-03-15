@@ -314,13 +314,23 @@ function countFileLines(repoDir: string, filePath: string): number {
 	}
 }
 
+function escapeGitRegexLiteral(value: string): string {
+	return `^${value.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&")}$`;
+}
+
 async function buildAuthorShas(
 	repoDir: string,
 	author: AuthorConfig,
 ): Promise<Set<string>> {
 	const authorFlags = [
-		...(author.emails ?? []).flatMap((e) => ["--author", e]),
-		...(author.names ?? []).flatMap((n) => ["--author", n]),
+		...(author.emails ?? []).flatMap((e) => [
+			"--author",
+			escapeGitRegexLiteral(e),
+		]),
+		...(author.names ?? []).flatMap((n) => [
+			"--author",
+			escapeGitRegexLiteral(n),
+		]),
 	];
 	if (authorFlags.length === 0) return new Set();
 
@@ -528,8 +538,14 @@ async function collectSingleRepo(
 		}
 
 		const authorFlags = [
-			...(author?.emails ?? []).flatMap((e) => ["--author", e]),
-			...(author?.names ?? []).flatMap((n) => ["--author", n]),
+			...(author?.emails ?? []).flatMap((e) => [
+				"--author",
+				escapeGitRegexLiteral(e),
+			]),
+			...(author?.names ?? []).flatMap((n) => [
+				"--author",
+				escapeGitRegexLiteral(n),
+			]),
 		];
 		const commits = Number(
 			execFileSync("git", ["rev-list", "--count", "HEAD", ...authorFlags], {
