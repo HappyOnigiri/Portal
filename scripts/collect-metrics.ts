@@ -356,11 +356,8 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 				{ encoding: "utf-8" },
 			);
 			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
-		} catch (err) {
-			console.error(
-				`[${displayName}] Warning: Failed to get merged PRs count:`,
-				err,
-			);
+		} catch {
+			console.error(`[${displayName}] Warning: Failed to get merged PRs count`);
 		}
 
 		let ciRuns = 0;
@@ -385,10 +382,7 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 					? String((err as NodeJS.ErrnoException & { stderr: unknown }).stderr)
 					: "";
 			if (!stderr.includes("HTTP 403")) {
-				console.error(
-					`[${displayName}] Warning: Failed to get CI runs count:`,
-					err,
-				);
+				console.error(`[${displayName}] Warning: Failed to get CI runs count`);
 			}
 		}
 
