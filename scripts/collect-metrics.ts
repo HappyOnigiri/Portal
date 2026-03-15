@@ -525,11 +525,10 @@ async function collectSingleRepo(
 			...(author?.names ?? []).flatMap((n) => ["--author", n]),
 		];
 		const commits = Number(
-			execFileSync(
-				"git",
-				["rev-list", "--count", "HEAD", ...authorFlags],
-				{ encoding: "utf-8", cwd: repoDir },
-			).trim(),
+			execFileSync("git", ["rev-list", "--count", "HEAD", ...authorFlags], {
+				encoding: "utf-8",
+				cwd: repoDir,
+			}).trim(),
 		);
 
 		const prAuthorFlags = author?.github ? ["--author", author.github] : [];
