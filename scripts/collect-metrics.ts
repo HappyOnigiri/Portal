@@ -55,11 +55,56 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 		exts: [".ts", ".tsx"],
 		color: "#3178c6",
 	},
-	{ id: "Astro", label: "Astro", exts: [".astro"], color: "#ff5a03" },
-	{ id: "CSS", label: "CSS", exts: [".css"], color: "#563d7c" },
+	{
+		id: "JavaScript",
+		label: "JavaScript",
+		exts: [".js", ".jsx", ".mjs", ".cjs"],
+		color: "#f1e05a",
+	},
 	{ id: "Python", label: "Python", exts: [".py"], color: "#3572A5" },
-	{ id: "YAML", label: "YAML", exts: [".yaml", ".yml"], color: "#cb171e" },
-	{ id: "Other", label: "Other", exts: [], color: "#ededed" },
+	{ id: "Java", label: "Java", exts: [".java"], color: "#b07219" },
+	{ id: "Kotlin", label: "Kotlin", exts: [".kt", ".kts"], color: "#A97BFF" },
+	{ id: "Swift", label: "Swift", exts: [".swift"], color: "#F05138" },
+	{ id: "Go", label: "Go", exts: [".go"], color: "#00ADD8" },
+	{ id: "Rust", label: "Rust", exts: [".rs"], color: "#dea584" },
+	{ id: "C", label: "C", exts: [".c", ".h"], color: "#555555" },
+	{
+		id: "C++",
+		label: "C++",
+		exts: [".cpp", ".cc", ".cxx", ".hpp", ".hh"],
+		color: "#f34b7d",
+	},
+	{ id: "C#", label: "C#", exts: [".cs"], color: "#178600" },
+	{ id: "Ruby", label: "Ruby", exts: [".rb"], color: "#701516" },
+	{ id: "PHP", label: "PHP", exts: [".php"], color: "#4F5D95" },
+	{ id: "Dart", label: "Dart", exts: [".dart"], color: "#00B4AB" },
+	{ id: "Scala", label: "Scala", exts: [".scala"], color: "#c22d40" },
+	{
+		id: "Shell",
+		label: "Shell",
+		exts: [".sh", ".bash", ".zsh"],
+		color: "#89e051",
+	},
+	{ id: "Lua", label: "Lua", exts: [".lua"], color: "#000080" },
+	{ id: "R", label: "R", exts: [".r", ".R"], color: "#198CE7" },
+	{ id: "Haskell", label: "Haskell", exts: [".hs"], color: "#5e5086" },
+	{ id: "Elixir", label: "Elixir", exts: [".ex", ".exs"], color: "#6e4a7e" },
+	{
+		id: "Clojure",
+		label: "Clojure",
+		exts: [".clj", ".cljs", ".cljc"],
+		color: "#db5855",
+	},
+	{ id: "Zig", label: "Zig", exts: [".zig"], color: "#ec915c" },
+	{ id: "Nim", label: "Nim", exts: [".nim"], color: "#ffc200" },
+	{ id: "OCaml", label: "OCaml", exts: [".ml", ".mli"], color: "#3be133" },
+	{ id: "F#", label: "F#", exts: [".fs", ".fsi", ".fsx"], color: "#b845fc" },
+	{ id: "Julia", label: "Julia", exts: [".jl"], color: "#a270ba" },
+	{ id: "Perl", label: "Perl", exts: [".pl", ".pm"], color: "#0298c3" },
+	{ id: "Erlang", label: "Erlang", exts: [".erl"], color: "#B83998" },
+	{ id: "Astro", label: "Astro", exts: [".astro"], color: "#ff5a03" },
+	{ id: "Vue", label: "Vue", exts: [".vue"], color: "#41b883" },
+	{ id: "Svelte", label: "Svelte", exts: [".svelte"], color: "#ff3e00" },
 ];
 
 function getExcludedPatterns(repoDir: string): string[] {
@@ -112,29 +157,19 @@ function countFileLines(repoDir: string, filePath: string): number {
 	}
 }
 
-function calcLanguages(
-	extLines: Map<string, number>,
-	totalLines: number,
-): LanguageResult[] {
-	if (totalLines === 0) return [];
-
-	const knownExts = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
-
+function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 	const rawValues = LANGUAGE_GROUPS.map((group) => {
 		let lines = 0;
-		if (group.exts.length === 0) {
-			for (const [ext, count] of extLines) {
-				if (!knownExts.has(ext)) lines += count;
-			}
-		} else {
-			for (const ext of group.exts) {
-				lines += extLines.get(ext) ?? 0;
-			}
+		for (const ext of group.exts) {
+			lines += extLines.get(ext) ?? 0;
 		}
 		return { ...group, lines };
 	}).filter((g) => g.lines > 0);
 
-	const rawPcts = rawValues.map((g) => (g.lines / totalLines) * 100);
+	const matchedTotal = rawValues.reduce((sum, g) => sum + g.lines, 0);
+	if (matchedTotal === 0) return [];
+
+	const rawPcts = rawValues.map((g) => (g.lines / matchedTotal) * 100);
 	const floors = rawPcts.map(Math.floor);
 	const remainder = 100 - floors.reduce((a, b) => a + b, 0);
 
@@ -153,7 +188,9 @@ function calcLanguages(
 			value: floors[i],
 			color: g.color,
 		}))
-		.filter((g) => g.value > 0);
+		.filter((g) => g.value > 0)
+		.sort((a, b) => b.value - a.value)
+		.slice(0, 10);
 }
 
 function main(): void {
@@ -252,7 +289,7 @@ function main(): void {
 			console.error("Warning: Failed to get CI runs count:", err);
 		}
 
-		const languages = calcLanguages(extLines, totalLines);
+		const languages = calcLanguages(extLines);
 
 		const result: MetricsResult = {
 			linesOfCode: totalLines,
