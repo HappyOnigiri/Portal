@@ -1,0 +1,13 @@
+# Portal メトリクス設定
+# CI: PORTAL_CONFIG シークレットに YAML を登録
+# ローカル: .portal.yaml にコピーして使用
+
+repositories:
+  # 自リポジトリ
+  - repo: self
+
+  # 外部リポジトリ（alias でログ表示名を指定可能）
+  # - repo: owner/private-repo
+  #   alias: secret_repo1
+  # - repo: owner/work-repo
+  #   alias: work1
