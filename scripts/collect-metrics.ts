@@ -525,8 +525,9 @@ async function collectSingleRepo(
 			...(author?.names ?? []).flatMap((n) => ["--author", n]),
 		];
 		const commits = Number(
-			execSync(
-				`git rev-list --count HEAD${authorFlags.length > 0 ? ` ${authorFlags.join(" ")}` : ""}`,
+			execFileSync(
+				"git",
+				["rev-list", "--count", "HEAD", ...authorFlags],
 				{ encoding: "utf-8", cwd: repoDir },
 			).trim(),
 		);
