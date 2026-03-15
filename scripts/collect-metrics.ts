@@ -126,8 +126,8 @@ function loadConfig(): PortalConfig {
 	if (process.env.PORTAL_CONFIG !== undefined) {
 		if (process.env.PORTAL_CONFIG.trim() === "") {
 			console.error(
-			"Error: PORTAL_CONFIG が空文字です。有効な YAML を設定してください",
-		);
+				"Error: PORTAL_CONFIG が空文字です。有効な YAML を設定してください",
+			);
 			process.exit(1);
 		}
 		rawYaml = process.env.PORTAL_CONFIG;
@@ -138,8 +138,8 @@ function loadConfig(): PortalConfig {
 			const content = readFileSync(localPath, "utf-8");
 			if (content.trim() === "") {
 				console.error(
-				"Error: .portal.yaml が空ファイルです。有効な YAML を記述してください",
-			);
+					"Error: .portal.yaml が空ファイルです。有効な YAML を記述してください",
+				);
 				process.exit(1);
 			}
 			rawYaml = content;
