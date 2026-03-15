@@ -1,45 +1,33 @@
 {
-	"linesOfCode": 2039,
-	"commits": 81,
-	"mergedPRs": 12,
-	"ciRuns": 59,
-	"lastUpdated": "2026-03-15T02:07:03.494Z",
+	"linesOfCode": 2104,
+	"commits": 85,
+	"mergedPRs": 14,
+	"ciRuns": 66,
+	"lastUpdated": "2026-03-15T03:33:28.587Z",
 	"languages": [
 		{
 			"id": "TypeScript",
 			"label": "TypeScript",
-			"value": 19,
+			"value": 52,
 			"color": "#3178c6"
 		},
 		{
 			"id": "Astro",
 			"label": "Astro",
-			"value": 15,
+			"value": 37,
 			"color": "#ff5a03"
-		},
-		{
-			"id": "CSS",
-			"label": "CSS",
-			"value": 24,
-			"color": "#563d7c"
 		},
 		{
 			"id": "Python",
 			"label": "Python",
-			"value": 3,
+			"value": 9,
 			"color": "#3572A5"
 		},
 		{
-			"id": "YAML",
-			"label": "YAML",
-			"value": 13,
-			"color": "#cb171e"
-		},
-		{
-			"id": "Other",
-			"label": "Other",
-			"value": 26,
-			"color": "#ededed"
+			"id": "JavaScript",
+			"label": "JavaScript",
+			"value": 2,
+			"color": "#f1e05a"
 		}
 	],
 	"aiUsage": [],
