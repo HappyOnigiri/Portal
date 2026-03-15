@@ -1,4 +1,4 @@
-import { execFileSync, execSync } from "node:child_process";
+import { execFile, execFileSync, execSync } from "node:child_process";
 import {
 	existsSync,
 	mkdtempSync,
@@ -6,9 +6,12 @@ import {
 	rmSync,
 	writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
+import { cpus, tmpdir } from "node:os";
 import { extname, join, resolve } from "node:path";
-import { parseArgs } from "node:util";
+import { parseArgs, promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
+
 import { parse as parseYaml } from "yaml";
 
 const { values: args } = parseArgs({
@@ -22,8 +25,14 @@ interface RepoConfig {
 	repo: string; // "owner/name" or "self"
 	alias?: string;
 }
+interface AuthorConfig {
+	emails?: string[];
+	names?: string[];
+	github?: string;
+}
 interface PortalConfig {
 	repositories: RepoConfig[];
+	author?: AuthorConfig;
 }
 
 interface LanguageGroup {
@@ -211,7 +220,45 @@ function loadConfig(): PortalConfig {
 		}
 	}
 
-	return parsed as PortalConfig;
+	const parsedConfig = parsed as PortalConfig;
+
+	if ("author" in parsedConfig && parsedConfig.author !== undefined) {
+		const author = parsedConfig.author;
+		if (typeof author !== "object" || author === null) {
+			console.error('Error: "author" はオブジェクトである必要があります');
+			process.exit(1);
+		}
+		if ("emails" in author && author.emails !== undefined) {
+			if (
+				!Array.isArray(author.emails) ||
+				author.emails.some((e) => typeof e !== "string")
+			) {
+				console.error(
+					'Error: "author.emails" は文字列の配列である必要があります',
+				);
+				process.exit(1);
+			}
+		}
+		if ("names" in author && author.names !== undefined) {
+			if (
+				!Array.isArray(author.names) ||
+				author.names.some((n) => typeof n !== "string")
+			) {
+				console.error(
+					'Error: "author.names" は文字列の配列である必要があります',
+				);
+				process.exit(1);
+			}
+		}
+		if ("github" in author && author.github !== undefined) {
+			if (typeof author.github !== "string") {
+				console.error('Error: "author.github" は文字列である必要があります');
+				process.exit(1);
+			}
+		}
+	}
+
+	return parsedConfig;
 }
 
 function getExcludedPatterns(repoDir: string): string[] {
@@ -264,6 +311,83 @@ function countFileLines(repoDir: string, filePath: string): number {
 	}
 }
 
+async function buildAuthorShas(
+	repoDir: string,
+	author: AuthorConfig,
+): Promise<Set<string>> {
+	const authorFlags = [
+		...(author.emails ?? []).flatMap((e) => ["--author", e]),
+		...(author.names ?? []).flatMap((n) => ["--author", n]),
+	];
+	if (authorFlags.length === 0) return new Set();
+
+	try {
+		const { stdout } = await execFileAsync(
+			"git",
+			["log", "--format=%H", ...authorFlags],
+			{ encoding: "utf-8", cwd: repoDir },
+		);
+		return new Set(
+			stdout
+				.trim()
+				.split("\n")
+				.filter((s) => s.length > 0),
+		);
+	} catch {
+		return new Set();
+	}
+}
+
+async function blameFileLines(
+	repoDir: string,
+	filePath: string,
+	authorShas: Set<string>,
+): Promise<number> {
+	try {
+		const { stdout } = await execFileAsync(
+			"git",
+			["blame", "--porcelain", filePath],
+			{ encoding: "utf-8", cwd: repoDir },
+		);
+
+		let lineCount = 0;
+		for (const line of stdout.split("\n")) {
+			if (line.startsWith("\t")) continue; // コード行はスキップ
+			const shaMatch = /^([0-9a-f]{40}) \d+ \d+/.exec(line);
+			if (shaMatch && authorShas.has(shaMatch[1])) {
+				lineCount += 1;
+			}
+		}
+
+		return lineCount;
+	} catch {
+		return 0;
+	}
+}
+
+async function mapConcurrent<T, R>(
+	items: T[],
+	concurrency: number,
+	fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+	const results: R[] = new Array(items.length);
+	let index = 0;
+
+	async function worker(): Promise<void> {
+		while (index < items.length) {
+			const i = index++;
+			results[i] = await fn(items[i]);
+		}
+	}
+
+	const workers = Array.from(
+		{ length: Math.min(concurrency, items.length) },
+		worker,
+	);
+	await Promise.all(workers);
+	return results;
+}
+
 function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 	const rawValues = LANGUAGE_GROUPS.map((group) => {
 		let lines = 0;
@@ -302,11 +426,18 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 		.map(({ id, label, value, color }) => ({ id, label, value, color }));
 }
 
-function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
+async function collectSingleRepo(
+	config: RepoConfig,
+	author?: AuthorConfig,
+): Promise<SingleRepoMetrics> {
 	const displayName = config.alias ?? config.repo;
 	const isSelf = config.repo === "self";
 	let repoDir = process.cwd();
 	let tmpDir: string | undefined;
+	const useBlame =
+		author !== undefined &&
+		((author.emails?.length ?? 0) > 0 || (author.names?.length ?? 0) > 0);
+	const cloneFilter = useBlame ? "--filter=blob:none" : "--filter=tree:0";
 
 	if (!isSelf) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
@@ -320,7 +451,7 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 					config.repo,
 					tmpDir,
 					"--",
-					"--filter=tree:0",
+					cloneFilter,
 					"--single-branch",
 				],
 				{
@@ -358,21 +489,40 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 		const extLines = new Map<string, number>();
 		let totalLines = 0;
 
-		for (const file of allFiles) {
-			const ext = extname(file).toLowerCase();
-			if (!SOURCE_EXTS.has(ext)) continue;
-			const lines = countFileLines(repoDir, file);
-			extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
-			totalLines += lines;
-		}
-
-		const commits = Number(
-			execSync("git rev-list --count HEAD", {
-				encoding: "utf-8",
-				cwd: repoDir,
-			}).trim(),
+		const sourceFiles = allFiles.filter((f) =>
+			SOURCE_EXTS.has(extname(f).toLowerCase()),
 		);
 
+		if (useBlame) {
+			const authorShas = await buildAuthorShas(repoDir, author as AuthorConfig);
+			const concurrency = Math.max(2, cpus().length);
+			const lineCounts = await mapConcurrent(sourceFiles, concurrency, (file) =>
+				blameFileLines(repoDir, file, authorShas),
+			);
+			for (let i = 0; i < sourceFiles.length; i++) {
+				const ext = extname(sourceFiles[i]).toLowerCase();
+				const lines = lineCounts[i];
+				extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
+				totalLines += lines;
+			}
+		} else {
+			for (const file of sourceFiles) {
+				const ext = extname(file).toLowerCase();
+				const lines = countFileLines(repoDir, file);
+				extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
+				totalLines += lines;
+			}
+		}
+
+		const authorFlags = author?.emails?.flatMap((e) => ["--author", e]) ?? [];
+		const commits = Number(
+			execSync(
+				`git rev-list --count HEAD${authorFlags.length > 0 ? ` ${authorFlags.join(" ")}` : ""}`,
+				{ encoding: "utf-8", cwd: repoDir },
+			).trim(),
+		);
+
+		const prAuthorFlags = author?.github ? ["--author", author.github] : [];
 		let mergedPRs = 0;
 		try {
 			const prOutput = execFileSync(
@@ -383,6 +533,7 @@ function collectSingleRepo(config: RepoConfig): SingleRepoMetrics {
 					...repoFlags,
 					"--state",
 					"merged",
+					...prAuthorFlags,
 					"--json",
 					"number",
 					"--limit",
@@ -462,12 +613,12 @@ function aggregateMetrics(results: SingleRepoMetrics[]): {
 	return merged;
 }
 
-function main(): void {
+async function main(): Promise<void> {
 	const config = loadConfig();
 
 	const results: SingleRepoMetrics[] = [];
 	for (const repoConfig of config.repositories) {
-		const metrics = collectSingleRepo(repoConfig);
+		const metrics = await collectSingleRepo(repoConfig, config.author);
 		results.push(metrics);
 	}
 
@@ -494,4 +645,7 @@ function main(): void {
 	}
 }
 
-main();
+main().catch((err) => {
+	console.error(err);
+	process.exit(1);
+});
