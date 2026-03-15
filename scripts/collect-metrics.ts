@@ -349,7 +349,7 @@ async function blameFileLines(
 	try {
 		const { stdout } = await execFileAsync(
 			"git",
-			["blame", "--porcelain", filePath],
+			["blame", "--porcelain", "--", filePath],
 			{ encoding: "utf-8", cwd: repoDir },
 		);
 
