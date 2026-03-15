@@ -504,15 +504,19 @@ async function collectSingleRepo(
 
 		if (useBlame) {
 			const authorShas = await buildAuthorShas(repoDir, author as AuthorConfig);
-			const concurrency = Math.max(2, cpus().length);
-			const lineCounts = await mapConcurrent(sourceFiles, concurrency, (file) =>
-				blameFileLines(repoDir, file, authorShas),
-			);
-			for (let i = 0; i < sourceFiles.length; i++) {
-				const ext = extname(sourceFiles[i]).toLowerCase();
-				const lines = lineCounts[i];
-				extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
-				totalLines += lines;
+			if (authorShas.size > 0) {
+				const concurrency = Math.max(2, cpus().length);
+				const lineCounts = await mapConcurrent(
+					sourceFiles,
+					concurrency,
+					(file) => blameFileLines(repoDir, file, authorShas),
+				);
+				for (let i = 0; i < sourceFiles.length; i++) {
+					const ext = extname(sourceFiles[i]).toLowerCase();
+					const lines = lineCounts[i];
+					extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
+					totalLines += lines;
+				}
 			}
 		} else {
 			for (const file of sourceFiles) {
