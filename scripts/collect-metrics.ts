@@ -130,6 +130,9 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 /** ソースコードとしてカウントする拡張子（画像・lock・バイナリを除外） */
 const SOURCE_EXTS = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
 
+/** git log / git blame の stdout 上限（大規模リポジトリでのバッファ超過を防ぐ） */
+const GIT_OUTPUT_MAX_BUFFER = 64 * 1024 * 1024;
+
 function loadConfig(): PortalConfig {
 	const defaultConfig: PortalConfig = { repositories: [{ repo: "self" }] };
 
@@ -325,7 +328,7 @@ async function buildAuthorShas(
 		const { stdout } = await execFileAsync(
 			"git",
 			["log", "--format=%H", ...authorFlags],
-			{ encoding: "utf-8", cwd: repoDir },
+			{ encoding: "utf-8", cwd: repoDir, maxBuffer: GIT_OUTPUT_MAX_BUFFER },
 		);
 		return new Set(
 			stdout
@@ -350,7 +353,7 @@ async function blameFileLines(
 		const { stdout } = await execFileAsync(
 			"git",
 			["blame", "--porcelain", "--", filePath],
-			{ encoding: "utf-8", cwd: repoDir },
+			{ encoding: "utf-8", cwd: repoDir, maxBuffer: GIT_OUTPUT_MAX_BUFFER },
 		);
 
 		let lineCount = 0;
