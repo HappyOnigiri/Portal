@@ -158,6 +158,10 @@ function loadConfig(): PortalConfig {
 	}
 
 	const repos = (parsed as { repositories: unknown[] }).repositories;
+	if (repos.length === 0) {
+		console.error("Error: repositories には最低1件のエントリが必要です");
+		process.exit(1);
+	}
 	for (let index = 0; index < repos.length; index++) {
 		const item = repos[index];
 		if (typeof item !== "object" || item === null || !("repo" in item)) {
