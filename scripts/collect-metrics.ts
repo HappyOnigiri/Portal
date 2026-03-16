@@ -1,13 +1,16 @@
 import { execFile, execFileSync } from "node:child_process";
+import { createHmac, randomBytes } from "node:crypto";
 import {
 	existsSync,
+	mkdirSync,
 	mkdtempSync,
+	readdirSync,
 	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { extname, join, resolve } from "node:path";
+import { dirname, extname, join, resolve } from "node:path";
 import { parseArgs, promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -33,6 +36,7 @@ interface AuthorConfig {
 interface PortalConfig {
 	repositories: RepoConfig[];
 	author?: AuthorConfig;
+	salt?: string;
 }
 
 interface LanguageGroup {
@@ -68,6 +72,17 @@ interface SingleRepoMetrics {
 	mergedPRs: number;
 	ciRuns: number;
 	extLines: Map<string, number>;
+}
+
+interface PerRepoFileData {
+	cacheKey: string;
+	addedLines: number;
+	deletedLines: number;
+	commits: number;
+	mergedPRs: number;
+	ciRuns: number;
+	extLines: Record<string, number>;
+	collectedAt: string;
 }
 
 const LANGUAGE_GROUPS: LanguageGroup[] = [
@@ -134,6 +149,8 @@ const SOURCE_EXTS = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
 
 /** git log / git blame の stdout 上限（大規模リポジトリでのバッファ超過を防ぐ） */
 const GIT_OUTPUT_MAX_BUFFER = 64 * 1024 * 1024;
+
+const REPO_DATA_DIR = resolve(process.cwd(), "src/data/repositories");
 
 function loadConfig(): PortalConfig {
 	const defaultConfig: PortalConfig = { repositories: [{ repo: "self" }] };
@@ -263,7 +280,116 @@ function loadConfig(): PortalConfig {
 		}
 	}
 
+	if ("salt" in parsedConfig && parsedConfig.salt !== undefined) {
+		if (typeof parsedConfig.salt !== "string") {
+			console.error('Error: "salt" は文字列である必要があります');
+			process.exit(1);
+		}
+	}
+
 	return parsedConfig;
+}
+
+function repoToFilePath(config: RepoConfig): string {
+	const name = config.alias ?? config.repo;
+	const segments = name.split("/");
+	const sanitized = segments.map((s) => s.replace(/[^a-zA-Z0-9._-]/g, "_"));
+	const last = sanitized[sanitized.length - 1];
+	const dirs = sanitized.slice(0, -1);
+	return resolve(REPO_DATA_DIR, ...dirs, `${last}.json`);
+}
+
+async function getMainCommitHash(config: RepoConfig): Promise<string> {
+	try {
+		if (config.repo === "self") {
+			const { stdout } = await execFileAsync("git", ["rev-parse", "HEAD"], {
+				encoding: "utf-8",
+				cwd: process.cwd(),
+			});
+			return stdout.trim();
+		} else {
+			const { stdout: branch } = await execFileAsync(
+				"gh",
+				["api", `repos/${config.repo}`, "--jq", ".default_branch"],
+				{ encoding: "utf-8" },
+			);
+			const { stdout } = await execFileAsync(
+				"gh",
+				[
+					"api",
+					`repos/${config.repo}/commits/${branch.trim()}`,
+					"--jq",
+					".sha",
+				],
+				{ encoding: "utf-8" },
+			);
+			return stdout.trim();
+		}
+	} catch {
+		return "";
+	}
+}
+
+function hmacHash(value: string, salt: string): string {
+	return createHmac("sha256", salt).update(value).digest("hex");
+}
+
+function readAllPerRepoFiles(): SingleRepoMetrics[] {
+	if (!existsSync(REPO_DATA_DIR)) return [];
+
+	const results: SingleRepoMetrics[] = [];
+
+	function walk(dir: string): void {
+		const entries = readdirSync(dir, { withFileTypes: true });
+		for (const entry of entries) {
+			const fullPath = join(dir, entry.name);
+			if (entry.isDirectory()) {
+				walk(fullPath);
+			} else if (entry.isFile() && entry.name.endsWith(".json")) {
+				try {
+					const raw = JSON.parse(readFileSync(fullPath, "utf-8")) as Record<
+						string,
+						unknown
+					>;
+					if (
+						typeof raw.addedLines !== "number" ||
+						typeof raw.deletedLines !== "number" ||
+						typeof raw.commits !== "number" ||
+						typeof raw.mergedPRs !== "number" ||
+						typeof raw.ciRuns !== "number"
+					) {
+						console.error(
+							`Warning: ${fullPath} は必須フィールドが不足しています。スキップします`,
+						);
+						continue;
+					}
+					const extLines = new Map<string, number>();
+					if (raw.extLines !== null && typeof raw.extLines === "object") {
+						for (const [k, v] of Object.entries(
+							raw.extLines as Record<string, unknown>,
+						)) {
+							if (typeof v === "number") extLines.set(k, v);
+						}
+					}
+					results.push({
+						addedLines: raw.addedLines,
+						deletedLines: raw.deletedLines,
+						commits: raw.commits,
+						mergedPRs: raw.mergedPRs,
+						ciRuns: raw.ciRuns,
+						extLines,
+					});
+				} catch {
+					console.error(
+						`Warning: ${fullPath} のパースに失敗しました。スキップします`,
+					);
+				}
+			}
+		}
+	}
+
+	walk(REPO_DATA_DIR);
+	return results;
 }
 
 function getExcludedPatterns(repoDir: string): string[] {
@@ -564,13 +690,78 @@ function aggregateMetrics(results: SingleRepoMetrics[]): {
 async function main(): Promise<void> {
 	const config = loadConfig();
 
-	const results: SingleRepoMetrics[] = [];
-	for (const repoConfig of config.repositories) {
-		const metrics = await collectSingleRepo(repoConfig, config.author);
-		results.push(metrics);
+	// SALT の解決
+	let salt: string;
+	if (config.salt) {
+		salt = config.salt;
+	} else if (process.env.PORTAL_SALT) {
+		salt = process.env.PORTAL_SALT;
+	} else {
+		salt = randomBytes(32).toString("hex");
+		console.error(
+			"Warning: SALT が未設定です。ランダム SALT を使用するためキャッシュが効きません。.portal.yaml に salt を設定してください",
+		);
 	}
 
-	const aggregated = aggregateMetrics(results);
+	if (!isDryRun) {
+		mkdirSync(REPO_DATA_DIR, { recursive: true });
+	}
+
+	for (const repoConfig of config.repositories) {
+		const displayName = repoConfig.alias ?? repoConfig.repo;
+		const filePath = repoToFilePath(repoConfig);
+
+		// コミットハッシュ取得とキャッシュ判定
+		const hash = await getMainCommitHash(repoConfig);
+		const hmac = hash ? hmacHash(hash, salt) : "";
+
+		if (hmac && !isDryRun && existsSync(filePath)) {
+			try {
+				const existing = JSON.parse(
+					readFileSync(filePath, "utf-8"),
+				) as PerRepoFileData;
+				if (existing.cacheKey === hmac) {
+					console.error(`[${displayName}] cache hit → スキップ`);
+					continue;
+				}
+			} catch {
+				// パース失敗時はキャッシュミス扱い
+			}
+		}
+
+		const metrics = await collectSingleRepo(repoConfig, config.author);
+
+		const extLinesRecord: Record<string, number> = {};
+		for (const [k, v] of metrics.extLines) {
+			extLinesRecord[k] = v;
+		}
+
+		const perRepoData: PerRepoFileData = {
+			cacheKey: hmac,
+			addedLines: metrics.addedLines,
+			deletedLines: metrics.deletedLines,
+			commits: metrics.commits,
+			mergedPRs: metrics.mergedPRs,
+			ciRuns: metrics.ciRuns,
+			extLines: extLinesRecord,
+			collectedAt: new Date().toISOString(),
+		};
+
+		if (isDryRun) {
+			process.stdout.write(
+				`[dry-run] ${filePath}:\n${JSON.stringify(perRepoData, null, 2)}\n`,
+			);
+		} else {
+			mkdirSync(dirname(filePath), { recursive: true });
+			writeFileSync(filePath, `${JSON.stringify(perRepoData, null, 2)}\n`);
+			console.error(`[${displayName}] Written to ${filePath}`);
+		}
+	}
+
+	// repositories/ 以下を全読み込み（手動追加ファイル含む）
+	const allRepoMetrics = isDryRun ? [] : readAllPerRepoFiles();
+
+	const aggregated = aggregateMetrics(allRepoMetrics);
 	const languages = calcLanguages(aggregated.extLines);
 
 	const result: MetricsResult = {
