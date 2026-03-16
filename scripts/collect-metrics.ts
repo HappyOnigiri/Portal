@@ -316,9 +316,9 @@ function countFileLines(repoDir: string, filePath: string): number {
 
 function escapeGitAuthorPattern(value: string): string {
 	// git log --author はパターンを正規表現として解釈する。
-	// [ と ] は文字クラスを形成するため、[bot] が意図しない文字クラスになる。
+	// すべての正規表現メタ文字をエスケープしてリテラルとして扱う。
 	// アンカリング（^...$）は "Name <email>" 形式全体に適用されるため使用しない。
-	return value.replace(/\[/g, "\\[").replace(/\]/g, "\\]");
+	return value.replace(/[.+*?^${}()|[\]\\]/g, "\\$&");
 }
 
 async function buildAuthorShas(
