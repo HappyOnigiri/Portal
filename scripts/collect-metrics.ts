@@ -336,7 +336,12 @@ async function getMainCommitHash(config: RepoConfig): Promise<string> {
 			);
 			return stdout.trim();
 		}
-	} catch {
+	} catch (err) {
+		console.warn(
+			`[${config.alias ?? config.repo}] Warning: main commit hash の取得に失敗しました。cacheKey を空として扱います: ${
+				err instanceof Error ? err.message : String(err)
+			}`,
+		);
 		return "";
 	}
 }
