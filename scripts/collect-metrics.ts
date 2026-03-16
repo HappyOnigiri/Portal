@@ -723,6 +723,8 @@ async function main(): Promise<void> {
 		mkdirSync(REPO_DATA_DIR, { recursive: true });
 	}
 
+	const collectedInThisRun: SingleRepoMetrics[] = [];
+
 	for (const repoConfig of config.repositories) {
 		const displayName = repoConfig.alias ?? repoConfig.repo;
 		const filePath = repoToFilePath(repoConfig);
@@ -746,6 +748,7 @@ async function main(): Promise<void> {
 		}
 
 		const metrics = await collectSingleRepo(repoConfig, config.author);
+		collectedInThisRun.push(metrics);
 
 		const extLinesRecord: Record<string, number> = {};
 		for (const [k, v] of metrics.extLines) {
@@ -775,7 +778,7 @@ async function main(): Promise<void> {
 	}
 
 	// repositories/ 以下を全読み込み（手動追加ファイル含む）
-	const allRepoMetrics = isDryRun ? [] : readAllPerRepoFiles();
+	const allRepoMetrics = isDryRun ? collectedInThisRun : readAllPerRepoFiles();
 
 	const aggregated = aggregateMetrics(allRepoMetrics);
 	const languages = calcLanguages(aggregated.extLines);
