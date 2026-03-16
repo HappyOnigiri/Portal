@@ -59,20 +59,33 @@ const lastSync = statusData.lastUpdated
 	<div class="p-6 overflow-x-auto">
 		<table class="w-full border-collapse">
 			<tbody class="text-[#e2e8f0]">
-				{/* 1. Lines of Code */}
+				{/* 1. Added Lines */}
 				<tr
 					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
 				>
 					<td
 						class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-sm sm:text-base"
-						>Lines of Code</td
+						>Added Lines</td
 					>
 					<td class="py-4 px-2 font-bold text-right sm:text-left"
-						>{formatNumber(statusData.linesOfCode)}</td
+						>{formatNumber(statusData.addedLines)}</td
 					>
 				</tr>
 
-				{/* 2. Commits */}
+				{/* 2. Deleted Lines */}
+				<tr
+					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
+				>
+					<td
+						class="py-4 px-2 text-[#94a3b8] w-1/4 sm:w-1/5 group-hover:text-[#00f0ff] text-sm sm:text-base"
+						>Deleted Lines</td
+					>
+					<td class="py-4 px-2 font-bold text-right sm:text-left"
+						>{formatNumber(statusData.deletedLines)}</td
+					>
+				</tr>
+
+				{/* 3. Commits */}
 				<tr
 					class="border-b border-[#2dd4bf]/10 hover:bg-[#ff003c]/5 transition-colors group"
 				>
@@ -85,7 +98,7 @@ const lastSync = statusData.lastUpdated
 					>
 				</tr>
 
-				{/* 3. Merged PRs */}
+				{/* 4. Merged PRs */}
 				<tr
 					class="border-b border-[#2dd4bf]/10 hover:bg-[#b534ff]/5 transition-colors group"
 				>
@@ -98,7 +111,7 @@ const lastSync = statusData.lastUpdated
 					>
 				</tr>
 
-				{/* 4. CI Runs */}
+				{/* 5. CI Runs */}
 				<tr
 					class="border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group"
 				>
