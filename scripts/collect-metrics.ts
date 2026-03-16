@@ -738,7 +738,12 @@ async function main(): Promise<void> {
 
 		// コミットハッシュ取得とキャッシュ判定
 		const hash = await getMainCommitHash(repoConfig);
-		const hmac = hash ? hmacHash(hash, salt) : "";
+		const authorScope = JSON.stringify({
+			emails: [...new Set(config.author?.emails ?? [])].sort(),
+			names: [...new Set(config.author?.names ?? [])].sort(),
+			github: config.author?.github ?? "",
+		});
+		const hmac = hash ? hmacHash(`${hash}:${authorScope}`, salt) : "";
 
 		if (hmac && !isDryRun && existsSync(filePath)) {
 			try {
