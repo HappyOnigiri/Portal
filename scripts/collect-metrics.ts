@@ -1,4 +1,4 @@
-import { execFile, execFileSync, execSync } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
 import {
 	existsSync,
 	mkdtempSync,
@@ -6,7 +6,7 @@ import {
 	rmSync,
 	writeFileSync,
 } from "node:fs";
-import { cpus, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import { extname, join, resolve } from "node:path";
 import { parseArgs, promisify } from "node:util";
 
@@ -50,7 +50,8 @@ interface LanguageResult {
 }
 
 interface MetricsResult {
-	linesOfCode: number;
+	addedLines: number;
+	deletedLines: number;
 	commits: number;
 	mergedPRs: number;
 	ciRuns: number;
@@ -61,7 +62,8 @@ interface MetricsResult {
 }
 
 interface SingleRepoMetrics {
-	linesOfCode: number;
+	addedLines: number;
+	deletedLines: number;
 	commits: number;
 	mergedPRs: number;
 	ciRuns: number;
@@ -304,110 +306,64 @@ function isExcluded(filePath: string, patterns: string[]): boolean {
 	return patterns.some((p) => patternToRegex(p).test(filePath));
 }
 
-function countFileLines(repoDir: string, filePath: string): number {
-	try {
-		const content = readFileSync(join(repoDir, filePath), "utf-8");
-		if (content.length === 0) return 0;
-		return content.replace(/\r\n/g, "\n").replace(/\n$/, "").split("\n").length;
-	} catch {
-		return 0;
-	}
-}
-
-function escapeGitAuthorPattern(value: string): string {
-	// git log --author はパターンを正規表現として解釈する。
-	// すべての正規表現メタ文字をエスケープしてリテラルとして扱う。
-	// アンカリング（^...$）は "Name <email>" 形式全体に適用されるため使用しない。
-	return value.replace(/[.+*?^${}()|[\]\\]/g, "\\$&");
-}
-
-async function buildAuthorShas(
+async function countNumstatLines(
 	repoDir: string,
-	author: AuthorConfig,
-): Promise<Set<string>> {
+	excludedPatterns: string[],
+	author?: AuthorConfig,
+): Promise<{
+	addedLines: number;
+	deletedLines: number;
+	extLines: Map<string, number>;
+}> {
 	const authorFlags = [
-		...(author.emails ?? []).flatMap((e) => [
-			"--author",
-			escapeGitAuthorPattern(e),
-		]),
-		...(author.names ?? []).flatMap((n) => [
-			"--author",
-			escapeGitAuthorPattern(n),
-		]),
+		...(author?.emails ?? []).flatMap((e) => ["--author", e]),
+		...(author?.names ?? []).flatMap((n) => ["--author", n]),
 	];
-	if (authorFlags.length === 0) return new Set();
 
 	try {
 		const { stdout } = await execFileAsync(
 			"git",
-			["log", "--format=%H", ...authorFlags],
-			{ encoding: "utf-8", cwd: repoDir, maxBuffer: GIT_OUTPUT_MAX_BUFFER },
-		);
-		return new Set(
-			stdout
-				.trim()
-				.split("\n")
-				.filter((s) => s.length > 0),
-		);
-	} catch (err) {
-		console.error(
-			`Warning: git log failed in ${repoDir}: ${err instanceof Error ? err.message : err}`,
-		);
-		return new Set();
-	}
-}
-
-async function blameFileLines(
-	repoDir: string,
-	filePath: string,
-	authorShas: Set<string>,
-): Promise<number> {
-	try {
-		const { stdout } = await execFileAsync(
-			"git",
-			["blame", "--porcelain", "--", filePath],
+			[
+				"log",
+				"--numstat",
+				"--format=",
+				"--no-renames",
+				"--fixed-strings",
+				...authorFlags,
+			],
 			{ encoding: "utf-8", cwd: repoDir, maxBuffer: GIT_OUTPUT_MAX_BUFFER },
 		);
 
-		let lineCount = 0;
+		let addedLines = 0;
+		let deletedLines = 0;
+		const extLines = new Map<string, number>();
+
 		for (const line of stdout.split("\n")) {
-			if (line.startsWith("\t")) continue; // コード行はスキップ
-			const shaMatch = /^([0-9a-f]{40}) \d+ \d+/.exec(line);
-			if (shaMatch && authorShas.has(shaMatch[1])) {
-				lineCount += 1;
-			}
+			const trimmed = line.trim();
+			if (!trimmed) continue;
+			const parts = trimmed.split("\t");
+			if (parts.length < 3) continue;
+			const [addedStr, deletedStr, filePath] = parts;
+			// バイナリファイルはスキップ
+			if (addedStr === "-" || deletedStr === "-") continue;
+			if (isExcluded(filePath, excludedPatterns)) continue;
+			const ext = extname(filePath).toLowerCase();
+			if (!SOURCE_EXTS.has(ext)) continue;
+			const added = parseInt(addedStr, 10);
+			const deleted = parseInt(deletedStr, 10);
+			if (Number.isNaN(added) || Number.isNaN(deleted)) continue;
+			addedLines += added;
+			deletedLines += deleted;
+			extLines.set(ext, (extLines.get(ext) ?? 0) + added);
 		}
 
-		return lineCount;
+		return { addedLines, deletedLines, extLines };
 	} catch (err) {
 		console.error(
-			`Warning: git blame failed for ${filePath} in ${repoDir}: ${err instanceof Error ? err.message : err}`,
+			`Warning: git log --numstat failed in ${repoDir}: ${err instanceof Error ? err.message : err}`,
 		);
-		return 0;
+		return { addedLines: 0, deletedLines: 0, extLines: new Map() };
 	}
-}
-
-async function mapConcurrent<T, R>(
-	items: T[],
-	concurrency: number,
-	fn: (item: T) => Promise<R>,
-): Promise<R[]> {
-	const results: R[] = new Array(items.length);
-	let index = 0;
-
-	async function worker(): Promise<void> {
-		while (index < items.length) {
-			const i = index++;
-			results[i] = await fn(items[i]);
-		}
-	}
-
-	const workers = Array.from(
-		{ length: Math.min(concurrency, items.length) },
-		worker,
-	);
-	await Promise.all(workers);
-	return results;
 }
 
 function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
@@ -456,14 +412,7 @@ async function collectSingleRepo(
 	const isSelf = config.repo === "self";
 	let repoDir = process.cwd();
 	let tmpDir: string | undefined;
-	const useBlame =
-		author !== undefined &&
-		((author.emails?.length ?? 0) > 0 || (author.names?.length ?? 0) > 0);
-	// useBlame=true の場合は git blame が全履歴を参照するためフルクローンが必要。
-	// partial clone (--filter=blob:none 等) では過去のblobが存在せず blame が失敗する。
-	const cloneArgs = useBlame
-		? ["--single-branch"]
-		: ["--filter=tree:0", "--single-branch"];
+	const cloneArgs = ["--single-branch"];
 
 	if (!isSelf) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
@@ -495,62 +444,25 @@ async function collectSingleRepo(
 	try {
 		const excludedPatterns = getExcludedPatterns(repoDir);
 
-		const allFiles = execSync("git ls-files", {
-			encoding: "utf-8",
-			cwd: repoDir,
-		})
-			.trim()
-			.split("\n")
-			.filter((f) => f.length > 0)
-			.filter((f) => !isExcluded(f, excludedPatterns));
-
-		const extLines = new Map<string, number>();
-		let totalLines = 0;
-
-		const sourceFiles = allFiles.filter((f) =>
-			SOURCE_EXTS.has(extname(f).toLowerCase()),
+		const { addedLines, deletedLines, extLines } = await countNumstatLines(
+			repoDir,
+			excludedPatterns,
+			author,
 		);
 
-		if (useBlame) {
-			const authorShas = await buildAuthorShas(repoDir, author as AuthorConfig);
-			if (authorShas.size > 0) {
-				const concurrency = Math.max(2, cpus().length);
-				const lineCounts = await mapConcurrent(
-					sourceFiles,
-					concurrency,
-					(file) => blameFileLines(repoDir, file, authorShas),
-				);
-				for (let i = 0; i < sourceFiles.length; i++) {
-					const ext = extname(sourceFiles[i]).toLowerCase();
-					const lines = lineCounts[i];
-					extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
-					totalLines += lines;
-				}
-			}
-		} else {
-			for (const file of sourceFiles) {
-				const ext = extname(file).toLowerCase();
-				const lines = countFileLines(repoDir, file);
-				extLines.set(ext, (extLines.get(ext) ?? 0) + lines);
-				totalLines += lines;
-			}
-		}
-
 		const authorFlags = [
-			...(author?.emails ?? []).flatMap((e) => [
-				"--author",
-				escapeGitAuthorPattern(e),
-			]),
-			...(author?.names ?? []).flatMap((n) => [
-				"--author",
-				escapeGitAuthorPattern(n),
-			]),
+			...(author?.emails ?? []).flatMap((e) => ["--author", e]),
+			...(author?.names ?? []).flatMap((n) => ["--author", n]),
 		];
 		const commits = Number(
-			execFileSync("git", ["rev-list", "--count", "HEAD", ...authorFlags], {
-				encoding: "utf-8",
-				cwd: repoDir,
-			}).trim(),
+			execFileSync(
+				"git",
+				["rev-list", "--count", "--fixed-strings", "HEAD", ...authorFlags],
+				{
+					encoding: "utf-8",
+					cwd: repoDir,
+				},
+			).trim(),
 		);
 
 		const prAuthorFlags = author?.github ? ["--author", author.github] : [];
@@ -606,10 +518,10 @@ async function collectSingleRepo(
 		}
 
 		console.error(
-			`[${displayName}] LOC=${totalLines}, commits=${commits}, PRs=${mergedPRs}, CI=${ciRuns}`,
+			`[${displayName}] added=${addedLines}, deleted=${deletedLines}, commits=${commits}, PRs=${mergedPRs}, CI=${ciRuns}`,
 		);
 
-		return { linesOfCode: totalLines, commits, mergedPRs, ciRuns, extLines };
+		return { addedLines, deletedLines, commits, mergedPRs, ciRuns, extLines };
 	} finally {
 		if (tmpDir) {
 			rmSync(tmpDir, { recursive: true, force: true });
@@ -619,14 +531,16 @@ async function collectSingleRepo(
 }
 
 function aggregateMetrics(results: SingleRepoMetrics[]): {
-	linesOfCode: number;
+	addedLines: number;
+	deletedLines: number;
 	commits: number;
 	mergedPRs: number;
 	ciRuns: number;
 	extLines: Map<string, number>;
 } {
 	const merged = {
-		linesOfCode: 0,
+		addedLines: 0,
+		deletedLines: 0,
 		commits: 0,
 		mergedPRs: 0,
 		ciRuns: 0,
@@ -634,7 +548,8 @@ function aggregateMetrics(results: SingleRepoMetrics[]): {
 	};
 
 	for (const r of results) {
-		merged.linesOfCode += r.linesOfCode;
+		merged.addedLines += r.addedLines;
+		merged.deletedLines += r.deletedLines;
 		merged.commits += r.commits;
 		merged.mergedPRs += r.mergedPRs;
 		merged.ciRuns += r.ciRuns;
@@ -659,7 +574,8 @@ async function main(): Promise<void> {
 	const languages = calcLanguages(aggregated.extLines);
 
 	const result: MetricsResult = {
-		linesOfCode: aggregated.linesOfCode,
+		addedLines: aggregated.addedLines,
+		deletedLines: aggregated.deletedLines,
 		commits: aggregated.commits,
 		mergedPRs: aggregated.mergedPRs,
 		ciRuns: aggregated.ciRuns,
