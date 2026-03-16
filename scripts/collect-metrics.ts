@@ -10,7 +10,14 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, extname, isAbsolute, join, relative, resolve } from "node:path";
+import {
+	dirname,
+	extname,
+	isAbsolute,
+	join,
+	relative,
+	resolve,
+} from "node:path";
 import { parseArgs, promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
