@@ -10,7 +10,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, extname, join, resolve } from "node:path";
+import { dirname, extname, isAbsolute, join, relative, resolve } from "node:path";
 import { parseArgs, promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -293,10 +293,21 @@ function loadConfig(): PortalConfig {
 function repoToFilePath(config: RepoConfig): string {
 	const name = config.alias ?? config.repo;
 	const segments = name.split("/");
-	const sanitized = segments.map((s) => s.replace(/[^a-zA-Z0-9._-]/g, "_"));
+	const sanitized = segments.map((s) => {
+		const cleaned = s.replace(/[^a-zA-Z0-9._-]/g, "_");
+		if (cleaned === "" || cleaned === "." || cleaned === "..") {
+			throw new Error(`Invalid repository path segment: ${s}`);
+		}
+		return cleaned;
+	});
 	const last = sanitized[sanitized.length - 1];
 	const dirs = sanitized.slice(0, -1);
-	return resolve(REPO_DATA_DIR, ...dirs, `${last}.json`);
+	const output = resolve(REPO_DATA_DIR, ...dirs, `${last}.json`);
+	const rel = relative(REPO_DATA_DIR, output);
+	if (rel.startsWith("..") || isAbsolute(rel)) {
+		throw new Error(`Resolved path escapes REPO_DATA_DIR: ${output}`);
+	}
+	return output;
 }
 
 async function getMainCommitHash(config: RepoConfig): Promise<string> {
