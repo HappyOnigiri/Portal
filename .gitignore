@@ -31,6 +31,9 @@ pnpm-debug.log*
 # Temporary files
 tmp/
 
+# Refix
+/.refix.yaml
+
 # START Ruler Generated Files
 /AGENTS.md
 /AGENTS.md.bak
