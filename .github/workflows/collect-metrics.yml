@@ -2,6 +2,9 @@ name: Collect Metrics
 
 on:
   workflow_dispatch:
+  schedule:
+    # 日本時間 2:00 (JST = UTC+9 → 17:00 UTC)
+    - cron: "0 17 * * *"
 
 jobs:
   collect:
