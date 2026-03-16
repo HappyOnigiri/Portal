@@ -1,5 +1,7 @@
 .PHONY: ci check-ts-rules build run-dev repomix collect collect-dry-run format sync-ruler
 
+PYTHON ?= python3
+
 check-ts-rules:
 	python3 scripts/check_ts_rules.py
 
