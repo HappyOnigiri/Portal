@@ -29,6 +29,9 @@ const { values: args } = parseArgs({
 		"dry-run": { type: "boolean", default: false },
 		local: { type: "string" },
 		output: { type: "string" },
+		"author-email": { type: "string", multiple: true },
+		"author-name": { type: "string", multiple: true },
+		"author-github": { type: "string" },
 	},
 });
 const isDryRun = args["dry-run"] ?? false;
@@ -873,8 +876,18 @@ async function mainLocal(
 		process.exit(1);
 	}
 
-	const portalConfig = loadConfig();
-	const author = portalConfig.author;
+	const author: AuthorConfig | undefined =
+		args["author-email"]?.length ||
+		args["author-name"]?.length ||
+		args["author-github"]
+			? {
+					emails: args["author-email"]?.length
+						? args["author-email"]
+						: undefined,
+					names: args["author-name"]?.length ? args["author-name"] : undefined,
+					github: args["author-github"],
+				}
+			: undefined;
 
 	const metrics = await collectSingleRepo({ repo: "local" }, author, absPath);
 
