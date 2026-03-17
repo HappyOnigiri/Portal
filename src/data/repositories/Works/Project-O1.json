@@ -1,0 +1,15 @@
+{
+	"cacheKey": "",
+	"addedLines": 248840,
+	"deletedLines": 93901,
+	"commits": 1992,
+	"mergedPRs": 81,
+	"ciRuns": 280,
+	"extLines": {
+		".go": 230635,
+		".sh": 1521,
+		".js": 16351,
+		".py": 333
+	},
+	"collectedAt": "2026-03-17T16:41:17.422Z"
+}
