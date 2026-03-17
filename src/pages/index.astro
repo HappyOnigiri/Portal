@@ -3,9 +3,10 @@ import { getCollection } from "astro:content";
 import AuthorStatusWidget from "../components/AuthorStatusWidget.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sortProjectsByOrder } from "../utils/project";
 
 const projectEntries = await getCollection("projects");
-const projects = projectEntries.map((entry) => entry.data);
+const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
 ---
 
 <BaseLayout title="ONIGIRI PORTAL | Top" description="HappyOnigiri's Portfolio">
