@@ -874,20 +874,8 @@ async function mainLocal(
 		process.exit(1);
 	}
 
-	// .portal.yaml から author 設定を読み込む（存在する場合）
-	let author: AuthorConfig | undefined;
-	const portalYamlPath = resolve(process.cwd(), ".portal.yaml");
-	if (existsSync(portalYamlPath)) {
-		try {
-			const content = readFileSync(portalYamlPath, "utf-8");
-			if (content.trim() !== "") {
-				const parsed = parseYaml(content) as PortalConfig;
-				author = parsed.author;
-			}
-		} catch {
-			// 読み込み失敗時は author なしで続行
-		}
-	}
+	const portalConfig = loadConfig();
+	const author = portalConfig.author;
 
 	const metrics = await collectSingleRepo({ repo: "local" }, author, absPath);
 
