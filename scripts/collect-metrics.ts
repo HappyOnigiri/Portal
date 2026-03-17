@@ -658,7 +658,11 @@ async function getMergedPrCountByAuthorFallback(
 			}
 		}
 		if (!data.pageInfo.hasNextPage) break;
-		cursor = data.pageInfo.endCursor;
+		const nextCursor = data.pageInfo.endCursor;
+		if (!nextCursor || nextCursor === cursor) {
+			throw new Error("Invalid pagination state: cursor did not advance");
+		}
+		cursor = nextCursor;
 	}
 
 	return count;
