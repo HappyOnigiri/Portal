@@ -41,11 +41,19 @@ npm install
 
 GitHub Actions により毎日 JST 2:00 に自動集計され、変更があれば `src/data/author-status.json` が自動コミットされます。`workflow_dispatch` による手動実行も可能です。
 
-`--local` オプションで任意のローカルリポジトリも集計できます。
+`--local` オプションで任意のローカルリポジトリも集計できます。`.portal.yaml` は不要で、author はCLI 引数で指定します。
 
 ```bash
+# 全コミット対象
 npm run collect-metrics -- --local /path/to/repo
-npm run collect-metrics -- --local /path/to/repo --output ./metrics.json
+
+# author を指定して絞り込み
+npm run collect-metrics -- --local /path/to/repo \
+  --author-email "user@example.com" \
+  --author-email "12345+user@users.noreply.github.com" \
+  --author-name "User Name" \
+  --author-github "username" \
+  --output ./metrics.json
 ```
 
 ## ライセンス
