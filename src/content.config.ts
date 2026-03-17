@@ -21,9 +21,9 @@ const projects = defineCollection({
 				const raw = await fs.readFile(filePath, "utf-8");
 				const items = parse(raw) as Array<Record<string, unknown>>;
 				const parsed: Array<{
-				id: string;
-				data: Awaited<ReturnType<typeof parseData>>;
-			}> = [];
+					id: string;
+					data: Awaited<ReturnType<typeof parseData>>;
+				}> = [];
 				for (const [i, item] of items.entries()) {
 					const id = String(item.id);
 					const data = await parseData({
