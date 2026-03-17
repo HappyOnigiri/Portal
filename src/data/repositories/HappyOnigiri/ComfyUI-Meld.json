@@ -1,16 +1,16 @@
 {
 	"cacheKey": "f3d2b3a05a0cb388200cdb2c541cc48999b2dda7ca003898b616d81eb3d6b0e5",
-	"addedLines": 555071,
-	"deletedLines": 491820,
+	"addedLines": 83599,
+	"deletedLines": 42006,
 	"commits": 1150,
 	"mergedPRs": 99,
 	"ciRuns": 328,
 	"extLines": {
 		".py": 26128,
 		".ts": 18466,
-		".js": 471545,
 		".tsx": 38885,
-		".cjs": 47
+		".cjs": 47,
+		".js": 73
 	},
-	"collectedAt": "2026-03-17T16:11:47.954Z"
+	"collectedAt": "2026-03-17T17:13:52.990Z"
 }
