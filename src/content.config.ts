@@ -42,10 +42,15 @@ const projects = defineCollection({
 			await syncData();
 
 			watcher?.add(filePath);
-			watcher?.on("change", async (changedPath) => {
+			let reloadTask = Promise.resolve();
+			watcher?.on("change", (changedPath) => {
 				if (changedPath === filePath) {
 					logger.info(`Reloading data from ${FILE_NAME}`);
-					await syncData();
+					reloadTask = reloadTask.then(() =>
+						syncData().catch((err) => {
+							logger.error(`Failed to reload ${FILE_NAME}: ${err}`);
+						}),
+					);
 				}
 			});
 		},
