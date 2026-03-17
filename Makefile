@@ -1,4 +1,4 @@
-.PHONY: ci check-ts-rules build run-dev repomix collect collect-dry-run format sync-ruler
+.PHONY: ci check-ts-rules build run-dev repomix collect collect-dry-run collect-no-cache format sync-ruler
 
 PYTHON ?= python3
 
@@ -31,6 +31,9 @@ collect:
 
 collect-dry-run:
 	npm run collect-metrics -- --dry-run
+
+collect-no-cache:
+	npm run collect-metrics -- --no-cache
 
 sync-ruler:
 	$(PYTHON) scripts/sync_ruler.py

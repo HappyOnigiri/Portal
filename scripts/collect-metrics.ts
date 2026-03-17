@@ -32,9 +32,11 @@ const { values: args } = parseArgs({
 		"author-email": { type: "string", multiple: true },
 		"author-name": { type: "string", multiple: true },
 		"author-github": { type: "string" },
+		"no-cache": { type: "boolean", default: false },
 	},
 });
 const isDryRun = args["dry-run"] ?? false;
+const noCache = args["no-cache"] ?? false;
 
 interface RepoConfig {
 	repo: string; // "owner/name" or "self"
@@ -886,7 +888,7 @@ async function main(): Promise<void> {
 		});
 		const hmac = hash ? hmacHash(`${hash}:${authorScope}`, salt) : "";
 
-		if (hmac && !isDryRun && existsSync(filePath)) {
+		if (hmac && !isDryRun && !noCache && existsSync(filePath)) {
 			try {
 				const existing = JSON.parse(
 					readFileSync(filePath, "utf-8"),
