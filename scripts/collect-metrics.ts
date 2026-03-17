@@ -610,11 +610,14 @@ async function collectSingleRepo(
 	}
 
 	let repoFlags: string[];
+	let shouldQueryGitHub: boolean;
 	if (overrideDir !== undefined) {
 		const detectedId = detectGitHubRepoId(repoDir);
 		repoFlags = detectedId ? ["-R", detectedId] : [];
+		shouldQueryGitHub = detectedId !== null;
 	} else {
 		repoFlags = isSelf ? [] : ["-R", config.repo];
+		shouldQueryGitHub = true;
 	}
 
 	try {
@@ -643,53 +646,65 @@ async function collectSingleRepo(
 
 		const prAuthorFlags = author?.github ? ["--author", author.github] : [];
 		let mergedPRs = 0;
-		try {
-			const prOutput = execFileSync(
-				"gh",
-				[
-					"pr",
-					"list",
-					...repoFlags,
-					"--state",
-					"merged",
-					...prAuthorFlags,
-					"--json",
-					"number",
-					"--limit",
-					"9999",
-				],
-				{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-			);
-			mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
-		} catch {
-			console.error(`[${displayName}] Warning: Failed to get merged PRs count`);
+		if (shouldQueryGitHub) {
+			try {
+				const prOutput = execFileSync(
+					"gh",
+					[
+						"pr",
+						"list",
+						...repoFlags,
+						"--state",
+						"merged",
+						...prAuthorFlags,
+						"--json",
+						"number",
+						"--limit",
+						"9999",
+					],
+					{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+				);
+				mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
+			} catch {
+				console.error(
+					`[${displayName}] Warning: Failed to get merged PRs count`,
+				);
+			}
 		}
 
 		const runAuthorFlags = author?.github ? ["--user", author.github] : [];
 		let ciRuns = 0;
-		try {
-			const runOutput = execFileSync(
-				"gh",
-				[
-					"run",
-					"list",
-					...repoFlags,
-					...runAuthorFlags,
-					"--json",
-					"databaseId",
-					"--limit",
-					"9999",
-				],
-				{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-			);
-			ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>).length;
-		} catch (err) {
-			const stderr =
-				err instanceof Error && "stderr" in err
-					? String((err as NodeJS.ErrnoException & { stderr: unknown }).stderr)
-					: "";
-			if (!stderr.includes("HTTP 403")) {
-				console.error(`[${displayName}] Warning: Failed to get CI runs count`);
+		if (shouldQueryGitHub) {
+			try {
+				const runOutput = execFileSync(
+					"gh",
+					[
+						"run",
+						"list",
+						...repoFlags,
+						...runAuthorFlags,
+						"--json",
+						"databaseId",
+						"--limit",
+						"9999",
+					],
+					{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+				);
+				ciRuns = (
+					JSON.parse(runOutput) as Array<{ databaseId: number }>
+				).length;
+			} catch (err) {
+				const stderr =
+					err instanceof Error && "stderr" in err
+						? String(
+								(err as NodeJS.ErrnoException & { stderr: unknown }).stderr,
+							)
+						: "";
+				if (!stderr.includes("HTTP 403")) {
+					console.error(
+						`[${displayName}] Warning: Failed to get CI runs count`,
+					);
+				}
 			}
 		}
 
