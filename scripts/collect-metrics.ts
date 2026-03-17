@@ -578,6 +578,14 @@ function parseGitHubRepoId(repoId: string): { owner: string; name: string } {
 	return { owner, name };
 }
 
+function parseGhCount(stdout: string, fieldName: string): number {
+	const value = Number.parseInt(stdout.trim(), 10);
+	if (!Number.isFinite(value)) {
+		throw new Error(`Invalid count for ${fieldName}: "${stdout.trim()}"`);
+	}
+	return value;
+}
+
 async function getMergedPrTotalCount(repoId: string): Promise<number> {
 	const { owner, name } = parseGitHubRepoId(repoId);
 	const query = `query { repository(owner:"${owner}", name:"${name}") { pullRequests(states:MERGED) { totalCount } } }`;
@@ -593,7 +601,7 @@ async function getMergedPrTotalCount(repoId: string): Promise<number> {
 		],
 		{ encoding: "utf-8" },
 	);
-	return Number(stdout.trim());
+	return parseGhCount(stdout, "pullRequests.totalCount");
 }
 
 async function getMergedPrSearchCount(
@@ -613,7 +621,7 @@ async function getMergedPrSearchCount(
 		],
 		{ encoding: "utf-8" },
 	);
-	return Number(stdout.trim());
+	return parseGhCount(stdout, "search.issueCount");
 }
 
 async function getMergedPrCountByAuthorFallback(
