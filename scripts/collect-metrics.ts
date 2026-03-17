@@ -27,6 +27,8 @@ import { parse as parseYaml } from "yaml";
 const { values: args } = parseArgs({
 	options: {
 		"dry-run": { type: "boolean", default: false },
+		local: { type: "string" },
+		output: { type: "string" },
 	},
 });
 const isDryRun = args["dry-run"] ?? false;
@@ -553,9 +555,25 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 		.map(({ id, label, value, color }) => ({ id, label, value, color }));
 }
 
+function detectGitHubRepoId(repoDir: string): string | null {
+	try {
+		const url = execFileSync("git", ["remote", "get-url", "origin"], {
+			encoding: "utf-8",
+			cwd: repoDir,
+		}).trim();
+		const match = url.match(
+			/github\.com[:/]([a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+?)(?:\.git)?$/,
+		);
+		return match ? match[1] : null;
+	} catch {
+		return null;
+	}
+}
+
 async function collectSingleRepo(
 	config: RepoConfig,
 	author?: AuthorConfig,
+	overrideDir?: string,
 ): Promise<SingleRepoMetrics> {
 	const displayName = config.alias ?? config.repo;
 	const isSelf = config.repo === "self";
@@ -563,7 +581,10 @@ async function collectSingleRepo(
 	let tmpDir: string | undefined;
 	const cloneArgs = ["--single-branch"];
 
-	if (!isSelf) {
+	if (overrideDir !== undefined) {
+		repoDir = overrideDir;
+		console.error(`[${displayName}] ローカルディレクトリを使用: ${repoDir}`);
+	} else if (!isSelf) {
 		tmpDir = mkdtempSync(join(tmpdir(), "collect-metrics-"));
 		console.error(`[${displayName}] Cloning into ${tmpDir}...`);
 		try {
@@ -588,7 +609,13 @@ async function collectSingleRepo(
 		console.error(`[${displayName}] カレントディレクトリを使用`);
 	}
 
-	const repoFlags = isSelf ? [] : ["-R", config.repo];
+	let repoFlags: string[];
+	if (overrideDir !== undefined) {
+		const detectedId = detectGitHubRepoId(repoDir);
+		repoFlags = detectedId ? ["-R", detectedId] : [];
+	} else {
+		repoFlags = isSelf ? [] : ["-R", config.repo];
+	}
 
 	try {
 		const excludedPatterns = getExcludedPatterns(repoDir);
@@ -816,7 +843,75 @@ async function main(): Promise<void> {
 	}
 }
 
-main().catch((err) => {
-	console.error(err);
-	process.exit(1);
-});
+async function mainLocal(
+	localPath: string,
+	outputPath?: string,
+): Promise<void> {
+	const absPath = resolve(localPath);
+
+	if (!existsSync(absPath)) {
+		console.error(`Error: パスが存在しません: ${absPath}`);
+		process.exit(1);
+	}
+
+	if (!existsSync(join(absPath, ".git"))) {
+		console.error(`Error: git リポジトリではありません: ${absPath}`);
+		process.exit(1);
+	}
+
+	// .portal.yaml から author 設定を読み込む（存在する場合）
+	let author: AuthorConfig | undefined;
+	const portalYamlPath = resolve(process.cwd(), ".portal.yaml");
+	if (existsSync(portalYamlPath)) {
+		try {
+			const content = readFileSync(portalYamlPath, "utf-8");
+			if (content.trim() !== "") {
+				const parsed = parseYaml(content) as PortalConfig;
+				author = parsed.author;
+			}
+		} catch {
+			// 読み込み失敗時は author なしで続行
+		}
+	}
+
+	const metrics = await collectSingleRepo({ repo: "local" }, author, absPath);
+
+	const extLinesRecord: Record<string, number> = {};
+	for (const [k, v] of metrics.extLines) {
+		extLinesRecord[k] = v;
+	}
+
+	const perRepoData: PerRepoFileData = {
+		cacheKey: "",
+		addedLines: metrics.addedLines,
+		deletedLines: metrics.deletedLines,
+		commits: metrics.commits,
+		mergedPRs: metrics.mergedPRs,
+		ciRuns: metrics.ciRuns,
+		extLines: extLinesRecord,
+		collectedAt: new Date().toISOString(),
+	};
+
+	const json = `${JSON.stringify(perRepoData, null, 2)}\n`;
+
+	if (outputPath) {
+		const absOutput = resolve(outputPath);
+		mkdirSync(dirname(absOutput), { recursive: true });
+		writeFileSync(absOutput, json);
+		console.error(`Written to ${absOutput}`);
+	} else {
+		process.stdout.write(json);
+	}
+}
+
+if (args.local) {
+	mainLocal(args.local, args.output).catch((err) => {
+		console.error(err);
+		process.exit(1);
+	});
+} else {
+	main().catch((err) => {
+		console.error(err);
+		process.exit(1);
+	});
+}

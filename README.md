@@ -95,6 +95,35 @@ npm run check:ts-rules
 
 `@ts-ignore` と明示的 `any` の使用を検出します。
 
+### メトリクス収集
+
+```bash
+npm run collect-metrics
+```
+
+`.portal.yaml`（または `PORTAL_CONFIG` 環境変数）に設定されたリポジトリのメトリクスを収集し、`src/data/repositories/` 以下に JSON を保存します。
+
+#### ローカルリポジトリの集計 (`--local`)
+
+設定ファイルを変更せず、ローカルに存在する任意のリポジトリを集計できます。
+
+```bash
+# stdout に JSON を出力
+npm run collect-metrics -- --local /path/to/repo
+
+# ファイルに出力
+npm run collect-metrics -- --local /path/to/repo --output ./metrics.json
+
+# ダッシュボードに手動で組み込む場合
+npm run collect-metrics -- --local /path/to/repo --output src/data/repositories/local/MyProject.json
+```
+
+- `--local` — 集計対象のローカルリポジトリのパスを指定します
+- `--output` — 出力先ファイルパス。省略すると stdout に出力されます
+- GitHub リモート（`origin`）が github.com を指していれば PR 数・CI 実行数も集計します
+- GitHub リモートがない場合は `mergedPRs` / `ciRuns` が 0 になります
+- 出力は通常の per-repo JSON と同じ形式（`cacheKey` は空文字列）
+
 ## CI
 
 ```bash
