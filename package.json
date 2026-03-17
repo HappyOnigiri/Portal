@@ -11,6 +11,7 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"check": "biome check . --error-on-warnings",
+		"check:fix": "biome check . --write",
 		"lint": "biome check .",
 		"format": "biome format --write . && npm run format:astro",
 		"format:astro": "prettier --write \"**/*.astro\"",

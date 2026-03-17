@@ -5,7 +5,10 @@ PYTHON ?= python3
 check-ts-rules:
 	python3 scripts/check_ts_rules.py
 
+# [Intended] CI チェックおよび自動修正を行う
 ci:
+	npm run check:fix
+	npm run format:astro
 	npm run check
 	npm run format:astro:check
 	npm run typecheck
