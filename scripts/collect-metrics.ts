@@ -690,9 +690,8 @@ async function collectSingleRepo(
 					],
 					{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
 				);
-				ciRuns = (
-					JSON.parse(runOutput) as Array<{ databaseId: number }>
-				).length;
+				ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>)
+					.length;
 			} catch (err) {
 				const stderr =
 					err instanceof Error && "stderr" in err
