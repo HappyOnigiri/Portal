@@ -1,11 +1,51 @@
 import { defineCollection } from "astro:content";
-import { file } from "astro/loaders";
+import { existsSync, promises as fs } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
+import { parse } from "yaml";
+
+const FILE_NAME = "src/content/projects.yaml";
 
 const projects = defineCollection({
-	loader: file("src/content/projects.yaml"),
+	loader: {
+		name: "projects-yaml-loader",
+		load: async ({ config, store, parseData, logger, watcher }) => {
+			const url = new URL(FILE_NAME, config.root);
+			if (!existsSync(url)) {
+				logger.error(`File not found: ${FILE_NAME}`);
+				return;
+			}
+			const filePath = fileURLToPath(url);
+
+			async function syncData() {
+				const raw = await fs.readFile(filePath, "utf-8");
+				const items = parse(raw) as Array<Record<string, unknown>>;
+				store.clear();
+				for (const [i, item] of items.entries()) {
+					const id = String(item.id);
+					const data = await parseData({
+						id,
+						data: { ...item, order: i + 1 },
+						filePath,
+					});
+					store.set({ id, data });
+				}
+			}
+
+			await syncData();
+
+			watcher?.add(filePath);
+			watcher?.on("change", async (changedPath) => {
+				if (changedPath === filePath) {
+					logger.info(`Reloading data from ${FILE_NAME}`);
+					await syncData();
+				}
+			});
+		},
+	},
 	schema: z.object({
 		id: z.string(),
+		order: z.number(),
 		title: z.string(),
 		title_en: z.string().optional(),
 		description: z.string(),
