@@ -446,6 +446,7 @@ function getExcludedPatterns(repoDir: string): string[] {
 }
 
 function patternToRegex(pattern: string): RegExp {
+	pattern = pattern.replace(/^\//, "");
 	const regexStr = pattern
 		.replace(/[.+^${}()|[\]\\]/g, "\\$&")
 		.replace(/\*\*/g, "DOUBLESTAR")
