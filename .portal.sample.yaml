@@ -2,6 +2,9 @@
 # CI: PORTAL_CONFIG シークレットに YAML を登録
 # ローカル: .portal.yaml にコピーして使用
 
+# キャッシュ用 SALT（省略時は毎回ランダム生成されキャッシュが無効になる）
+# salt: "your-random-secret-string"
+
 # Author フィルタ（省略時は全コードを集計）
 # author:
 #   emails:
