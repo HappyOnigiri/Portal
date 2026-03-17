@@ -573,6 +573,101 @@ function detectGitHubRepoId(repoDir: string): string | null {
 	}
 }
 
+function parseGitHubRepoId(repoId: string): { owner: string; name: string } {
+	const [owner, name] = repoId.split("/");
+	return { owner, name };
+}
+
+async function getMergedPrTotalCount(repoId: string): Promise<number> {
+	const { owner, name } = parseGitHubRepoId(repoId);
+	const query = `query { repository(owner:"${owner}", name:"${name}") { pullRequests(states:MERGED) { totalCount } } }`;
+	const { stdout } = await execFileAsync(
+		"gh",
+		[
+			"api",
+			"graphql",
+			"-f",
+			`query=${query}`,
+			"--jq",
+			".data.repository.pullRequests.totalCount",
+		],
+		{ encoding: "utf-8" },
+	);
+	return Number(stdout.trim());
+}
+
+async function getMergedPrSearchCount(
+	repoId: string,
+	authorGithub: string,
+): Promise<number> {
+	const query = `query { search(query:"repo:${repoId} is:pr is:merged author:${authorGithub}", type:ISSUE) { issueCount } }`;
+	const { stdout } = await execFileAsync(
+		"gh",
+		[
+			"api",
+			"graphql",
+			"-f",
+			`query=${query}`,
+			"--jq",
+			".data.search.issueCount",
+		],
+		{ encoding: "utf-8" },
+	);
+	return Number(stdout.trim());
+}
+
+async function getMergedPrCountByAuthorFallback(
+	repoId: string,
+	authorGithub: string,
+): Promise<number> {
+	const { owner, name } = parseGitHubRepoId(repoId);
+	const authorLower = authorGithub.toLowerCase();
+	let count = 0;
+	let cursor: string | null = null;
+
+	for (;;) {
+		const afterClause = cursor ? `, after:"${cursor}"` : "";
+		const query = `query { repository(owner:"${owner}", name:"${name}") { pullRequests(states:MERGED, first:100${afterClause}) { nodes { author { login } } pageInfo { hasNextPage endCursor } } } }`;
+		const { stdout } = await execFileAsync(
+			"gh",
+			[
+				"api",
+				"graphql",
+				"-f",
+				`query=${query}`,
+				"--jq",
+				".data.repository.pullRequests",
+			],
+			{ encoding: "utf-8" },
+		);
+		const data = JSON.parse(stdout) as {
+			nodes: Array<{ author: { login: string } | null }>;
+			pageInfo: { hasNextPage: boolean; endCursor: string | null };
+		};
+		for (const node of data.nodes) {
+			if (node.author?.login.toLowerCase() === authorLower) {
+				count++;
+			}
+		}
+		if (!data.pageInfo.hasNextPage) break;
+		cursor = data.pageInfo.endCursor;
+	}
+
+	return count;
+}
+
+async function countMergedPrs(
+	repoId: string,
+	authorGithub?: string,
+): Promise<number> {
+	if (!authorGithub) {
+		return getMergedPrTotalCount(repoId);
+	}
+	const searchCount = await getMergedPrSearchCount(repoId, authorGithub);
+	if (searchCount > 0) return searchCount;
+	return getMergedPrCountByAuthorFallback(repoId, authorGithub);
+}
+
 async function collectSingleRepo(
 	config: RepoConfig,
 	author?: AuthorConfig,
@@ -614,12 +709,18 @@ async function collectSingleRepo(
 
 	let repoFlags: string[];
 	let shouldQueryGitHub: boolean;
+	let githubRepoId: string | null;
 	if (overrideDir !== undefined) {
-		const detectedId = detectGitHubRepoId(repoDir);
-		repoFlags = detectedId ? ["-R", detectedId] : [];
-		shouldQueryGitHub = detectedId !== null;
+		githubRepoId = detectGitHubRepoId(repoDir);
+		repoFlags = githubRepoId ? ["-R", githubRepoId] : [];
+		shouldQueryGitHub = githubRepoId !== null;
+	} else if (isSelf) {
+		githubRepoId = detectGitHubRepoId(repoDir);
+		repoFlags = githubRepoId ? ["-R", githubRepoId] : [];
+		shouldQueryGitHub = githubRepoId !== null;
 	} else {
-		repoFlags = isSelf ? [] : ["-R", config.repo];
+		githubRepoId = config.repo;
+		repoFlags = ["-R", config.repo];
 		shouldQueryGitHub = true;
 	}
 
@@ -647,27 +748,10 @@ async function collectSingleRepo(
 			).trim(),
 		);
 
-		const prAuthorFlags = author?.github ? ["--author", author.github] : [];
 		let mergedPRs = 0;
-		if (shouldQueryGitHub) {
+		if (shouldQueryGitHub && githubRepoId) {
 			try {
-				const prOutput = execFileSync(
-					"gh",
-					[
-						"pr",
-						"list",
-						...repoFlags,
-						"--state",
-						"merged",
-						...prAuthorFlags,
-						"--json",
-						"number",
-						"--limit",
-						"9999",
-					],
-					{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-				);
-				mergedPRs = (JSON.parse(prOutput) as Array<{ number: number }>).length;
+				mergedPRs = await countMergedPrs(githubRepoId, author?.github);
 			} catch {
 				console.error(
 					`[${displayName}] Warning: Failed to get merged PRs count`,
