@@ -5,3 +5,7 @@ export type Project = CollectionEntry<"projects">["data"];
 export function sortProjectsByTitle(projects: Project[]): Project[] {
 	return [...projects].sort((a, b) => a.title.localeCompare(b.title, "ja"));
 }
+
+export function sortProjectsByOrder(projects: Project[]): Project[] {
+	return [...projects].sort((a, b) => a.order - b.order);
+}
