@@ -1,3 +1,11 @@
+- id: "pixel-refiner"
+  title: "PixelRefiner"
+  title_en: "PixelRefiner"
+  description: "AIで生成したドット絵を、素材やアイコンとして使えるクオリティに。アンチエイリアス除去・背景透過を数秒で完了します。"
+  description_en: "Optimize AI-generated pixel art into high-quality assets and icons. Complete anti-aliasing removal and background transparency in seconds."
+  image: "/images/thumbnails/pixel-refiner.png"
+  url: "https://www.pixel-refiner.app/"
+  
 - id: "mesugaki-pong"
   title: "メスガキポンポン"
   title_en: "MESUGAKI PONG"
