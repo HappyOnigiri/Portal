@@ -1,39 +1,45 @@
 {
-	"addedLines": 781679,
-	"deletedLines": 601853,
-	"commits": 5801,
-	"mergedPRs": 1159,
-	"ciRuns": 2942,
-	"lastUpdated": "2026-03-17T16:17:28.782Z",
+	"addedLines": 1263194,
+	"deletedLines": 885255,
+	"commits": 9544,
+	"mergedPRs": 1291,
+	"ciRuns": 3699,
+	"lastUpdated": "2026-03-17T16:42:05.672Z",
 	"languages": [
 		{
 			"id": "JavaScript",
 			"label": "JavaScript",
-			"value": 62,
+			"value": 40,
 			"color": "#f1e05a"
-		},
-		{
-			"id": "Ruby",
-			"label": "Ruby",
-			"value": 12,
-			"color": "#701516"
-		},
-		{
-			"id": "TypeScript",
-			"label": "TypeScript",
-			"value": 12,
-			"color": "#3178c6"
 		},
 		{
 			"id": "Go",
 			"label": "Go",
-			"value": 7,
+			"value": 24,
 			"color": "#00ADD8"
+		},
+		{
+			"id": "Dart",
+			"label": "Dart",
+			"value": 16,
+			"color": "#00B4AB"
+		},
+		{
+			"id": "TypeScript",
+			"label": "TypeScript",
+			"value": 8,
+			"color": "#3178c6"
+		},
+		{
+			"id": "Ruby",
+			"label": "Ruby",
+			"value": 8,
+			"color": "#701516"
 		},
 		{
 			"id": "Python",
 			"label": "Python",
-			"value": 7,
+			"value": 4,
 			"color": "#3572A5"
 		}
 	],
