@@ -20,7 +20,7 @@ const projects = defineCollection({
 			async function syncData() {
 				const raw = await fs.readFile(filePath, "utf-8");
 				const items = parse(raw) as Array<Record<string, unknown>>;
-				store.clear();
+				const parsed: Array<{ id: string; data: Awaited<ReturnType<typeof parseData>> }> = [];
 				for (const [i, item] of items.entries()) {
 					const id = String(item.id);
 					const data = await parseData({
@@ -28,6 +28,10 @@ const projects = defineCollection({
 						data: { ...item, order: i + 1 },
 						filePath,
 					});
+					parsed.push({ id, data });
+				}
+				store.clear();
+				for (const { id, data } of parsed) {
 					store.set({ id, data });
 				}
 			}
