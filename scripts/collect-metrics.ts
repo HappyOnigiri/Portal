@@ -523,6 +523,28 @@ async function countNumstatLines(
 	}
 }
 
+function hslToHex(h: number, s: number, l: number): string {
+	const sn = s / 100;
+	const ln = l / 100;
+	const a = sn * Math.min(ln, 1 - ln);
+	const f = (n: number) => {
+		const k = (n + h / 30) % 12;
+		const color = ln - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+		return Math.round(255 * color)
+			.toString(16)
+			.padStart(2, "0");
+	};
+	return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function distributeColors(count: number): string[] {
+	const startHue = 10;
+	return Array.from({ length: count }, (_, i) => {
+		const hue = (startHue + i * (360 / count)) % 360;
+		return hslToHex(hue, 70, 60);
+	});
+}
+
 function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 	const rawValues = LANGUAGE_GROUPS.map((group) => {
 		let lines = 0;
@@ -547,18 +569,20 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 			floors[index]++;
 		});
 
-	return rawValues
+	const sorted = rawValues
 		.map((g, i) => ({
 			id: g.id,
 			label: g.label,
 			value: floors[i],
-			color: g.color,
 			rawPct: rawPcts[i],
 		}))
 		.filter((g) => g.value > 0)
 		.sort((a, b) => b.rawPct - a.rawPct)
 		.slice(0, 10)
-		.map(({ id, label, value, color }) => ({ id, label, value, color }));
+		.map(({ id, label, value }) => ({ id, label, value }));
+
+	const colors = distributeColors(sorted.length);
+	return sorted.map((g, i) => ({ ...g, color: colors[i] }));
 }
 
 function detectGitHubRepoId(repoDir: string): string | null {
