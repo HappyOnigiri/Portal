@@ -2,11 +2,19 @@
 import { getCollection } from "astro:content";
 import AuthorStatusWidget from "../components/AuthorStatusWidget.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import ZennArticlesWidget from "../components/ZennArticlesWidget.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sortProjectsByOrder } from "../utils/project";
 
 const projectEntries = await getCollection("projects");
 const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
+const zennEntries = (await getCollection("zennArticles"))
+	.sort(
+		(a, b) =>
+			new Date(b.data.published_at).getTime() -
+			new Date(a.data.published_at).getTime(),
+	)
+	.slice(0, 3);
 ---
 
 <BaseLayout title="ONIGIRI PORTAL | Top" description="HappyOnigiri's Portfolio">
@@ -19,6 +27,14 @@ const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
 			{projects.map((project) => <ProjectCard project={project} />)}
 		</div>
 	</section>
+
+	{
+		zennEntries.length > 0 && (
+			<section aria-label="Zenn Articles" style="margin-bottom: 3rem;">
+				<ZennArticlesWidget articles={zennEntries} />
+			</section>
+		)
+	}
 
 	<section aria-label="HappyOnigiri Status" style="margin-bottom: 3rem;">
 		<AuthorStatusWidget />

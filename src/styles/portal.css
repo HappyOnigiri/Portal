@@ -546,3 +546,27 @@ body {
 		text-align: center;
 	}
 }
+
+/* Zenn Articles Widget */
+.zenn-article-link {
+	color: var(--text-main);
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.zenn-article-row:hover .zenn-article-link {
+	color: var(--accent-cyan);
+	text-shadow: 0 0 5px rgba(0, 240, 255, 0.4);
+}
+
+.zenn-all-link {
+	color: var(--text-muted);
+	text-decoration: none;
+	font-size: 0.9rem;
+	transition: color 0.2s ease;
+}
+
+.zenn-all-link:hover {
+	color: var(--accent-cyan);
+	text-shadow: 0 0 5px rgba(0, 240, 255, 0.4);
+}
