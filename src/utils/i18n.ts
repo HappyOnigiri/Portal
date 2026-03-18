@@ -84,8 +84,8 @@ function setupLanguageButtons(): void {
 	for (const btn of document.querySelectorAll<HTMLElement>("[data-lang-btn]")) {
 		btn.addEventListener("click", (e) => {
 			e.preventDefault();
-			const lang = btn.getAttribute("data-lang-btn") as Language;
-			if (lang) setLanguage(lang);
+			const lang = btn.getAttribute("data-lang-btn");
+			if (lang === "ja" || lang === "en") setLanguage(lang);
 		});
 	}
 }
