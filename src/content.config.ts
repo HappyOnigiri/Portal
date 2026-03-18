@@ -107,7 +107,7 @@ async function fetchAllZennArticles(logger: {
 				else logger.warn(`Zenn article schema error: ${parsed.error.message}`);
 			}
 			if (json.next_page === null) break;
-			page++;
+			page = json.next_page;
 		}
 		return articles;
 	} catch (err) {
