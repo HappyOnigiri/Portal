@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v0.0.1...workspace-v0.1.0) (2026-03-18)
+## [1.0.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v0.0.1...workspace-v1.0.0) (2026-03-18)
 
 
 ### Features
