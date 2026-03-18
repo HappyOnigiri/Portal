@@ -5,7 +5,12 @@ export type Resources = Record<Language, Translations>;
 const STORAGE_KEY = "portal-lang";
 
 function detectLanguage(): Language {
-	const saved = localStorage.getItem(STORAGE_KEY) as Language;
+	let saved: string | null = null;
+	try {
+		saved = localStorage.getItem(STORAGE_KEY);
+	} catch {
+		// Ignore storage errors (e.g., restricted environments)
+	}
 	if (saved === "ja" || saved === "en") return saved;
 	return navigator.language.startsWith("ja") ? "ja" : "en";
 }
@@ -62,7 +67,11 @@ function updatePage(): void {
 
 function setLanguage(lang: Language): void {
 	currentLang = lang;
-	localStorage.setItem(STORAGE_KEY, lang);
+	try {
+		localStorage.setItem(STORAGE_KEY, lang);
+	} catch {
+		// Ignore storage errors (e.g., restricted environments)
+	}
 	updatePage();
 }
 
