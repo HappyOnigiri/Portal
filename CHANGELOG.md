@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v1.0.0...workspace-v1.1.0) (2026-03-18)
+
+
+### Features
+
+* **content:** ComfyUI-Meld プロジェクトカードを追加 ([32bb6ce](https://github.com/HappyOnigiri/Portal/commit/32bb6ce0e1fff3fc9ec49436f61d9378eec5e058))
+* **i18n:** クライアントサイド i18n エンジンと翻訳リソースを追加 ([0c34a51](https://github.com/HappyOnigiri/Portal/commit/0c34a51b6fc4279c3cbec365cfcc22b8f234f540))
+* **i18n:** レイアウト・コンポーネントに i18n 対応と言語スイッチャーを追加 ([a603e5d](https://github.com/HappyOnigiri/Portal/commit/a603e5d2b65a4f26424c6e305a71bccd0b1a1318))
+
+
+### Bug Fixes
+
+* **i18n:** data-lang-btn 属性値をランタイムで検証してから setLanguage に渡す ([8b53a05](https://github.com/HappyOnigiri/Portal/commit/8b53a05500325a50d98d79038af937812a757415))
+* **i18n:** img 要素の alt 属性を言語切り替え時に更新してアクセシビリティを修正 ([c2315a4](https://github.com/HappyOnigiri/Portal/commit/c2315a4fef765d9008c678b71cdcd4a3e511f371))
+* **i18n:** localStorage アクセスを try/catch でラップしてストレージ制限環境での例外を防ぐ ([e50526c](https://github.com/HappyOnigiri/Portal/commit/e50526c6fd5abdb6842d51e4ee90700df3c1ede3))
+* **scripts:** .ai/AGENTS.md が存在しない場合の cmp エラーを防ぐ存在チェックを追加 ([c26a869](https://github.com/HappyOnigiri/Portal/commit/c26a8698aabafdaa07d82fa3db544650ab1ae7f0))
+
 ## [1.0.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v0.0.1...workspace-v1.0.0) (2026-03-18)
 
 
