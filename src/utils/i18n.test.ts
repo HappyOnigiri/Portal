@@ -208,6 +208,42 @@ describe("initI18n - translations リソース", () => {
 	});
 });
 
+describe("initI18n - localStorage エラー耐性", () => {
+	it("localStorage.getItem が例外を投げても navigator 言語にフォールバックする", () => {
+		vi.stubGlobal("localStorage", {
+			getItem: () => {
+				throw new Error("SecurityError");
+			},
+			setItem: () => {},
+		});
+		vi.stubGlobal("navigator", { language: "ja-JP" });
+		setup();
+		initI18n();
+		expect(document.documentElement.lang).toBe("ja");
+		vi.stubGlobal("localStorage", localStorageMock);
+	});
+
+	it("localStorage.setItem が例外を投げても言語切り替えが継続する", () => {
+		store["portal-lang"] = "ja";
+		vi.stubGlobal("localStorage", {
+			getItem: (key: string) => store[key] ?? null,
+			setItem: () => {
+				throw new Error("SecurityError");
+			},
+		});
+		document.body.innerHTML = `
+      <p data-i18n="greeting"></p>
+      <button data-lang-btn="en">EN</button>
+    `;
+		setup();
+		initI18n();
+		(document.querySelector("[data-lang-btn='en']") as HTMLElement).click();
+		expect(document.documentElement.lang).toBe("en");
+		expect(document.querySelector("[data-i18n]")?.textContent).toBe("Hello");
+		vi.stubGlobal("localStorage", localStorageMock);
+	});
+});
+
 describe("initI18n - 言語スイッチャーボタン", () => {
 	it("現在の言語に対応するボタンに active クラスが付く", () => {
 		store["portal-lang"] = "en";
