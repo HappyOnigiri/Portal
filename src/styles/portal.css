@@ -397,6 +397,22 @@ body {
 	opacity: 0.6;
 }
 
+.portal-version {
+	font-size: 0.85rem;
+	color: var(--text-muted);
+	opacity: 0.6;
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+.portal-version:hover,
+.portal-version:focus-visible {
+	opacity: 1;
+	color: var(--accent-cyan);
+	text-shadow: 0 0 8px var(--accent-cyan);
+	outline: none;
+}
+
 .footer-links {
 	display: flex;
 	gap: 20px;

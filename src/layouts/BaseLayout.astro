@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "../styles/portal.css";
+import { version } from "../../package.json";
 
 interface Props {
 	title: string;
@@ -43,6 +44,14 @@ const currentYear = new Date().getFullYear();
 						<p class="copyright">
 							&copy; {currentYear} HappyOnigiri. All rights reserved.
 						</p>
+						<a
+							href="https://github.com/HappyOnigiri/Portal"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="portal-version"
+						>
+							Portal v{version}
+						</a>
 						<div class="footer-links">
 							<a
 								href="https://x.com/H_OnigiriWorks"
