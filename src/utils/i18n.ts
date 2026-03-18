@@ -25,7 +25,12 @@ function updatePage(): void {
 	for (const el of document.querySelectorAll<HTMLElement>("[data-lang-ja]")) {
 		const jaText = el.getAttribute("data-lang-ja") ?? "";
 		const enText = el.getAttribute("data-lang-en") ?? jaText;
-		el.textContent = currentLang === "ja" ? jaText : enText;
+		const text = currentLang === "ja" ? jaText : enText;
+		if (el instanceof HTMLImageElement) {
+			el.alt = text;
+		} else {
+			el.textContent = text;
+		}
 	}
 
 	// data-i18n によるテキスト切り替え
