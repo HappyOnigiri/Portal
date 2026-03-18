@@ -132,7 +132,7 @@ const zennArticles = defineCollection({
 						new Date(b.published_at).getTime() -
 						new Date(a.published_at).getTime(),
 				);
-				await fs.mkdir(new URL("src/data/articles/", config.root).pathname, {
+				await fs.mkdir(fileURLToPath(new URL("src/data/articles/", config.root)), {
 					recursive: true,
 				});
 				await fs.writeFile(
