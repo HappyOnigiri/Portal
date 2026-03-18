@@ -2,9 +2,11 @@
 set -eu
 
 # --- AGENTS.md ---
-if ! cmp -s .ai/AGENTS.md AGENTS.md; then
-  cp .ai/AGENTS.md AGENTS.md
-  echo "sync-ruler: AGENTS.md updated"
+if [ -f .ai/AGENTS.md ]; then
+  if ! cmp -s .ai/AGENTS.md AGENTS.md; then
+    cp .ai/AGENTS.md AGENTS.md
+    echo "sync-ruler: AGENTS.md updated"
+  fi
 fi
 
 # --- skills ---
