@@ -27,24 +27,26 @@ const { project } = Astro.props as Props;
 				<div class="card-image">
 					<img
 						src={project.image}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
 					/>
 				</div>
 			)}
 			<div class="card-content">
-				<h2>{project.title}</h2>
-				{project.title_en && (
-					<div class="card-version" lang="en">
-						{project.title_en}
-					</div>
-				)}
-				<p>{project.description}</p>
-				{project.description_en && (
-					<p class="card-description-en" lang="en">
-						{project.description_en}
-					</p>
-				)}
+				<h2
+					data-lang-ja={project.title}
+					data-lang-en={project.title_en || project.title}
+				>
+					{project.title}
+				</h2>
+				<p
+					data-lang-ja={project.description}
+					data-lang-en={project.description_en || project.description}
+				>
+					{project.description}
+				</p>
 			</div>
 		</a>
 	) : (
@@ -53,24 +55,26 @@ const { project } = Astro.props as Props;
 				<div class="card-image">
 					<img
 						src={project.image}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
 					/>
 				</div>
 			)}
 			<div class="card-content">
-				<h2>{project.title}</h2>
-				{project.title_en && (
-					<div class="card-version" lang="en">
-						{project.title_en}
-					</div>
-				)}
-				<p>{project.description}</p>
-				{project.description_en && (
-					<p class="card-description-en" lang="en">
-						{project.description_en}
-					</p>
-				)}
+				<h2
+					data-lang-ja={project.title}
+					data-lang-en={project.title_en || project.title}
+				>
+					{project.title}
+				</h2>
+				<p
+					data-lang-ja={project.description}
+					data-lang-en={project.description_en || project.description}
+				>
+					{project.description}
+				</p>
 			</div>
 		</div>
 	)
