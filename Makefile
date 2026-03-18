@@ -39,4 +39,4 @@ collect-no-cache:
 	npm run collect-metrics -- --no-cache
 
 sync-ruler:
-	$(PYTHON) scripts/sync_ruler.py
+	@sh scripts/sync_ruler.sh
