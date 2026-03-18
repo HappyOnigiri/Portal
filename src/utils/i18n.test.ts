@@ -158,6 +158,24 @@ describe("initI18n - data-lang-ja / data-lang-en 切り替え", () => {
 	});
 });
 
+describe("initI18n - data-lang-ja / data-lang-en img alt 切り替え", () => {
+	it("英語設定時は img の alt を data-lang-en の値に更新する", () => {
+		store["portal-lang"] = "en";
+		document.body.innerHTML = `<img data-lang-ja="プロジェクトのサムネイル" data-lang-en="Project thumbnail" alt="プロジェクトのサムネイル" />`;
+		setup();
+		initI18n();
+		expect(document.querySelector("img")?.alt).toBe("Project thumbnail");
+	});
+
+	it("日本語設定時は img の alt を data-lang-ja の値に更新する", () => {
+		store["portal-lang"] = "ja";
+		document.body.innerHTML = `<img data-lang-ja="プロジェクトのサムネイル" data-lang-en="Project thumbnail" alt="Project thumbnail" />`;
+		setup();
+		initI18n();
+		expect(document.querySelector("img")?.alt).toBe("プロジェクトのサムネイル");
+	});
+});
+
 describe("initI18n - data-i18n-attr 属性切り替え", () => {
 	it("指定した属性を翻訳キーの値で更新する", () => {
 		store["portal-lang"] = "en";
