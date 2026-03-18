@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/portal.css";
 import { version } from "../../package.json";
+import { translations } from "../utils/translations";
 
 interface Props {
 	title: string;
@@ -28,11 +29,30 @@ const currentYear = new Date().getFullYear();
 			rel="stylesheet"
 		/>
 		<title>{title}</title>
+		{/* FOUC 対策: JS 実行前に lang を設定 */}
+		<script is:inline>
+			(function () {
+				var saved = localStorage.getItem("portal-lang");
+				var lang =
+					saved === "ja" || saved === "en"
+						? saved
+						: navigator.language.startsWith("ja")
+							? "ja"
+							: "en";
+				document.documentElement.lang = lang;
+			})();
+		</script>
 	</head>
 	<body>
 		<div class="cyber-scanlines" aria-hidden="true"></div>
 		<div class="cyber-container">
-			<div class="cyber-header-top" aria-hidden="true"></div>
+			<div class="cyber-header-top">
+				<div class="lang-switcher" style="margin-left: auto;">
+					<button data-lang-btn="en" class="lang-btn">EN</button>
+					<span class="lang-divider">|</span>
+					<button data-lang-btn="ja" class="lang-btn">JP</button>
+				</div>
+			</div>
 
 			<main id="main-content" class="portal-main">
 				<slot />
@@ -57,6 +77,7 @@ const currentYear = new Date().getFullYear();
 								href="https://x.com/H_OnigiriWorks"
 								target="_blank"
 								rel="noopener noreferrer"
+								data-i18n-attr="aria-label:footer.x.aria"
 								aria-label="X（Twitter）で HappyOnigiri をフォロー"
 								class="social-link x-link"
 							>
@@ -88,5 +109,13 @@ const currentYear = new Date().getFullYear();
 				</div>
 			</footer>
 		</div>
+
+		<script is:inline define:vars={{ translations }}>
+			window.__portalI18nResources = translations;
+		</script>
+		<script>
+			import { initI18n } from "../utils/i18n";
+			initI18n();
+		</script>
 	</body>
 </html>
