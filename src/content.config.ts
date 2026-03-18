@@ -89,7 +89,9 @@ async function fetchAllZennArticles(logger: {
 	let page = 1;
 	try {
 		while (true) {
-			const res = await fetch(`${ZENN_API_BASE}&page=${page}`);
+			const res = await fetch(`${ZENN_API_BASE}&page=${page}`, {
+				signal: AbortSignal.timeout(10_000),
+			});
 			if (!res.ok) {
 				logger.warn(`Zenn API returned ${res.status} on page ${page}`);
 				return null;
