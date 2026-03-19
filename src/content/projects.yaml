@@ -1,3 +1,5 @@
+# category_color の選択肢: cyan / emerald / amber / purple / blue / pink
+
 - id: "pixel-refiner"
   title: "PixelRefiner"
   title_en: "PixelRefiner"
@@ -5,6 +7,8 @@
   description_en: "Optimize AI-generated pixel art into high-quality assets and icons. Complete anti-aliasing removal and background transparency in seconds."
   image: "/images/thumbnails/pixel-refiner.png"
   url: "https://www.pixel-refiner.app/"
+  category: "TOOL"
+  category_color: "cyan"
 
 - id: "comfyui-meld"
   title: "ComfyUI-Meld"
@@ -13,6 +17,8 @@
   description_en: "Turn your generated images into a powerful asset database. A ComfyUI extension that adds image management, search, and lineage tracking."
   image: "/images/thumbnails/comfyui-meld.png"
   url: "https://github.com/HappyOnigiri/ComfyUI-Meld"
+  category: "PLUGIN"
+  category_color: "amber"
 
 - id: "mesugaki-pong"
   title: "メスガキポンポン"
@@ -21,6 +27,8 @@
   description_en: "A chaotic PONG game where a cheeky brat taunts you."
   image: "/images/thumbnails/mesugaki-pong.png"
   url: "https://onigiri-game-portal.vercel.app/mesugaki-pong/"
+  category: "GAME"
+  category_color: "pink"
 
 - id: "quantum-maguro"
   title: "量子マグロ亭"
@@ -29,3 +37,5 @@
   description_en: "A typing game themed around endless conveyor belt sushi! (Type Japanese using Romaji)"
   image: "/images/thumbnails/quantum-maguro.png"
   url: "https://onigiri-game-portal.vercel.app/quantum-maguro/"
+  category: "GAME"
+  category_color: "pink"
