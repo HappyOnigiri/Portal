@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v1.1.0...workspace-v1.2.0) (2026-03-19)
+
+
+### Features
+
+* **components:** Development Statusのデザイン刷新とZennリンクの追加 ([dab3257](https://github.com/HappyOnigiri/Portal/commit/dab32576e3df26e3b7df95a13d9cfcba82f59b9b))
+* **components:** プロジェクトカードにカテゴリバッジ機能を追加 ([38000bc](https://github.com/HappyOnigiri/Portal/commit/38000bcb701545a259d4974d803539d05b095228))
+
+
+### Bug Fixes
+
+* **a11y:** ソーシャルリンクに aria-label を追加してスクリーンリーダー対応を改善 ([8b1c465](https://github.com/HappyOnigiri/Portal/commit/8b1c465c5c7f3cfa70182bc142af8b6d504f6744))
+* **components:** Deleted Lines カードに赤系カラーテーマ(#f87171)を適用 ([6987538](https://github.com/HappyOnigiri/Portal/commit/69875387066671840e29672507875055bb0ef09e))
+* **components:** 未使用変数 showAiSections を削除 ([c40a7e8](https://github.com/HappyOnigiri/Portal/commit/c40a7e8c49dedbebbabd4543185445b64934123f))
+
 ## [1.1.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v1.0.0...workspace-v1.1.0) (2026-03-18)
 
 
