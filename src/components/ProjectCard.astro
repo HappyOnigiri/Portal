@@ -6,6 +6,8 @@ export interface ProjectData {
 	description_en?: string;
 	image?: string;
 	url?: string;
+	category?: string;
+	category_color?: string;
 }
 
 interface Props {
@@ -32,6 +34,11 @@ const { project } = Astro.props as Props;
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
 					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
 				</div>
 			)}
 			<div class="card-content">
@@ -60,6 +67,11 @@ const { project } = Astro.props as Props;
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
 					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
 				</div>
 			)}
 			<div class="card-content">
