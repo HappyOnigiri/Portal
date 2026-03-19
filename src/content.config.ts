@@ -64,6 +64,8 @@ const projects = defineCollection({
 		description_en: z.string().optional(),
 		image: z.string().optional(),
 		url: z.string().url().optional(),
+		category: z.string().optional(),
+		category_color: z.string().optional(),
 	}),
 });
 
