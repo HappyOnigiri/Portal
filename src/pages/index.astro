@@ -3,8 +3,18 @@ import { getCollection } from "astro:content";
 import AuthorStatusWidget from "../components/AuthorStatusWidget.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import ZennArticlesWidget from "../components/ZennArticlesWidget.astro";
+import { SITE_ORIGIN } from "../constants/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sortProjectsByOrder } from "../utils/project";
+import {
+	buildJsonLdGraph,
+	itemListProjects,
+	personHappyOnigiri,
+	webSiteRoot,
+} from "../utils/structured-data";
+import { translations } from "../utils/translations";
+
+const metaDescriptionJa = translations.ja["meta.description"];
 
 const projectEntries = await getCollection("projects");
 const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
@@ -15,14 +25,32 @@ const zennEntries = (await getCollection("zennArticles"))
 			new Date(a.data.published_at).getTime(),
 	)
 	.slice(0, 3);
+
+const jsonLd = buildJsonLdGraph([
+	personHappyOnigiri(SITE_ORIGIN),
+	webSiteRoot(SITE_ORIGIN, metaDescriptionJa),
+	itemListProjects(
+		SITE_ORIGIN,
+		projects.map((p) => ({
+			id: p.id,
+			title: p.title,
+			description: p.description,
+		})),
+	),
+]);
 ---
 
-<BaseLayout title="ONIGIRI PORTAL | Top" description="HappyOnigiri's Portfolio">
+<BaseLayout
+	title="ONIGIRI PORTAL | トップ"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
 	<section class="cyber-header">
 		<h1 class="cyber-glitch">ONIGIRI PORTAL</h1>
 	</section>
 
-	<section aria-label="Projects" style="margin-bottom: 3rem;">
+	<section id="projects" aria-label="Projects" style="margin-bottom: 3rem;">
 		<div class="grid">
 			{projects.map((project) => <ProjectCard project={project} />)}
 		</div>
@@ -30,13 +58,21 @@ const zennEntries = (await getCollection("zennArticles"))
 
 	{
 		zennEntries.length > 0 && (
-			<section aria-label="Zenn Articles" style="margin-bottom: 3rem;">
+			<section
+				id="articles"
+				aria-label="Zenn Articles"
+				style="margin-bottom: 3rem;"
+			>
 				<ZennArticlesWidget articles={zennEntries} />
 			</section>
 		)
 	}
 
-	<section aria-label="HappyOnigiri Status" style="margin-bottom: 3rem;">
+	<section
+		id="status"
+		aria-label="HappyOnigiri Status"
+		style="margin-bottom: 3rem;"
+	>
 		<AuthorStatusWidget />
 	</section>
 </BaseLayout>
