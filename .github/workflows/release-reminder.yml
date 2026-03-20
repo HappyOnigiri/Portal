@@ -28,9 +28,14 @@ jobs:
             --search "merged:>=${LAST_DATE}" --json number -q 'length')
 
           THRESHOLD=10
-          if [ "$COUNT" -ge "$THRESHOLD" ]; then
-            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。リリースを検討してください。"
-            BODY+=$'\n\n'
-            BODY+="[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
-            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+          if [ "$COUNT" -eq 0 ]; then
+            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` 以降にマージされた PR はありません。"
+          else
+            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。"
+            if [ "$COUNT" -ge "$THRESHOLD" ]; then
+              BODY+="リリースを検討してください。"
+            fi
           fi
+          BODY+=$'\n\n'
+          BODY+="[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
