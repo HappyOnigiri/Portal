@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.3.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v1.2.0...workspace-v1.3.0) (2026-03-20)
+
+
+### Features
+
+* **components:** 詳細ページ導線と Zenn ハブ・avatar alt を調整 ([abf749d](https://github.com/HappyOnigiri/Portal/commit/abf749d66fc5c8bb07a40d8d011a094cf6484cbc))
+* **content:** Refix を追加し ComfyUI-Meld サムネを JPG に変更、表示順を調整 ([158a84f](https://github.com/HappyOnigiri/Portal/commit/158a84fbfadda2688971d22679551df908aca9d8))
+* **i18n:** SEO・ナビ・ページ向けの翻訳キーを追加 ([72cd908](https://github.com/HappyOnigiri/Portal/commit/72cd908c633badb3c8c1761923e01056e668edeb))
+* **layout:** canonical・OGP・Twitter・JSON-LD とサイト内ナビを追加 ([0213ffd](https://github.com/HappyOnigiri/Portal/commit/0213ffdc536563b71d1bbeda29fa809b030d05e2))
+* **pages:** プロジェクト一覧・詳細と Zenn 記事一覧ページを追加 ([810cd1e](https://github.com/HappyOnigiri/Portal/commit/810cd1eace1b4709d3e86a1d5dd2b34212a8308e))
+* **seo:** JSON-LD 用の structured-data ユーティリティとテストを追加 ([20ad7ab](https://github.com/HappyOnigiri/Portal/commit/20ad7ab0a1e86eace1af23d5966aebe83db9f88e))
+
+
+### Bug Fixes
+
+* **layout:** OGP画像にアバター画像を設定 ([8f46bdc](https://github.com/HappyOnigiri/Portal/commit/8f46bdc8090584e504238980c4539245733bf627))
+* **root:** make run-dev に自動復旧と色付き出力対応を追加 ([ead74ce](https://github.com/HappyOnigiri/Portal/commit/ead74ce80229654bcda765891dddbc199b9b82ea))
+* **root:** SEO対応でも既存の見た目と導線を維持 ([3bcaf66](https://github.com/HappyOnigiri/Portal/commit/3bcaf66a94fadbe651f5d3fc9286d082e2cd9749))
+
 ## [1.2.0](https://github.com/HappyOnigiri/Portal/compare/workspace-v1.1.0...workspace-v1.2.0) (2026-03-19)
 
 
