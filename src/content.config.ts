@@ -125,7 +125,11 @@ const zennArticles = defineCollection({
 			const jsonUrl = new URL(ZENN_JSON_FILE, config.root);
 			const jsonPath = fileURLToPath(jsonUrl);
 
-			let articles = await fetchAllZennArticles(logger);
+			const skipFetch = process.env.CI === "true";
+			if (skipFetch) {
+				logger.info("CI mode: skipping Zenn API fetch");
+			}
+			let articles = skipFetch ? null : await fetchAllZennArticles(logger);
 
 			if (articles !== null) {
 				// published_at 降順でソートして JSON に書き出す
