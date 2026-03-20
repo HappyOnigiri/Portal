@@ -33,7 +33,7 @@ jobs:
           else
             BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。"
             if [ "$COUNT" -ge "$THRESHOLD" ]; then
-              BODY+="リリースを検討してください。"
+              BODY+=$'\nリリースを検討してください。'
             fi
           fi
           BODY+=$'\n\n'
