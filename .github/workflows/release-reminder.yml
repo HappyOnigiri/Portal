@@ -1,0 +1,36 @@
+name: Release Reminder
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check and comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          LAST_TAG=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName -q .tagName 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "No previous release found, skipping"
+            exit 0
+          fi
+
+          LAST_DATE=$(gh release view --repo "$GITHUB_REPOSITORY" --json publishedAt -q .publishedAt)
+          COUNT=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
+            --search "merged:>=${LAST_DATE}" --json number -q 'length')
+
+          THRESHOLD=10
+          if [ "$COUNT" -ge "$THRESHOLD" ]; then
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
+              --body "**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。リリースを検討してください。
+
+[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
+          fi
