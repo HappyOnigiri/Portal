@@ -69,6 +69,9 @@ jobs:
         with:
           fromTag: ${{ steps.prev_tag.outputs.tag }}
           toTag: release/v${{ inputs.version }}
+          # release-changelog-builder-action のプレースホルダーは #{{NAME}} 構文
+          # (${{}} は GitHub Actions 変数と衝突するため)
+          # see: https://github.com/mikepenz/release-changelog-builder-action
           configurationJson: |
             {
               "categories": [
@@ -79,7 +82,7 @@ jobs:
               ],
               "sort": { "order": "ASC", "on_property": "mergedAt" },
               "template": "#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
-              "pr_template": "- [#{{NUMBER}}]({{URL}}) {{TITLE}}",
+              "pr_template": "- [##{{NUMBER}}](#{{URL}}) #{{TITLE}}",
               "empty_template": "No notable changes.",
               "label_extractor": [
                 { "pattern": "^feat", "target": "feature", "on_property": "title", "method": "match" },
