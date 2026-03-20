@@ -31,6 +31,7 @@ repomix:
 
 collect:
 	npm run collect-metrics
+	FETCH_ZENN=true npx astro sync
 
 collect-dry-run:
 	npm run collect-metrics -- --dry-run
