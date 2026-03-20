@@ -29,6 +29,28 @@ npm install
 | `npm run collect-metrics` | GitHub メトリクス収集 |
 | `make ci` | lint + typecheck + test + build を一括実行 |
 
+## SEO と検索向け運用
+
+本番 URL は `astro.config.mjs` の `site`（`https://onigiri-portal.vercel.app`）と [src/constants/site.ts](src/constants/site.ts) の `SITE_ORIGIN` で管理しています。**ドメインを変える場合は両方を同期**してください。
+
+- **メタ・OGP（画像タグ除く）・Twitter Card・canonical** — `src/layouts/BaseLayout.astro`
+- **構造化データ（JSON-LD）** — 各ページと `src/utils/structured-data.ts`
+- **サイトマップ** — `@astrojs/sitemap` によりビルド時に `dist/sitemap-index.xml` が生成される
+- **robots.txt** — `public/robots.txt`（`Sitemap:` は本番オリジンに合わせて更新）
+
+### Google Search Console（推奨）
+
+1. [Search Console](https://search.google.com/search-console) でプロパティを追加（URL プレフィックス `https://onigiri-portal.vercel.app/` またはドメイン資源）。
+2. 所有権確認（HTML ファイル / DNS / Google Analytics 等、Vercel の案内に従う）。
+3. **サイトマップ**に `https://onigiri-portal.vercel.app/sitemap-index.xml` を送信。
+4. 定期的に **ページのインデックス登録**・**検索パフォーマンス**・**体験**（コアウェブバイタル等）を確認。
+
+### その他の確認
+
+- [Bing Webmaster Tools](https://www.bing.com/webmasters) に同様にサイトを登録し、サイトマップを送信するとよい。
+- リリース後は [リッチリザルトテスト](https://search.google.com/test/rich-results) で JSON-LD を spot check する。
+- **ゲーム等は別ドメイン**でホストしている。ポータル側の canonical は常に `onigiri-portal.vercel.app` 上の URL とし、ゲーム本体の評価は別プロパティ（別ドメイン）で見る。
+
 ### メトリクス収集
 
 `.portal.yaml` に定義されたリポジトリごとに以下を集計し、`src/data/` に JSON として保存します。
