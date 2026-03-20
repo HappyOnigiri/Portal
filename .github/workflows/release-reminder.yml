@@ -29,8 +29,8 @@ jobs:
 
           THRESHOLD=10
           if [ "$COUNT" -ge "$THRESHOLD" ]; then
-            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" \
-              --body "**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。リリースを検討してください。
-
-[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
+            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。リリースを検討してください。"
+            BODY+=$'\n\n'
+            BODY+="[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
           fi
