@@ -2,7 +2,7 @@ name: Release Reminder
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
     branches: [main]
 
 permissions:
@@ -12,33 +12,6 @@ jobs:
   remind:
     runs-on: ubuntu-latest
     steps:
-      - name: Check and comment
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          LAST_TAG=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName -q .tagName 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            echo "No previous release found, skipping"
-            exit 0
-          fi
-
-          LAST_DATE=$(gh release view --repo "$GITHUB_REPOSITORY" --json publishedAt -q .publishedAt)
-          PR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
-            --search "merged:>=${LAST_DATE}" --json number,title)
-          COUNT=$(echo "$PR_JSON" | jq 'length')
-          PR_LIST=$(echo "$PR_JSON" | jq -r --arg repo "$GITHUB_REPOSITORY" '.[] | "- [#\(.number)](https://github.com/\($repo)/pull/\(.number)) \(.title)"')
-
-          THRESHOLD=10
-          if [ "$COUNT" -eq 0 ]; then
-            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` 以降にマージされた PR はありません。"
-          else
-            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。"
-            if [ "$COUNT" -ge "$THRESHOLD" ]; then
-              BODY+=$'\nリリースを検討してください。'
-            fi
-            BODY+=$'\n\n<details><summary>マージ済み PR 一覧</summary>\n\n'
-            BODY+="$PR_LIST"
-            BODY+=$'\n\n</details>'
-          fi
-          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+      - uses: HappyOnigiri/ShareSettings/actions/release-reminder@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
