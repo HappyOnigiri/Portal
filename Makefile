@@ -11,10 +11,10 @@ ci:
 	npm run format:astro
 	npm run check
 	npm run format:astro:check
-	npm run typecheck
+	CI=true npm run typecheck
 	make check-ts-rules
 	npm run test:coverage
-	$(MAKE) build
+	CI=true $(MAKE) build
 
 format:
 	npm run format
