@@ -39,7 +39,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           TAG: ${{ steps.version.outputs.tag }}
           BODY: ${{ github.event.pull_request.body }}
-        run: gh release create "$TAG" --title "$TAG" --notes "$BODY"
+        run: |
+          echo "$BODY" > release_notes.md
+          gh release create "$TAG" --title "$TAG" --notes-file release_notes.md
 
       - name: Delete release branch
         env:
