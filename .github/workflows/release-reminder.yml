@@ -24,13 +24,21 @@ jobs:
           fi
 
           LAST_DATE=$(gh release view --repo "$GITHUB_REPOSITORY" --json publishedAt -q .publishedAt)
-          COUNT=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
-            --search "merged:>=${LAST_DATE}" --json number -q 'length')
+          PR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
+            --search "merged:>=${LAST_DATE}" --json number,title)
+          COUNT=$(echo "$PR_JSON" | jq 'length')
+          PR_LIST=$(echo "$PR_JSON" | jq -r '.[] | "- #\(.number) \(.title)"')
 
           THRESHOLD=10
-          if [ "$COUNT" -ge "$THRESHOLD" ]; then
-            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。リリースを検討してください。"
-            BODY+=$'\n\n'
-            BODY+="[差分を確認](https://github.com/${GITHUB_REPOSITORY}/compare/${LAST_TAG}...main)"
-            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+          if [ "$COUNT" -eq 0 ]; then
+            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` 以降にマージされた PR はありません。"
+          else
+            BODY="**Release Reminder**: 前回リリース \`${LAST_TAG}\` から **${COUNT} 件**の PR がマージされています。"
+            if [ "$COUNT" -ge "$THRESHOLD" ]; then
+              BODY+=$'\nリリースを検討してください。'
+            fi
+            BODY+=$'\n\n<details><summary>マージ済み PR 一覧</summary>\n\n'
+            BODY+="$PR_LIST"
+            BODY+=$'\n\n</details>'
           fi
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$BODY"
