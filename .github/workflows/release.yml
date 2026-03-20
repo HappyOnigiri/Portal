@@ -59,11 +59,19 @@ jobs:
           git commit -m "release: v${VERSION}"
           git push --force-with-lease origin "release/v${VERSION}"
 
+      - name: Get previous tag
+        id: prev_tag
+        run: echo "tag=$(git describe --tags --abbrev=0 HEAD 2>/dev/null || echo '')" >> "$GITHUB_OUTPUT"
+
       - name: Build changelog
         id: changelog
         uses: mikepenz/release-changelog-builder-action@v5
         with:
+          fromTag: ${{ steps.prev_tag.outputs.tag }}
           toTag: release/v${{ inputs.version }}
+          # release-changelog-builder-action のプレースホルダーは #{{NAME}} 構文
+          # (${{}} は GitHub Actions 変数と衝突するため)
+          # see: https://github.com/mikepenz/release-changelog-builder-action
           configurationJson: |
             {
               "categories": [
@@ -74,7 +82,7 @@ jobs:
               ],
               "sort": { "order": "ASC", "on_property": "mergedAt" },
               "template": "#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
-              "pr_template": "- #{{TITLE}} (#{{NUMBER}})",
+              "pr_template": "- [##{{NUMBER}}](#{{URL}}) #{{TITLE}}",
               "empty_template": "No notable changes.",
               "label_extractor": [
                 { "pattern": "^feat", "target": "feature", "on_property": "title", "method": "match" },
