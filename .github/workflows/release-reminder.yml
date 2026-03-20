@@ -27,7 +27,7 @@ jobs:
           PR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
             --search "merged:>=${LAST_DATE}" --json number,title)
           COUNT=$(echo "$PR_JSON" | jq 'length')
-          PR_LIST=$(echo "$PR_JSON" | jq -r '.[] | "- #\(.number) \(.title)"')
+          PR_LIST=$(echo "$PR_JSON" | jq -r '.[] | "- #\(.number)"')
 
           THRESHOLD=10
           if [ "$COUNT" -eq 0 ]; then
