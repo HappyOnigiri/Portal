@@ -6,7 +6,8 @@
 		"node": ">=22.12.0"
 	},
 	"scripts": {
-		"dev": "astro dev",
+		"dev": "node --experimental-strip-types scripts/run-dev.ts",
+		"dev:raw": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
