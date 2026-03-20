@@ -454,8 +454,7 @@ body {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	margin-left: auto;
-	margin-top: 0;
+	margin-top: 1rem;
 	font-family: Orbitron, sans-serif;
 	font-size: 0.8rem;
 	opacity: 0.7;

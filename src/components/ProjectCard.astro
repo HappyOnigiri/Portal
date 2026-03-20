@@ -13,43 +13,118 @@ export interface ProjectData {
 
 interface Props {
 	project: ProjectData;
+	hrefMode?: "detail" | "external";
 }
 
-const { project } = Astro.props as Props;
+const { project, hrefMode = "external" } = Astro.props as Props;
 const detailHref = `/projects/${project.id}`;
+const isDetailMode = hrefMode === "detail";
 ---
 
-<a class="card card--link" href={detailHref}>
-	{
-		project.image && (
-			<div class="card-image">
-				<img
-					src={project.image}
-					data-lang-ja={`${project.title} のサムネイル`}
-					data-lang-en={`${project.title_en || project.title} thumbnail`}
-					alt={`${project.title} のサムネイル`}
-					loading="lazy"
-				/>
-				{project.category && (
-					<span class="card-category" data-color={project.category_color}>
-						{project.category}
-					</span>
-				)}
+{
+	isDetailMode ? (
+		<a class="card card--link" href={detailHref}>
+			{project.image && (
+				<div class="card-image">
+					<img
+						src={project.image}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
+						alt={`${project.title} のサムネイル`}
+						loading="lazy"
+					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
+				</div>
+			)}
+			<div class="card-content">
+				<h2
+					data-lang-ja={project.title}
+					data-lang-en={project.title_en || project.title}
+				>
+					{project.title}
+				</h2>
+				<p
+					data-lang-ja={project.description}
+					data-lang-en={project.description_en || project.description}
+				>
+					{project.description}
+				</p>
 			</div>
-		)
-	}
-	<div class="card-content">
-		<h2
-			data-lang-ja={project.title}
-			data-lang-en={project.title_en || project.title}
+		</a>
+	) : project.url ? (
+		<a
+			class="card card--link"
+			href={project.url}
+			target="_blank"
+			rel="noopener noreferrer"
 		>
-			{project.title}
-		</h2>
-		<p
-			data-lang-ja={project.description}
-			data-lang-en={project.description_en || project.description}
-		>
-			{project.description}
-		</p>
-	</div>
-</a>
+			{project.image && (
+				<div class="card-image">
+					<img
+						src={project.image}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
+						alt={`${project.title} のサムネイル`}
+						loading="lazy"
+					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
+				</div>
+			)}
+			<div class="card-content">
+				<h2
+					data-lang-ja={project.title}
+					data-lang-en={project.title_en || project.title}
+				>
+					{project.title}
+				</h2>
+				<p
+					data-lang-ja={project.description}
+					data-lang-en={project.description_en || project.description}
+				>
+					{project.description}
+				</p>
+			</div>
+		</a>
+	) : (
+		<div class="card">
+			{project.image && (
+				<div class="card-image">
+					<img
+						src={project.image}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
+						alt={`${project.title} のサムネイル`}
+						loading="lazy"
+					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
+				</div>
+			)}
+			<div class="card-content">
+				<h2
+					data-lang-ja={project.title}
+					data-lang-en={project.title_en || project.title}
+				>
+					{project.title}
+				</h2>
+				<p
+					data-lang-ja={project.description}
+					data-lang-en={project.description_en || project.description}
+				>
+					{project.description}
+				</p>
+			</div>
+		</div>
+	)
+}

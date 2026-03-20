@@ -50,7 +50,11 @@ const jsonLd = buildJsonLdGraph([
 
 	<section aria-label="Projects">
 		<div class="grid">
-			{projects.map((project) => <ProjectCard project={project} />)}
+			{
+				projects.map((project) => (
+					<ProjectCard project={project} hrefMode="detail" />
+				))
+			}
 		</div>
 	</section>
 </BaseLayout>
