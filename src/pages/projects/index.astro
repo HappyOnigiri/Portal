@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { SITE_ORIGIN } from "../../constants/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sortProjectsByOrder } from "../../utils/project";
+import {
+	breadcrumbList,
+	buildJsonLdGraph,
+	itemListProjects,
+	personHappyOnigiri,
+	webSiteRoot,
+} from "../../utils/structured-data";
+import { translations } from "../../utils/translations";
+
+const metaDescriptionJa = translations.ja["meta.description"];
+const projectEntries = await getCollection("projects");
+const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
+
+const jsonLd = buildJsonLdGraph([
+	personHappyOnigiri(SITE_ORIGIN),
+	webSiteRoot(SITE_ORIGIN, metaDescriptionJa),
+	breadcrumbList(SITE_ORIGIN, [
+		{ name: "トップ", path: "/" },
+		{ name: "プロジェクト一覧", path: "/projects" },
+	]),
+	itemListProjects(
+		SITE_ORIGIN,
+		projects.map((p) => ({
+			id: p.id,
+			title: p.title,
+			description: p.description,
+		})),
+	),
+]);
+---
+
+<BaseLayout
+	title="プロジェクト一覧 | ONIGIRI PORTAL"
+	description={translations.ja["projects.intro"]}
+	canonicalPath="/projects"
+	jsonLd={jsonLd}
+>
+	<header class="page-intro">
+		<h1 class="page-title" data-i18n="projects.title">プロジェクト一覧</h1>
+		<p class="page-lead" data-i18n="projects.intro">
+			{translations.ja["projects.intro"]}
+		</p>
+	</header>
+
+	<section aria-label="Projects">
+		<div class="grid">
+			{projects.map((project) => <ProjectCard project={project} />)}
+		</div>
+	</section>
+</BaseLayout>

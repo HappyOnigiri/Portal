@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import { SITE_ORIGIN } from "../../constants/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+	breadcrumbList,
+	buildJsonLdGraph,
+	collectionPageArticles,
+	itemListZennArticles,
+	personHappyOnigiri,
+	webSiteRoot,
+} from "../../utils/structured-data";
+import { translations } from "../../utils/translations";
+
+const metaDescriptionJa = translations.ja["articles.intro"];
+const articles = (await getCollection("zennArticles")).sort(
+	(a, b) =>
+		new Date(b.data.published_at).getTime() -
+		new Date(a.data.published_at).getTime(),
+);
+
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("ja-JP", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		timeZone: "Asia/Tokyo",
+	});
+
+const jsonLd = buildJsonLdGraph([
+	personHappyOnigiri(SITE_ORIGIN),
+	webSiteRoot(SITE_ORIGIN, translations.ja["meta.description"]),
+	collectionPageArticles(SITE_ORIGIN, metaDescriptionJa),
+	breadcrumbList(SITE_ORIGIN, [
+		{ name: "トップ", path: "/" },
+		{ name: "Zenn 記事一覧", path: "/articles" },
+	]),
+	itemListZennArticles(
+		articles.map((a) => ({
+			title: a.data.title,
+			slug: a.data.slug,
+		})),
+	),
+]);
+---
+
+<BaseLayout
+	title="Zenn 記事一覧 | ONIGIRI PORTAL"
+	description={metaDescriptionJa}
+	canonicalPath="/articles"
+	jsonLd={jsonLd}
+>
+	<header class="page-intro">
+		<h1 class="page-title" data-i18n="articles.title">Zenn 記事一覧</h1>
+		<p class="page-lead" data-i18n="articles.intro">
+			{metaDescriptionJa}
+		</p>
+	</header>
+
+	{
+		articles.length === 0 ? (
+			<p class="page-lead">現在、表示できる記事がありません。</p>
+		) : (
+			<div class="w-full max-w-[1160px] mx-auto bg-[#141623]/80 border border-[#2dd4bf]/30 rounded-xl shadow-[0_0_15px_rgba(0,240,255,0.1)] overflow-hidden backdrop-blur-sm text-sm sm:text-base font-mono">
+				<div class="p-6 overflow-x-auto">
+					<table class="w-full border-collapse">
+						<tbody class="text-[#e2e8f0]">
+							{articles.map((article) => (
+								<tr class="zenn-article-row border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
+									<td class="py-4 px-2 text-2xl w-10 shrink-0">
+										{article.data.emoji}
+									</td>
+									<td class="py-4 px-2 flex-1">
+										<a
+											href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+											class="zenn-article-link"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											{article.data.title}
+										</a>
+									</td>
+									<td class="py-4 px-2 text-[#94a3b8] text-xs whitespace-nowrap text-right">
+										{formatDate(article.data.published_at)}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<div class="px-6 pb-5 text-right">
+					<a
+						href="https://zenn.dev/happy_onigiri"
+						class="zenn-all-link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<span data-i18n="articles.profileLink">Zenn プロフィール →</span>
+					</a>
+				</div>
+			</div>
+		)
+	}
+</BaseLayout>
