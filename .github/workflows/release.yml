@@ -79,7 +79,7 @@ jobs:
               ],
               "sort": { "order": "ASC", "on_property": "mergedAt" },
               "template": "#{{CHANGELOG}}\n#{{UNCATEGORIZED}}",
-              "pr_template": "- [##{{NUMBER}}](#{{URL}}) #{{TITLE}}",
+              "pr_template": "- [#{{NUMBER}}]({{URL}}) {{TITLE}}",
               "empty_template": "No notable changes.",
               "label_extractor": [
                 { "pattern": "^feat", "target": "feature", "on_property": "title", "method": "match" },
