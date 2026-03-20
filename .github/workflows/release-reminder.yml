@@ -25,7 +25,7 @@ jobs:
 
           LAST_DATE=$(gh release view --repo "$GITHUB_REPOSITORY" --json publishedAt -q .publishedAt)
           PR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state merged --base main \
-            --search "merged:>=${LAST_DATE}" --json number,title)
+            --search "merged:>=${LAST_DATE}" --json number)
           COUNT=$(echo "$PR_JSON" | jq 'length')
           PR_LIST=$(echo "$PR_JSON" | jq -r '.[] | "- #\(.number)"')
 
