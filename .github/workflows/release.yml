@@ -92,6 +92,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Ensure release label exists
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh label create release --color "0075ca" --force
+
       - name: Create release PR
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
