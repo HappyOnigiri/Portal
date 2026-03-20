@@ -1,5 +1,6 @@
 ---
 import statusData from "../data/author-status.json";
+import { translations } from "../utils/translations";
 
 // 数値のフォーマット
 const formatNumber = (num: number) =>
@@ -25,7 +26,9 @@ const lastSync = statusData.lastUpdated
 		<div class="profile-header">
 			<img
 				src="/images/avatar.jpg"
-				alt="HappyOnigiri avatar"
+				data-lang-ja={translations.ja["avatar.alt"]}
+				data-lang-en={translations.en["avatar.alt"]}
+				alt={translations.ja["avatar.alt"]}
 				class="profile-avatar"
 			/>
 			<div>
