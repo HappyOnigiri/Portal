@@ -9,9 +9,6 @@ export const translations: Resources = {
 		"meta.description":
 			"HappyOnigiri（おにぎり）の開発ポータル。ゲーム・ツール・プラグインなど個人制作物の紹介と、Zenn 記事・開発状況へのリンクをまとめています。",
 		"img.thumbnail": "のサムネイル",
-		"nav.top": "トップ",
-		"nav.projects": "プロジェクト",
-		"nav.articles": "記事",
 		"project.externalCta": "別サイトで開く",
 		"project.externalHint":
 			"公開・実行は別ドメインのサイトです。下のリンクから移動してください。",
@@ -33,9 +30,6 @@ export const translations: Resources = {
 		"meta.description":
 			"HappyOnigiri's developer portal: games, tools, plugins, and links to Zenn articles and dev status.",
 		"img.thumbnail": "thumbnail",
-		"nav.top": "Top",
-		"nav.projects": "Projects",
-		"nav.articles": "Articles",
 		"project.externalCta": "Open external site",
 		"project.externalHint":
 			"This project is hosted on a different domain. Use the link below to continue.",
