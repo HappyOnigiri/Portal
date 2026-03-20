@@ -57,7 +57,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
           git commit -m "release: v${VERSION}"
-          git push origin "release/v${VERSION}"
+          git push --force-with-lease origin "release/v${VERSION}"
 
       - name: Build changelog
         id: changelog
@@ -98,15 +98,21 @@ jobs:
         run: |
           gh label create release --color "0075ca" --force
 
-      - name: Create release PR
+      - name: Create or update release PR
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           VERSION: ${{ inputs.version }}
           CHANGELOG: ${{ steps.changelog.outputs.changelog }}
         run: |
-          gh pr create \
-            --base main \
-            --head "release/v${VERSION}" \
-            --title "release: v${VERSION}" \
-            --body "${CHANGELOG}" \
-            --label "release"
+          if gh pr view "release/v${VERSION}" --json number >/dev/null 2>&1; then
+            gh pr edit "release/v${VERSION}" \
+              --title "release: v${VERSION}" \
+              --body "${CHANGELOG}"
+          else
+            gh pr create \
+              --base main \
+              --head "release/v${VERSION}" \
+              --title "release: v${VERSION}" \
+              --body "${CHANGELOG}" \
+              --label "release"
+          fi
