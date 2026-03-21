@@ -45,7 +45,7 @@ interface RepoConfig {
 interface AuthorConfig {
 	emails?: string[];
 	names?: string[];
-	github?: string;
+	github?: string[];
 }
 interface PortalConfig {
 	repositories: RepoConfig[];
@@ -77,6 +77,7 @@ interface MetricsResult {
 	languages: LanguageResult[];
 	aiUsage: LanguageResult[];
 	aiTokens: number;
+	ossPRs?: number;
 }
 
 interface SingleRepoMetrics {
@@ -287,8 +288,16 @@ function loadConfig(): PortalConfig {
 			}
 		}
 		if ("github" in author && author.github !== undefined) {
-			if (typeof author.github !== "string") {
-				console.error('Error: "author.github" は文字列である必要があります');
+			const gh = (author as { github: unknown }).github;
+			if (typeof gh === "string") {
+				(author as { github: unknown }).github = [gh];
+			} else if (
+				!Array.isArray(gh) ||
+				(gh as unknown[]).some((g) => typeof g !== "string")
+			) {
+				console.error(
+					'Error: "author.github" は文字列または文字列の配列である必要があります',
+				);
 				process.exit(1);
 			}
 		}
@@ -653,10 +662,10 @@ async function getMergedPrSearchCount(
 
 async function getMergedPrCountByAuthorFallback(
 	repoId: string,
-	authorGithub: string,
+	authorGithubs: string[],
 ): Promise<number> {
 	const { owner, name } = parseGitHubRepoId(repoId);
-	const authorLower = authorGithub.toLowerCase();
+	const authorLowers = new Set(authorGithubs.map((g) => g.toLowerCase()));
 	let count = 0;
 	let cursor: string | null = null;
 
@@ -680,7 +689,7 @@ async function getMergedPrCountByAuthorFallback(
 			pageInfo: { hasNextPage: boolean; endCursor: string | null };
 		};
 		for (const node of data.nodes) {
-			if (node.author?.login.toLowerCase() === authorLower) {
+			if (node.author && authorLowers.has(node.author.login.toLowerCase())) {
 				count++;
 			}
 		}
@@ -697,14 +706,34 @@ async function getMergedPrCountByAuthorFallback(
 
 async function countMergedPrs(
 	repoId: string,
-	authorGithub?: string,
+	authorGithubs?: string[],
 ): Promise<number> {
-	if (!authorGithub) {
+	if (!authorGithubs || authorGithubs.length === 0) {
 		return getMergedPrTotalCount(repoId);
 	}
-	const searchCount = await getMergedPrSearchCount(repoId, authorGithub);
-	if (searchCount > 0) return searchCount;
-	return getMergedPrCountByAuthorFallback(repoId, authorGithub);
+	let total = 0;
+	for (const authorGithub of authorGithubs) {
+		const searchCount = await getMergedPrSearchCount(repoId, authorGithub);
+		if (searchCount > 0) {
+			total += searchCount;
+		} else {
+			total += await getMergedPrCountByAuthorFallback(repoId, [authorGithub]);
+		}
+	}
+	return total;
+}
+
+function loadOssPrCount(): number {
+	const ossPrsPath = resolve(process.cwd(), "src/data/oss_prs/oss_prs.json");
+	try {
+		const urls = JSON.parse(readFileSync(ossPrsPath, "utf-8")) as string[];
+		return urls.length;
+	} catch {
+		console.error(
+			`Warning: src/data/oss_prs/oss_prs.json の読み込みに失敗しました。ossPRs をスキップします`,
+		);
+		return 0;
+	}
 }
 
 async function collectSingleRepo(
@@ -798,26 +827,35 @@ async function collectSingleRepo(
 			}
 		}
 
-		const runAuthorFlags = author?.github ? ["--user", author.github] : [];
+		const runAuthors = author?.github ?? [];
 		let ciRuns = 0;
 		if (shouldQueryGitHub) {
 			try {
-				const runOutput = execFileSync(
-					"gh",
-					[
-						"run",
-						"list",
-						...repoFlags,
-						...runAuthorFlags,
-						"--json",
-						"databaseId",
-						"--limit",
-						"9999",
-					],
-					{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-				);
-				ciRuns = (JSON.parse(runOutput) as Array<{ databaseId: number }>)
-					.length;
+				const seenIds = new Set<number>();
+				const userArgSets =
+					runAuthors.length > 0 ? runAuthors.map((g) => ["--user", g]) : [[]];
+				for (const userArgs of userArgSets) {
+					const runOutput = execFileSync(
+						"gh",
+						[
+							"run",
+							"list",
+							...repoFlags,
+							...userArgs,
+							"--json",
+							"databaseId",
+							"--limit",
+							"9999",
+						],
+						{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+					);
+					for (const r of JSON.parse(runOutput) as Array<{
+						databaseId: number;
+					}>) {
+						seenIds.add(r.databaseId);
+					}
+				}
+				ciRuns = seenIds.size;
 			} catch (err) {
 				const stderr =
 					err instanceof Error && "stderr" in err
@@ -908,7 +946,7 @@ async function main(): Promise<void> {
 		const authorScope = JSON.stringify({
 			emails: [...new Set(config.author?.emails ?? [])].sort(),
 			names: [...new Set(config.author?.names ?? [])].sort(),
-			github: config.author?.github ?? "",
+			github: [...new Set(config.author?.github ?? [])].sort(),
 		});
 		const hmac = hash ? hmacHash(`${hash}:${authorScope}`, salt) : "";
 
@@ -962,6 +1000,8 @@ async function main(): Promise<void> {
 	const aggregated = aggregateMetrics(allRepoMetrics);
 	const languages = calcLanguages(aggregated.extLines);
 
+	const ossPRs = loadOssPrCount() || undefined;
+
 	const result: MetricsResult = {
 		addedLines: aggregated.addedLines,
 		deletedLines: aggregated.deletedLines,
@@ -972,6 +1012,7 @@ async function main(): Promise<void> {
 		languages,
 		aiUsage: [],
 		aiTokens: 0,
+		...(ossPRs !== undefined ? { ossPRs } : {}),
 	};
 
 	if (isDryRun) {
@@ -1008,7 +1049,7 @@ async function mainLocal(
 						? args["author-email"]
 						: undefined,
 					names: args["author-name"]?.length ? args["author-name"] : undefined,
-					github: args["author-github"],
+					github: args["author-github"] ? [args["author-github"]] : undefined,
 				}
 			: undefined;
 
