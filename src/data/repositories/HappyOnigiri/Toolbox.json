@@ -1,0 +1,12 @@
+{
+	"cacheKey": "8c14c0d358389242997aab74067855fae1ccf6b75ebb6577a4db1e49ad51cfee",
+	"addedLines": 28,
+	"deletedLines": 1,
+	"commits": 11,
+	"mergedPRs": 0,
+	"ciRuns": 0,
+	"extLines": {
+		".sh": 28
+	},
+	"collectedAt": "2026-03-21T09:00:29.842Z"
+}
