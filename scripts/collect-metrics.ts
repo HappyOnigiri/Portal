@@ -727,8 +727,17 @@ async function countMergedPrs(
 function loadOssPrCount(): number {
 	const ossPrsPath = resolve(process.cwd(), "src/data/oss_prs/oss_prs.json");
 	try {
-		const urls = JSON.parse(readFileSync(ossPrsPath, "utf-8")) as string[];
-		return urls.length;
+		const parsed: unknown = JSON.parse(readFileSync(ossPrsPath, "utf-8"));
+		if (
+			!Array.isArray(parsed) ||
+			!parsed.every((item) => typeof item === "string")
+		) {
+			console.error(
+				`Warning: src/data/oss_prs/oss_prs.json の形式が不正です。ossPRs をスキップします`,
+			);
+			return 0;
+		}
+		return parsed.filter((url) => url.trim() !== "").length;
 	} catch {
 		console.error(
 			`Warning: src/data/oss_prs/oss_prs.json の読み込みに失敗しました。ossPRs をスキップします`,
