@@ -55,6 +55,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
 
+      - name: Collect Zenn articles
+        run: FETCH_ZENN=true npx astro sync
+
       - name: Format
         run: npx biome format --write .
 
@@ -62,8 +65,8 @@ jobs:
         run: |
           git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
           git config user.email "${{ secrets.APP_ID }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- src/data/author-status.json; then
-            git add src/data/author-status.json
+          if ! git diff --quiet -- src/data/author-status.json src/data/articles/zenn.json; then
+            git add src/data/author-status.json src/data/articles/zenn.json
             git commit -m "chore: update repository metrics [skip ci]"
             git push origin main
           else
