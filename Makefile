@@ -31,12 +31,14 @@ repomix:
 
 collect:
 	npm run collect-metrics
+	npm run format
 
 collect-dry-run:
 	npm run collect-metrics -- --dry-run
 
 collect-no-cache:
 	npm run collect-metrics -- --no-cache
+	npm run format
 
 setup:
 	curl -fsSL https://raw.githubusercontent.com/HappyOnigiri/ShareSettings/main/SyncRule/run.sh | bash
