@@ -1,5 +1,13 @@
 [
 	{
+		"id": 547078,
+		"title": "Claude Code のメモリ暴走で Mac がフリーズする前に自動で止める",
+		"slug": "9ae9080ba5eb88",
+		"emoji": "⚠️",
+		"article_type": "tech",
+		"published_at": "2026-03-20T15:39:57.482+09:00"
+	},
+	{
 		"id": 543685,
 		"title": "Claude Codeにコードの修正を依頼したら、私になりすましてPRにコメントをつけてレビューBOTと和解していた話",
 		"slug": "2df24dbfb9264a",
