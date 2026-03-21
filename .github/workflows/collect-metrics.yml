@@ -2,6 +2,11 @@ name: Collect Metrics
 
 on:
   workflow_dispatch:
+    inputs:
+      no-cache:
+        description: "キャッシュを無効にして全リポジトリを再集計する"
+        type: boolean
+        default: false
 
 jobs:
   collect:
@@ -50,7 +55,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Collect metrics
-        run: npm run collect-metrics
+        run: npm run collect-metrics${{ inputs.no-cache == true && ' -- --no-cache' || '' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
