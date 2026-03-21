@@ -724,7 +724,7 @@ async function countMergedPrs(
 	return total;
 }
 
-function loadOssPrCount(): number {
+function loadOssPrCount(): number | undefined {
 	const ossPrsPath = resolve(process.cwd(), "src/data/oss_prs/oss_prs.json");
 	try {
 		const parsed: unknown = JSON.parse(readFileSync(ossPrsPath, "utf-8"));
@@ -735,14 +735,14 @@ function loadOssPrCount(): number {
 			console.error(
 				`Warning: src/data/oss_prs/oss_prs.json の形式が不正です。ossPRs をスキップします`,
 			);
-			return 0;
+			return undefined;
 		}
 		return parsed.filter((url) => url.trim() !== "").length;
 	} catch {
 		console.error(
 			`Warning: src/data/oss_prs/oss_prs.json の読み込みに失敗しました。ossPRs をスキップします`,
 		);
-		return 0;
+		return undefined;
 	}
 }
 
@@ -1010,7 +1010,7 @@ async function main(): Promise<void> {
 	const aggregated = aggregateMetrics(allRepoMetrics);
 	const languages = calcLanguages(aggregated.extLines);
 
-	const ossPRs = loadOssPrCount() || undefined;
+	const ossPRs = loadOssPrCount();
 
 	const result: MetricsResult = {
 		addedLines: aggregated.addedLines,
