@@ -708,11 +708,12 @@ async function countMergedPrs(
 	repoId: string,
 	authorGithubs?: string[],
 ): Promise<number> {
-	if (!authorGithubs || authorGithubs.length === 0) {
+	const uniqueGithubs = [...new Set(authorGithubs ?? [])];
+	if (uniqueGithubs.length === 0) {
 		return getMergedPrTotalCount(repoId);
 	}
 	let total = 0;
-	for (const authorGithub of authorGithubs) {
+	for (const authorGithub of uniqueGithubs) {
 		const searchCount = await getMergedPrSearchCount(repoId, authorGithub);
 		if (searchCount > 0) {
 			total += searchCount;
