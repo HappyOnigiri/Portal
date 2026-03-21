@@ -179,6 +179,20 @@ const lastSync = statusData.lastUpdated
 					{formatNumber(statusData.ciRuns)}
 				</div>
 			</div>
+
+			{
+				((statusData as { ossPRs?: number }).ossPRs ?? 0) > 0 && (
+					<div class="flex-1 min-w-[140px] bg-gradient-to-br from-[#141623] to-[#1a1d2d] border border-[#2dd4bf]/20 p-4 rounded-xl shadow-lg relative overflow-hidden group">
+						<div class="absolute -right-4 -top-4 w-12 h-12 bg-[#f59e0b]/10 rounded-full blur-xl group-hover:bg-[#f59e0b]/20 transition-all" />
+						<div class="text-[#94a3b8] text-xs font-semibold tracking-wider mb-2">
+							OSS PRs
+						</div>
+						<div class="text-2xl font-bold font-mono text-[#f59e0b]">
+							{formatNumber((statusData as { ossPRs?: number }).ossPRs!)}
+						</div>
+					</div>
+				)
+			}
 		</div>
 
 		<div class="mt-4 bg-[#141623]/50 border border-[#2dd4bf]/10 rounded-xl p-4">
