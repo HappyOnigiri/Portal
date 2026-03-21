@@ -31,7 +31,7 @@ const { values: args } = parseArgs({
 		output: { type: "string" },
 		"author-email": { type: "string", multiple: true },
 		"author-name": { type: "string", multiple: true },
-		"author-github": { type: "string" },
+		"author-github": { type: "string", multiple: true },
 		"no-cache": { type: "boolean", default: false },
 	},
 });
@@ -1053,13 +1053,15 @@ async function mainLocal(
 	const author: AuthorConfig | undefined =
 		args["author-email"]?.length ||
 		args["author-name"]?.length ||
-		args["author-github"]
+		args["author-github"]?.length
 			? {
 					emails: args["author-email"]?.length
 						? args["author-email"]
 						: undefined,
 					names: args["author-name"]?.length ? args["author-name"] : undefined,
-					github: args["author-github"] ? [args["author-github"]] : undefined,
+					github: args["author-github"]?.length
+						? args["author-github"]
+						: undefined,
 				}
 			: undefined;
 
