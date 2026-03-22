@@ -32,18 +32,6 @@
   category: "TOOL"
   category_color: "cyan"
 
-- id: "claude-nano-line"
-  title: "Claude Nano Line"
-  title_en: "Claude Nano Line"
-  description: "Claude Code の statusLine をフォーマット文字列で自由に組み立てられるツールです。"
-  description_en: "A format-string-driven statusLine for Claude Code. Show exactly what you want, the way you want it."
-  image: "/images/thumbnails/claude-nano-line.png"
-  image_fit: contain
-  image_contain_bg: "#000000"
-  url: "https://github.com/HappyOnigiri/ClaudeNanoLine"
-  category: "TOOL"
-  category_color: "cyan"
-
 - id: "refix"
   title: "Refix"
   title_en: "Refix"
@@ -61,5 +49,17 @@
   description_en: "Turn your generated images into a powerful asset database. A ComfyUI extension that adds image management, search, and lineage tracking."
   image: "/images/thumbnails/comfyui-meld.jpg"
   url: "https://github.com/HappyOnigiri/ComfyUI-Meld"
+  category: "PLUGIN"
+  category_color: "amber"
+
+- id: "claude-nano-line"
+  title: "Claude Nano Line"
+  title_en: "Claude Nano Line"
+  description: "Claude Code の statusLine をフォーマット文字列で自由に組み立てられるツールです。"
+  description_en: "A format-string-driven statusLine for Claude Code. Show exactly what you want, the way you want it."
+  image: "/images/thumbnails/claude-nano-line.png"
+  image_fit: contain
+  image_contain_bg: "#000000"
+  url: "https://github.com/HappyOnigiri/ClaudeNanoLine"
   category: "PLUGIN"
   category_color: "amber"
