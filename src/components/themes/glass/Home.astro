@@ -97,6 +97,11 @@ const col2 = projects.filter((_, i) => i % 2 !== 0);
 		--glass-bg: rgba(255, 255, 255, 0.45);
 		--glass-border: rgba(255, 255, 255, 0.7);
 		--glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+
+		/* Standard UI vars mapped to Glass */
+		--panel-bg: var(--glass-bg);
+		--card-border: 1px solid var(--glass-border);
+		--card-shadow: var(--glass-shadow);
 	}
 
 	[data-theme="glass"] body {
@@ -253,6 +258,9 @@ const col2 = projects.filter((_, i) => i % 2 !== 0);
 	}
 
 	@media (max-width: 768px) {
+		.glass-container {
+			padding: 0 1rem 4rem;
+		}
 		.glass-masonry {
 			flex-direction: column;
 		}

@@ -45,16 +45,18 @@ const wrapperProps = isDetailMode
 ---
 
 <Wrapper {...wrapperProps}>
-	<div class="flex flex-row w-full h-full p-4 sm:p-6 items-center gap-6">
+	<div
+		class="flex flex-col sm:flex-row w-full h-full p-4 sm:p-6 items-start sm:items-center gap-4 sm:gap-6"
+	>
 		{
 			resolvedImage && (
-				<div class="w-1/3 shrink-0 rounded-lg overflow-hidden border border-[var(--panel-border)] bg-[var(--bg-color)] shadow-sm">
+				<div class="w-full sm:w-1/3 shrink-0 rounded-lg overflow-hidden border border-[var(--panel-border)] bg-[var(--bg-color)] shadow-sm">
 					<Image
 						src={resolvedImage}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
 						widths={[400]}
-						class="w-full h-24 sm:h-32 object-cover"
+						class="w-full h-40 sm:h-32 object-cover"
 						style={
 							imageFit === "contain"
 								? `object-fit: contain; background: ${project.image_contain_bg || "transparent"};`
