@@ -192,6 +192,10 @@ body {
 	transform: scale(1.1);
 }
 
+.card--link:hover .card-image[data-image-fit="contain"] img {
+	transform: none;
+}
+
 .card-content {
 	padding: 24px 28px 16px;
 	display: flex;
