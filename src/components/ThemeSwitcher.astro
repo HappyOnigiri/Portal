@@ -1,0 +1,102 @@
+---
+export interface Props {
+	theme?: "cyber" | "minimal" | "pop" | "glass" | "terminal" | "brutal";
+}
+const { theme = "cyber" } = Astro.props;
+
+let nextUrl = "/";
+let label = "";
+
+if (theme === "cyber") {
+	nextUrl = "/minimal";
+	label = "THEME: CYBER";
+} else if (theme === "minimal") {
+	nextUrl = "/pop";
+	label = "Theme: Minimal";
+} else if (theme === "pop") {
+	nextUrl = "/glass";
+	label = "THEME: POP";
+} else if (theme === "glass") {
+	nextUrl = "/terminal";
+	label = "Theme: Glass";
+} else if (theme === "terminal") {
+	nextUrl = "/brutal";
+	label = "THEME: TERMINAL";
+} else if (theme === "brutal") {
+	nextUrl = "/";
+	label = "THEME: BRUTAL";
+}
+---
+
+<div class="fixed top-4 right-4 z-50 flex">
+	{
+		theme === "cyber" && (
+			<a
+				href={nextUrl}
+				class="px-3 py-1.5 text-[10px] font-mono tracking-widest text-[#00f0ff] border border-[#00f0ff]/50 bg-black/50 hover:bg-[#00f0ff]/10 hover:border-[#00f0ff] transition-all backdrop-blur-md rounded-sm shadow-[0_0_10px_rgba(0,240,255,0.1)]"
+				title="Next Theme"
+			>
+				{label}
+			</a>
+		)
+	}
+	{
+		theme === "minimal" && (
+			<a
+				href={nextUrl}
+				class="px-4 py-1.5 text-[11px] font-sans tracking-wide text-gray-500 border border-gray-200 bg-white/80 hover:bg-gray-50 hover:text-gray-800 transition-colors backdrop-blur-md rounded-full shadow-sm"
+				title="Next Theme"
+			>
+				{label}
+			</a>
+		)
+	}
+	{
+		theme === "pop" && (
+			<a
+				href={nextUrl}
+				class="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-black bg-white border-2 border-black shadow-[2px_2px_0_#000] hover:translate-y-px hover:translate-x-px hover:shadow-none transition-all"
+				title="Next Theme"
+			>
+				{label}
+			</a>
+		)
+	}
+	{
+		theme === "glass" && (
+			<a
+				href={nextUrl}
+				class="px-4 py-2 text-[12px] font-semibold tracking-wide text-gray-800 bg-white/40 hover:bg-white/70 border border-white/60 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] rounded-2xl transition-all"
+				title="Next Theme"
+			>
+				{label}
+			</a>
+		)
+	}
+	{
+		theme === "terminal" && (
+			<a
+				href={nextUrl}
+				class="px-3 py-1.5 text-[14px] font-bold tracking-widest rounded-none"
+				style="font-family: var(--terminal-font); color: var(--text-main); background: transparent; border: 1px solid var(--text-muted);"
+				onmouseover="this.style.background='var(--text-muted)'; this.style.color='#000'"
+				onmouseout="this.style.background='transparent'; this.style.color='var(--text-main)'"
+				title="Next Theme"
+			>
+				$&gt; {label}
+			</a>
+		)
+	}
+	{
+		theme === "brutal" && (
+			<a
+				href={nextUrl}
+				class="px-5 py-2 text-[14px] font-black uppercase tracking-tighter text-white bg-red-600 border-4 border-black hover:bg-black hover:text-red-500 hover:scale-105 transition-transform"
+				style="box-shadow: 8px 8px 0 #000;"
+				title="Next Theme"
+			>
+				{label}
+			</a>
+		)
+	}
+</div>

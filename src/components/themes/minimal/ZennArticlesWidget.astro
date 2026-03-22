@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	articles: CollectionEntry<"zennArticles">[];
+}
+
+const { articles } = Astro.props;
+
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("ja-JP", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		timeZone: "Asia/Tokyo",
+	});
+---
+
+<div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base font-mono">
+	<div class="flex flex-col w-full" style="font-family: var(--font-body);">
+		<div
+			class="flex items-center justify-between border-b-2 border-[var(--panel-border)] pb-2 mb-4"
+		>
+			<h2 class="text-xl sm:text-2xl font-bold text-[var(--title-color)]">
+				Articles
+			</h2>
+			<a
+				href="https://zenn.dev/happy_onigiri"
+				class="text-xs font-semibold text-[var(--accent-main)] hover:underline uppercase tracking-wide"
+			>
+				View All &rarr;
+			</a>
+		</div>
+		<ul class="flex flex-col gap-5 sm:gap-6 py-2">
+			{
+				articles.map((article) => (
+					<li class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
+						<span class="text-xs text-[var(--text-muted)] font-mono min-w-[90px] pt-1">
+							{formatDate(article.data.published_at)}
+						</span>
+						<a
+							href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							class="flex-1 text-[var(--text-main)] hover:text-[var(--accent-main)] font-semibold text-base sm:text-lg transition-colors underline-offset-4 hover:underline leading-snug"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{article.data.title}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</div>

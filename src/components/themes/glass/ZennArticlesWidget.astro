@@ -1,0 +1,118 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+	articles: CollectionEntry<"zennArticles">[];
+	theme: string;
+}
+const { articles } = Astro.props;
+---
+
+<div class="glass-card glass-zenn-widget">
+	<ul class="glass-zenn-list">
+		{
+			articles.map((article) => (
+				<li class="glass-zenn-item">
+					<a
+						href={`https://zenn.dev${article.data.path}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="glass-zenn-link"
+					>
+						<span class="glass-zenn-emoji">{article.data.emoji}</span>
+						<div class="glass-zenn-text">
+							<span class="glass-zenn-title">{article.data.title}</span>
+							<span class="glass-zenn-date">
+								{new Date(article.data.published_at).toLocaleDateString(
+									"ja-JP",
+								)}
+							</span>
+						</div>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<a
+		href="https://zenn.dev/happy_onigiri"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="glass-zenn-more"
+	>
+		View all articles →
+	</a>
+</div>
+
+<style>
+	.glass-zenn-widget {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.glass-zenn-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.glass-zenn-link {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 12px;
+		border-radius: 16px;
+		text-decoration: none;
+		background: rgba(255, 255, 255, 0.3);
+		transition: background 0.2s ease;
+	}
+
+	.glass-zenn-link:hover {
+		background: rgba(255, 255, 255, 0.6);
+	}
+
+	.glass-zenn-emoji {
+		font-size: 1.8rem;
+		background: rgba(255, 255, 255, 0.5);
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		flex-shrink: 0;
+	}
+
+	.glass-zenn-text {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.glass-zenn-title {
+		font-weight: 600;
+		color: #1e293b;
+		font-size: 0.95rem;
+		line-height: 1.4;
+	}
+
+	.glass-zenn-date {
+		font-size: 0.8rem;
+		color: #64748b;
+	}
+
+	.glass-zenn-more {
+		text-align: right;
+		font-size: 0.9rem;
+		color: #3b82f6;
+		text-decoration: none;
+		font-weight: 600;
+	}
+
+	.glass-zenn-more:hover {
+		text-decoration: underline;
+	}
+</style>

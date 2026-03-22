@@ -1,0 +1,266 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AuthorStatusWidget from "./AuthorStatusWidget.astro";
+import ProjectCard from "./ProjectCard.astro";
+import ZennArticlesWidget from "./ZennArticlesWidget.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	zennEntries: CollectionEntry<"zennArticles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, zennEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "glass";
+
+// Prepare masonry layout logic: columns
+const col1 = projects.filter((_, i) => i % 2 === 0);
+const col2 = projects.filter((_, i) => i % 2 !== 0);
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | トップ"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<!-- Glass specific background elements -->
+	<div class="glass-bg-blob blob-1"></div>
+	<div class="glass-bg-blob blob-2"></div>
+	<div class="glass-bg-blob blob-3"></div>
+
+	<div class="glass-hero">
+		<div class="glass-hero-content">
+			<h1 class="glass-title">ONIGIRI PORTAL</h1>
+			<p class="glass-subtitle">Creative & Engineering Portfolio</p>
+		</div>
+	</div>
+
+	<div class="glass-container">
+		<section id="projects" aria-label="Projects" class="glass-section">
+			<h2 class="glass-section-title">Projects</h2>
+			<div class="glass-masonry">
+				<div class="glass-masonry-col">
+					{
+						col1.map((project) => (
+							<ProjectCard project={project} theme={theme} />
+						))
+					}
+				</div>
+				<div class="glass-masonry-col">
+					{
+						col2.map((project) => (
+							<ProjectCard project={project} theme={theme} />
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<div class="glass-sidebar">
+			<section
+				id="status"
+				aria-label="HappyOnigiri Status"
+				class="glass-section"
+			>
+				<h2 class="glass-section-title">Status</h2>
+				<AuthorStatusWidget theme={theme} />
+			</section>
+
+			{
+				zennEntries.length > 0 && (
+					<section
+						id="articles"
+						aria-label="Zenn Articles"
+						class="glass-section"
+					>
+						<h2 class="glass-section-title">Articles</h2>
+						<ZennArticlesWidget articles={zennEntries} theme={theme} />
+					</section>
+				)
+			}
+		</div>
+	</div>
+</BaseLayout>
+
+<style is:global>
+	[data-theme="glass"] {
+		--bg-color: #f1f5f9;
+		--bg-image: none;
+		--text-main: #334155;
+		--text-muted: #64748b;
+		--accent-main: #3b82f6;
+
+		/* Glass specific */
+		--glass-bg: rgba(255, 255, 255, 0.45);
+		--glass-border: rgba(255, 255, 255, 0.7);
+		--glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+	}
+
+	[data-theme="glass"] body {
+		background: #f1f5f9;
+		overflow-x: hidden;
+	}
+
+	/* Dynamic animated blobs in the background */
+	.glass-bg-blob {
+		position: fixed;
+		border-radius: 50%;
+		filter: blur(80px);
+		z-index: 0;
+		opacity: 0.6;
+		animation: float 20s infinite ease-in-out alternate;
+	}
+
+	.blob-1 {
+		top: -10%;
+		left: -10%;
+		width: 50vw;
+		height: 50vw;
+		background: #dbeafe; /* soft blue */
+		animation-delay: 0s;
+	}
+
+	.blob-2 {
+		bottom: -20%;
+		right: -10%;
+		width: 60vw;
+		height: 60vw;
+		background: #fce7f3; /* soft pink */
+		animation-delay: -5s;
+	}
+
+	.blob-3 {
+		top: 40%;
+		left: 30%;
+		width: 40vw;
+		height: 40vw;
+		background: #e0e7ff; /* soft indigo */
+		animation-delay: -10s;
+	}
+
+	@keyframes float {
+		0% {
+			transform: translate(0, 0) scale(1);
+		}
+		100% {
+			transform: translate(5%, 10%) scale(1.1);
+		}
+	}
+
+	/* Layout Container */
+	.glass-hero {
+		position: relative;
+		z-index: 10;
+		text-align: center;
+		padding: 6rem 2rem 4rem;
+	}
+
+	.glass-hero-content {
+		display: inline-block;
+		background: var(--glass-bg);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid var(--glass-border);
+		padding: 3rem 5rem;
+		border-radius: 40px;
+		box-shadow: var(--glass-shadow);
+	}
+
+	.glass-title {
+		font-family: "Outfit", sans-serif;
+		font-size: 3.5rem;
+		font-weight: 800;
+		color: #1e293b;
+		margin: 0 0 0.5rem 0;
+		letter-spacing: -0.02em;
+	}
+
+	.glass-subtitle {
+		font-size: 1.2rem;
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+	.glass-container {
+		position: relative;
+		z-index: 10;
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0 2rem 6rem;
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 3rem;
+		align-items: start;
+	}
+
+	.glass-section {
+		margin-bottom: 3rem;
+	}
+
+	.glass-section-title {
+		font-family: "Outfit", sans-serif;
+		font-size: 1.5rem;
+		color: #1e293b;
+		margin-bottom: 1.5rem;
+		padding-left: 1rem;
+		border-left: 4px solid var(--accent-main);
+	}
+
+	.glass-masonry {
+		display: flex;
+		gap: 2rem;
+	}
+
+	.glass-masonry-col {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		flex: 1;
+	}
+
+	.glass-sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
+
+	/* Card Base for Glass Widgets */
+	.glass-card {
+		background: var(--glass-bg);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid var(--glass-border);
+		border-radius: 24px;
+		padding: 24px;
+		box-shadow: var(--glass-shadow);
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
+	}
+
+	.glass-card:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+	}
+
+	@media (max-width: 1024px) {
+		.glass-container {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.glass-masonry {
+			flex-direction: column;
+		}
+		.glass-hero-content {
+			padding: 2rem;
+		}
+		.glass-title {
+			font-size: 2.5rem;
+		}
+	}
+</style>

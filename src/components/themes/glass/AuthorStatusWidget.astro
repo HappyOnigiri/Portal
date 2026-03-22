@@ -1,0 +1,78 @@
+---
+import statusData from "../../../data/author-status.json";
+
+export interface Props {
+	theme: string;
+}
+
+const stats = [
+	{ label: "Commits", value: statusData.commits, icon: "💻" },
+	{ label: "Merged PRs", value: statusData.mergedPRs, icon: "🚀" },
+	{ label: "CI Runs", value: statusData.ciRuns, icon: "⚡" },
+	{ label: "Added Lines", value: statusData.addedLines, icon: "➕" },
+	{ label: "Deleted Lines", value: statusData.deletedLines, icon: "➖" },
+];
+---
+
+<div class="glass-card glass-status-widget">
+	<div class="glass-status-grid">
+		{
+			stats.map((stat) => (
+				<div class="glass-status-item">
+					<span class="glass-status-icon">{stat.icon}</span>
+					<span class="glass-status-value">{stat.value}</span>
+					<span class="glass-status-label">{stat.label}</span>
+				</div>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.glass-status-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 16px;
+	}
+
+	.glass-status-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 20px;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 20px;
+		text-align: center;
+		transition:
+			transform 0.2s ease,
+			background 0.2s ease;
+	}
+
+	.glass-status-item:hover {
+		transform: translateY(-2px);
+		background: rgba(255, 255, 255, 0.5);
+	}
+
+	.glass-status-icon {
+		font-size: 1.5rem;
+		margin-bottom: 8px;
+	}
+
+	.glass-status-value {
+		font-family: "Outfit", sans-serif;
+		font-size: 1.5rem;
+		font-weight: 800;
+		color: #1e293b;
+		line-height: 1;
+		margin-bottom: 4px;
+	}
+
+	.glass-status-label {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #64748b;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+</style>

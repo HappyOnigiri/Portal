@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/portal.css";
 import { version } from "../../package.json";
+import ThemeSwitcher from "../components/ThemeSwitcher.astro";
 import { translations } from "../utils/translations";
 
 interface Props {
@@ -21,6 +22,7 @@ const {
 	robots = "index, follow",
 	ogType = "website",
 	jsonLd,
+	theme = "cyber",
 } = Astro.props as Props;
 
 const currentYear = new Date().getFullYear();
@@ -36,7 +38,7 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme={theme}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -62,27 +64,20 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 				<script type="application/ld+json" set:html={jsonLdSerialized} />
 			)
 		}
-		{/* FOUC 対策: JS 実行前に lang を設定 */}
-		<script is:inline>
-			(function () {
-				var saved = localStorage.getItem("portal-lang");
-				var lang =
-					saved === "ja" || saved === "en"
-						? saved
-						: navigator.language.startsWith("ja")
-							? "ja"
-							: "en";
-				document.documentElement.lang = lang;
-			})();
-		</script>
+		{/* FOUC 対策: JS 実行前に lang と theme を設定 */}
 	</head>
 	<body>
 		<div class="cyber-container">
 			<div class="cyber-header-top">
-				<div class="lang-switcher" style="margin-left: auto;">
-					<button data-lang-btn="en" class="lang-btn">EN</button>
-					<span class="lang-divider">|</span>
-					<button data-lang-btn="ja" class="lang-btn">JP</button>
+				<div
+					style="display: flex; align-items: center; gap: 1rem; margin-left: auto;"
+				>
+					<ThemeSwitcher theme={theme} />
+					<div class="lang-switcher">
+						<button data-lang-btn="en" class="lang-btn">EN</button>
+						<span class="lang-divider">|</span>
+						<button data-lang-btn="ja" class="lang-btn">JP</button>
+					</div>
 				</div>
 			</div>
 

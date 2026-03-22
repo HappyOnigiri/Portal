@@ -1,0 +1,101 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+	articles: CollectionEntry<"zennArticles">[];
+	theme: string;
+}
+const { articles } = Astro.props;
+---
+
+<div class="terminal-cat-output">
+	{
+		articles.map((article, index) => {
+			const date = new Date(article.data.published_at)
+				.toISOString()
+				.split("T")[0];
+			return (
+				<div class="zenn-line">
+					<span class="line-num">
+						{(index + 1).toString().padStart(2, "0")}
+					</span>
+					<span class="article-date">[{date}]</span>
+					<span class="article-emoji">{article.data.emoji}</span>
+					<a
+						href={`https://zenn.dev${article.data.path}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="article-title"
+					>
+						{article.data.title}
+					</a>
+				</div>
+			);
+		})
+	}
+	<div class="zenn-line">
+		<span class="line-num"
+			>{(articles.length + 1).toString().padStart(2, "0")}</span
+		>
+		<a
+			href="https://zenn.dev/happy_onigiri"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="article-more"
+			data-lang-ja="-- MORE -- (クリックしてすべて表示)"
+			data-lang-en="-- MORE -- (Please Click to view all)"
+			>-- MORE -- (クリックしてすべて表示)</a
+		>
+	</div>
+</div>
+
+<style>
+	.terminal-cat-output {
+		font-family: var(--terminal-font);
+		font-size: 14px;
+		line-height: 1.6;
+	}
+
+	.zenn-line {
+		display: flex;
+		gap: 15px;
+	}
+
+	.line-num {
+		color: #888888;
+		user-select: none;
+	}
+
+	.article-date {
+		color: #66b3ff;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.article-emoji {
+		display: inline-block;
+		width: 20px;
+		text-align: center;
+	}
+
+	.article-title {
+		color: #f2f2f2;
+		text-decoration: none;
+	}
+
+	.article-title:hover {
+		background: #f2f2f2;
+		color: #000;
+	}
+
+	.article-more {
+		color: #66b3ff;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	.article-more:hover {
+		background: #66b3ff;
+		color: #000;
+	}
+</style>

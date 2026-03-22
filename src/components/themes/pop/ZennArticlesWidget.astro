@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	articles: CollectionEntry<"zennArticles">[];
+}
+
+const { articles } = Astro.props;
+
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("ja-JP", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		timeZone: "Asia/Tokyo",
+	});
+---
+
+<div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base font-mono">
+	<div
+		class="flex flex-col w-full border-4 border-black bg-white shadow-[8px_8px_0_#000] p-6 sm:p-8"
+		style="font-family: var(--font-body);"
+	>
+		<div
+			class="flex items-end justify-between mb-8 pb-4 border-b-4 border-black"
+		>
+			<h2
+				class="font-black text-3xl sm:text-5xl uppercase tracking-widest leading-none text-black drop-shadow-[2px_2px_0_var(--accent-main)]"
+				style="font-family: var(--font-heading);"
+			>
+				Articles
+			</h2>
+		</div>
+		<div class="flex flex-col gap-5">
+			{
+				articles.map((article) => (
+					<a
+						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group block border-2 border-black p-4 transition-transform hover:-translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0_#000] bg-[var(--bg-color)] hover:bg-white"
+					>
+						<div class="flex items-center gap-4">
+							<span class="text-4xl drop-shadow-[2px_2px_0_rgba(0,0,0,0.2)]">
+								{article.data.emoji}
+							</span>
+							<div class="flex-1">
+								<h3 class="font-black text-lg sm:text-xl mb-2 text-black leading-tight">
+									{article.data.title}
+								</h3>
+								<span class="font-bold text-xs uppercase bg-black text-white px-2 py-1">
+									{formatDate(article.data.published_at)}
+								</span>
+							</div>
+						</div>
+					</a>
+				))
+			}
+		</div>
+		<a
+			href="https://zenn.dev/happy_onigiri"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="mt-8 font-black text-lg uppercase text-center block border-4 border-black py-4 bg-[var(--accent-main)] text-[#000] shadow-[6px_6px_0_#000] hover:-translate-y-1 hover:-translate-x-1 transition-transform"
+			style="font-family: var(--font-heading);"
+		>
+			Read More on Zenn
+		</a>
+	</div>
+</div>

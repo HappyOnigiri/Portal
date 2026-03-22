@@ -1,0 +1,117 @@
+---
+import { Image } from "astro:assets";
+import avatarImage from "../../../assets/images/avatar.jpg";
+import statusData from "../../../data/author-status.json";
+
+// 数値のフォーマット
+const formatNumber = (num: number) =>
+	new Intl.NumberFormat("ja-JP").format(num);
+
+const lastSync = statusData.lastUpdated
+	? new Date(statusData.lastUpdated).toLocaleString("ja-JP", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			timeZone: "Asia/Tokyo",
+			timeZoneName: "short",
+		})
+	: "---";
+---
+
+<div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base">
+	<div class="flex flex-col w-full" style="font-family: var(--font-body);">
+		<div class="flex flex-col sm:flex-row gap-8 items-start mb-12">
+			<Image
+				src={avatarImage}
+				alt="Avatar"
+				class="w-24 h-24 rounded-full"
+				loading="eager"
+			/>
+			<div class="flex-1">
+				<h2 class="text-3xl font-bold text-[var(--title-color)] mb-3">
+					HappyOnigiri
+				</h2>
+				<p
+					class="text-[var(--text-muted)] leading-relaxed max-w-2xl text-sm sm:text-base"
+				>
+					思いつきでドリブン開発をしています。<br />
+					ジャンルは問わず「面白そう」「あったら便利そう」と思ったものを形にしています。
+				</p>
+			</div>
+		</div>
+
+		<div
+			class="grid grid-cols-2 md:grid-cols-5 gap-6 border-y border-[var(--panel-border)] py-8 my-8"
+		>
+			<div class="flex flex-col gap-1">
+				<span
+					class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider"
+					>Lines</span
+				>
+				<span class="text-3xl font-semibold text-[var(--text-main)]"
+					>{formatNumber(statusData.addedLines + statusData.deletedLines)}</span
+				>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span
+					class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider"
+					>Commits</span
+				>
+				<span class="text-3xl font-semibold text-[var(--text-main)]"
+					>{formatNumber(statusData.commits)}</span
+				>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span
+					class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider"
+					>Merged PR</span
+				>
+				<span class="text-3xl font-semibold text-[var(--text-main)]"
+					>{formatNumber(statusData.mergedPRs)}</span
+				>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span
+					class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider"
+					>CI Runs</span
+				>
+				<span class="text-3xl font-semibold text-[var(--text-main)]"
+					>{formatNumber(statusData.ciRuns)}</span
+				>
+			</div>
+			<div class="flex flex-col gap-1">
+				<span
+					class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider"
+					>Last Sync</span
+				>
+				<span class="text-sm font-semibold text-[var(--text-main)]"
+					>{lastSync.split(" ")[0]}</span
+				>
+			</div>
+		</div>
+
+		<div class="flex flex-col gap-3">
+			<h3 class="text-sm font-bold text-[var(--title-color)]">Top Languages</h3>
+			<div class="flex flex-wrap gap-4">
+				{
+					statusData.languages.slice(0, 5).map((lang) => (
+						<div class="flex items-center gap-2">
+							<span
+								class="w-2 h-2 rounded-full"
+								style={`background-color: ${lang.color};`}
+							/>
+							<span class="text-sm font-medium text-[var(--text-main)]">
+								{lang.label}
+							</span>
+							<span class="text-xs text-[var(--text-muted)]">
+								{lang.value}%
+							</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</div>

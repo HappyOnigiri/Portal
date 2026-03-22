@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
+import ProjectCard from "../../ProjectCard.astro";
+import ZennArticlesWidget from "../../ZennArticlesWidget.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	zennEntries: CollectionEntry<"zennArticles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, zennEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "pop";
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | トップ"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<section class="cyber-header">
+		<h1 class="cyber-glitch">ONIGIRI PORTAL</h1>
+	</section>
+
+	<section id="projects" aria-label="Projects" style="margin-bottom: 3rem;">
+		<div class="project-grid">
+			{
+				projects.map((project) => (
+					<ProjectCard project={project} theme={theme} />
+				))
+			}
+		</div>
+	</section>
+
+	{
+		zennEntries.length > 0 && (
+			<section
+				id="articles"
+				aria-label="Zenn Articles"
+				style="margin-bottom: 3rem;"
+			>
+				<ZennArticlesWidget articles={zennEntries} theme={theme} />
+			</section>
+		)
+	}
+
+	<section
+		id="status"
+		aria-label="HappyOnigiri Status"
+		style="margin-bottom: 3rem;"
+	>
+		<AuthorStatusWidget theme={theme} />
+	</section>
+</BaseLayout>

@@ -1,0 +1,113 @@
+---
+import { getCollection } from "astro:content";
+import { SITE_ORIGIN } from "../constants/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sortProjectsByOrder } from "../utils/project";
+import {
+	buildJsonLdGraph,
+	itemListProjects,
+	personHappyOnigiri,
+	webSiteRoot,
+} from "../utils/structured-data";
+import { translations } from "../utils/translations";
+import AuthorStatusWidget from "./AuthorStatusWidget.astro";
+import ProjectCard from "./ProjectCard.astro";
+import ZennArticlesWidget from "./ZennArticlesWidget.astro";
+
+const metaDescriptionJa = translations.ja["meta.description"];
+
+const projectEntries = await getCollection("projects");
+const projects = sortProjectsByOrder(projectEntries.map((entry) => entry.data));
+const zennEntries = (await getCollection("zennArticles"))
+	.sort(
+		(a, b) =>
+			new Date(b.data.published_at).getTime() -
+			new Date(a.data.published_at).getTime(),
+	)
+	.slice(0, 3);
+
+const jsonLd = buildJsonLdGraph([
+	personHappyOnigiri(SITE_ORIGIN),
+	webSiteRoot(SITE_ORIGIN, metaDescriptionJa),
+	itemListProjects(
+		SITE_ORIGIN,
+		projects.map((p) => ({
+			id: p.id,
+			title: p.title,
+			description: p.description,
+		})),
+	),
+]);
+export interface Props {
+	theme?: "cyber" | "minimal" | "pop" | "glass" | "terminal" | "brutal";
+}
+const { theme = "cyber" } = Astro.props;
+
+import BrutalHome from "./themes/brutal/Home.astro";
+import CyberHome from "./themes/cyber/Home.astro";
+import GlassHome from "./themes/glass/Home.astro";
+import MinimalHome from "./themes/minimal/Home.astro";
+import PopHome from "./themes/pop/Home.astro";
+import TerminalHome from "./themes/terminal/Home.astro";
+---
+
+{
+	theme === "cyber" && (
+		<CyberHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}
+{
+	theme === "minimal" && (
+		<MinimalHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}
+{
+	theme === "pop" && (
+		<PopHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}
+{
+	theme === "glass" && (
+		<GlassHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}
+{
+	theme === "terminal" && (
+		<TerminalHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}
+{
+	theme === "brutal" && (
+		<BrutalHome
+			projects={projects}
+			zennEntries={zennEntries}
+			jsonLd={jsonLd}
+			metaDescriptionJa={metaDescriptionJa}
+		/>
+	)
+}

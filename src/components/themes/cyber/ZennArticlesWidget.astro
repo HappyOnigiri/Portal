@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	articles: CollectionEntry<"zennArticles">[];
+}
+
+const { articles } = Astro.props;
+
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("ja-JP", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		timeZone: "Asia/Tokyo",
+	});
+---
+
+<div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base font-mono">
+	<div
+		class="flex flex-col w-full bg-[color:var(--panel-bg)] border border-[color:var(--panel-border)] rounded-xl shadow-[var(--card-shadow)] overflow-hidden backdrop-blur-sm"
+	>
+		<div class="px-6 pt-5 pb-1">
+			<h2 class="section-heading">Zenn Articles</h2>
+		</div>
+
+		<div class="p-6 overflow-x-auto">
+			<table class="w-full border-collapse">
+				<tbody class="text-[color:var(--text-main)]">
+					{
+						articles.map((article) => (
+							<tr class="zenn-article-row border-b border-[color:var(--panel-border)] hover:bg-[color:var(--panel-border)] transition-colors group">
+								<td class="py-4 px-2 text-2xl w-10 shrink-0">
+									{article.data.emoji}
+								</td>
+								<td class="py-4 px-2 flex-1">
+									<a
+										href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+										class="zenn-article-link"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										{article.data.title}
+									</a>
+								</td>
+								<td class="py-4 px-2 text-[color:var(--text-muted)] text-xs whitespace-nowrap text-right">
+									{formatDate(article.data.published_at)}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="px-6 pb-5 text-right">
+			<a
+				href="https://zenn.dev/happy_onigiri"
+				class="zenn-all-link"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<span data-i18n="zenn.viewAll">すべての記事を見る →</span>
+			</a>
+		</div>
+	</div>
+</div>

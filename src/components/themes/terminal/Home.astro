@@ -1,0 +1,211 @@
+---
+import type { CollectionEntry } from "astro:content";
+import packageJson from "../../../../package.json";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AuthorStatusWidget from "./AuthorStatusWidget.astro";
+import ProjectCard from "./ProjectCard.astro";
+import ZennArticlesWidget from "./ZennArticlesWidget.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	zennEntries: CollectionEntry<"zennArticles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, zennEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "terminal";
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | ターミナル"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<div class="terminal-container">
+		<header class="terminal-header">
+			<pre
+				class="terminal-ascii">
+   ____        _       _      _        ____             __        __
+  / __ \____  (_)___ _(_)____(_)      / __ \____  _____/ /_____ _/ /
+ / / / / __ \/ / __ `/ / ___/ /      / /_/ / __ \/ ___/ __/ __ `/ /
+/ /_/ / / / / / /_/ / / /  / /      / ____/ /_/ / /  / /_/ /_/ / /
+\____/_/ /_/_/\__, /_/_/  /_/      /_/    \____/_/   \__/\__,_/_/
+             /____/
+
+PORTAL v{packageJson.version}   <span class="lang-switcher" style="display:inline; font-family: var(--terminal-font); font-size: 14px;"><button data-lang-btn="ja" class="lang-btn" style="background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:inherit;">[JA]</button> <span style="color:var(--text-muted)">/</span> <button data-lang-btn="en" class="lang-btn" style="background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:inherit;">[EN]</button></span>
+			</pre>
+			<br />
+		</header>
+
+		<main class="terminal-main">
+			<div class="command-block">
+				<div class="prompt">
+					<span class="user">root@portal</span>:<span class="dir">~</span>$
+					fastfetch
+				</div>
+				<div class="output">
+					<AuthorStatusWidget theme={theme} />
+				</div>
+			</div>
+
+			<div class="command-block">
+				<div class="prompt">
+					<span class="user">root@portal</span>:<span class="dir"
+						>~/projects</span
+					>$ ls -1
+				</div>
+				<div class="output terminal-ls">
+					{
+						projects.map((project) => (
+							<ProjectCard project={project} theme={theme} />
+						))
+					}
+				</div>
+			</div>
+
+			{
+				zennEntries.length > 0 && (
+					<div class="command-block">
+						<div class="prompt">
+							<span class="user">root@portal</span>:
+							<span class="dir">~/articles</span>$ cat latest.txt
+						</div>
+						<div class="output">
+							<ZennArticlesWidget articles={zennEntries} theme={theme} />
+						</div>
+					</div>
+				)
+			}
+
+			<div class="command-block">
+				<div class="prompt">
+					<span class="user">root@portal</span>:<span class="dir">~</span>$ <span
+						class="cursor">_</span
+					>
+				</div>
+			</div>
+		</main>
+	</div>
+</BaseLayout>
+
+<style is:global>
+	[data-theme="terminal"] {
+		--bg-color: #000000;
+		--bg-image: none;
+		--text-main: #f2f2f2;
+		--text-muted: #888888;
+		--accent-main: #ffffff;
+		--terminal-font:
+			ui-monospace, "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+	}
+
+	[data-theme="terminal"] body {
+		background-color: var(--bg-color);
+		color: var(--text-main);
+		font-family: var(--terminal-font);
+		padding: 20px;
+		margin: 0;
+	}
+
+	[data-theme="terminal"] ::selection {
+		background: #4d4d4d;
+		color: #ffffff;
+	}
+
+	.terminal-container {
+		max-width: 900px;
+		margin: 0 auto;
+		width: 100%;
+		line-height: 1.5;
+	}
+
+	.terminal-ascii {
+		font-family: var(--terminal-font);
+		white-space: pre;
+		margin: 0 0 20px 0;
+		font-size: 14px;
+		line-height: 1.2;
+		color: var(--text-main);
+	}
+
+	.terminal-header p {
+		margin: 0;
+		font-size: 14px;
+	}
+
+	.command-block {
+		margin-bottom: 30px;
+	}
+
+	.prompt {
+		font-weight: bold;
+		margin-bottom: 15px;
+		font-size: 14px;
+	}
+
+	.prompt .user {
+		color: var(--text-main);
+	}
+
+	.prompt .dir {
+		color: #66b3ff;
+	}
+
+	.output {
+		padding-left: 0;
+		margin-bottom: 20px;
+		font-size: 14px;
+	}
+
+	.ls-header {
+		margin-bottom: 10px;
+	}
+
+	.cursor {
+		animation: blink 1s step-end infinite;
+		display: inline-block;
+		width: 10px;
+		background: #f2f2f2;
+		color: transparent;
+	}
+
+	@keyframes blink {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+	}
+
+	/* Prevent normal cyber-container styles from messing up terminal */
+	[data-theme="terminal"] .cyber-container {
+		padding: 0;
+		max-width: none;
+	}
+	[data-theme="terminal"] .cyber-header-top {
+		/* Keep visible for ThemeSwitcher */
+	}
+	[data-theme="terminal"] .cyber-footer {
+		display: none;
+	}
+
+	[data-theme="terminal"] .cyber-header-top .lang-switcher {
+		display: none;
+	}
+
+	[data-theme="terminal"] .lang-btn {
+		color: var(--text-muted);
+		font-family: var(--terminal-font);
+		font-size: 14px;
+		transition: none; /* Remove smooth hover transitions to match terminal style */
+	}
+	[data-theme="terminal"] .lang-btn:hover,
+	[data-theme="terminal"] .lang-btn.active {
+		color: var(--text-main);
+		text-shadow: none; /* Remove glowing effect */
+	}
+</style>

@@ -1,0 +1,95 @@
+---
+import statusData from "../../../data/author-status.json";
+
+export interface Props {
+	theme: string;
+}
+
+const stats = [
+	{ label: "COMMITS", value: statusData.commits, color: "var(--brutal-blue)" },
+	{
+		label: "MERGED PR",
+		value: statusData.mergedPRs,
+		color: "var(--brutal-pink)",
+	},
+	{ label: "CI RUNS", value: statusData.ciRuns, color: "#fff" },
+	{
+		label: "ADDED",
+		value: statusData.addedLines,
+		color: "var(--brutal-yellow)",
+	},
+	{
+		label: "DELETED",
+		value: statusData.deletedLines,
+		color: "var(--brutal-green)",
+	},
+];
+---
+
+<div class="brutal-status-grid">
+	{
+		stats.map((stat, i) => {
+			const rotation = (i % 2 === 0 ? 1 : -1) * (Math.random() * 5 + 2);
+			return (
+				<div
+					class="brutal-status-item"
+					style={`background-color: ${stat.color}; transform: rotate(${rotation}deg);`}
+				>
+					<div class="brutal-status-value">{stat.value}</div>
+					<div class="brutal-status-label">{stat.label}</div>
+				</div>
+			);
+		})
+	}
+</div>
+
+<style>
+	.brutal-status-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 30px;
+	}
+
+	.brutal-status-item {
+		border: 6px solid #000;
+		padding: 20px;
+		text-align: center;
+		box-shadow: 12px 12px 0 #000;
+		transition: all 0.1s;
+	}
+
+	.brutal-status-item:hover {
+		transform: scale(1.1) rotate(0deg) !important;
+		box-shadow: 20px 20px 0 #000;
+		z-index: 10;
+		background-color: #fff !important;
+	}
+
+	.brutal-status-value {
+		font-family: var(--font-brutal);
+		font-size: 4rem;
+		line-height: 1;
+		margin-bottom: 10px;
+		-webkit-text-stroke: 2px #000;
+		color: #fff;
+		text-shadow: 4px 4px 0 #000;
+	}
+
+	.brutal-status-label {
+		font-family: var(--font-brutal);
+		font-size: 1.5rem;
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 5px 10px;
+	}
+
+	/* Make the first item span full width */
+	.brutal-status-item:first-child {
+		grid-column: 1 / -1;
+	}
+
+	.brutal-status-item:first-child .brutal-status-value {
+		font-size: 6rem;
+	}
+</style>

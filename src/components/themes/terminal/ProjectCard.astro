@@ -1,0 +1,69 @@
+---
+import type { Project } from "../../../utils/project";
+
+export interface Props {
+	project: Project;
+	theme: string;
+}
+
+const { project } = Astro.props;
+---
+
+<div class="terminal-ls-row">
+	<span class="ls-name">
+		<a href={`/projects/${project.id}`}>{project.id}</a>
+	</span>
+	<span class="ls-desc"
+		><span
+			data-lang-ja={project.title}
+			data-lang-en={project.title_en || project.title}>{project.title}</span
+		> - <span
+			data-lang-ja={project.description}
+			data-lang-en={project.description_en || project.description}
+			>{project.description}</span
+		></span
+	>
+</div>
+
+<style>
+	.terminal-ls-row {
+		display: flex;
+		gap: 15px;
+		margin-bottom: 8px;
+		font-size: 14px;
+	}
+
+	.ls-name {
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.ls-name a {
+		color: #66b3ff;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	.ls-name a:hover {
+		text-decoration: underline;
+		background: #66b3ff;
+		color: #000;
+	}
+
+	.ls-desc {
+		color: #888888;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		flex-grow: 1;
+	}
+
+	@media (max-width: 768px) {
+		.terminal-ls-row {
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.ls-desc {
+			display: none;
+		}
+	}
+</style>
