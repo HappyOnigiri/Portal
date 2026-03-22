@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 export interface ProjectData {
 	id: string;
 	title: string;
@@ -26,23 +29,39 @@ const containBgStyle =
 	imageFit === "contain" && project.image_contain_bg
 		? { "--image-contain-bg": project.image_contain_bg }
 		: undefined;
+
+const thumbnails = import.meta.glob<{ default: ImageMetadata }>(
+	"../assets/images/thumbnails/*.{jpg,jpeg,png,gif,webp,avif,svg}",
+);
+
+let resolvedImage: ImageMetadata | undefined;
+if (project.image) {
+	const filename = project.image.split("/").at(-1);
+	const globKey = `../assets/images/thumbnails/${filename}`;
+	const loader = thumbnails[globKey];
+	if (loader) {
+		resolvedImage = (await loader()).default;
+	}
+}
 ---
 
 {
 	isDetailMode ? (
 		<a class="card card--link" href={detailHref}>
-			{project.image && (
+			{resolvedImage && (
 				<div
 					class="card-image"
 					data-image-fit={imageFit}
 					style={containBgStyle}
 				>
-					<img
-						src={project.image}
+					<Image
+						src={resolvedImage}
 						data-lang-ja={`${project.title} のサムネイル`}
 						data-lang-en={`${project.title_en || project.title} thumbnail`}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
+						widths={[400, 800]}
+						sizes="(max-width: 640px) 400px, 800px"
 					/>
 					{project.category && (
 						<span class="card-category" data-color={project.category_color}>
@@ -73,18 +92,20 @@ const containBgStyle =
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			{project.image && (
+			{resolvedImage && (
 				<div
 					class="card-image"
 					data-image-fit={imageFit}
 					style={containBgStyle}
 				>
-					<img
-						src={project.image}
+					<Image
+						src={resolvedImage}
 						data-lang-ja={`${project.title} のサムネイル`}
 						data-lang-en={`${project.title_en || project.title} thumbnail`}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
+						widths={[400, 800]}
+						sizes="(max-width: 640px) 400px, 800px"
 					/>
 					{project.category && (
 						<span class="card-category" data-color={project.category_color}>
@@ -110,18 +131,20 @@ const containBgStyle =
 		</a>
 	) : (
 		<div class="card">
-			{project.image && (
+			{resolvedImage && (
 				<div
 					class="card-image"
 					data-image-fit={imageFit}
 					style={containBgStyle}
 				>
-					<img
-						src={project.image}
+					<Image
+						src={resolvedImage}
 						data-lang-ja={`${project.title} のサムネイル`}
 						data-lang-en={`${project.title_en || project.title} thumbnail`}
 						alt={`${project.title} のサムネイル`}
 						loading="lazy"
+						widths={[400, 800]}
+						sizes="(max-width: 640px) 400px, 800px"
 					/>
 					{project.category && (
 						<span class="card-category" data-color={project.category_color}>
