@@ -85,12 +85,18 @@ const theme = "brutal";
 	[data-theme="brutal"] {
 		--bg-color: #f4f4f0;
 		--text-main: #000;
+		--text-muted: #555;
 		--brutal-yellow: #eeff00;
 		--brutal-pink: #ff00ea;
 		--brutal-blue: #0051ff;
 		--brutal-green: #00ff22;
 		--brutal-red: #ff0000;
 		--font-brutal: "Impact", "Arial Black", sans-serif;
+
+		/* Standard UI vars mapped to Brutal */
+		--panel-bg: #fff;
+		--card-border: 4px solid #000;
+		--card-shadow: 6px 6px 0 #000;
 	}
 
 	[data-theme="brutal"] body {
@@ -228,6 +234,28 @@ const theme = "brutal";
 		}
 		.brutal-title {
 			font-size: 5rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.brutal-title {
+			font-size: 3.5rem;
+		}
+		.brutal-heading {
+			font-size: 2rem;
+			padding: 8px 15px;
+		}
+		.brutal-grid {
+			padding: 0 15px;
+			gap: 30px;
+		}
+		.brutal-projects {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+		.brutal-hero-box {
+			padding: 30px 15px;
+			margin: 20px auto;
 		}
 	}
 </style>

@@ -63,17 +63,21 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 		color: #000;
 		transition: all 0.1s steps(3);
 		position: relative;
+		width: calc(100% - 12px); /* Prevent shadow from causing overflow */
+		box-sizing: border-box;
 	}
 
 	.brutal-card:hover {
-		transform: rotate(0deg) scale(1.05) translate(-5px, -5px) !important;
+		transform: rotate(0deg) scale(1.02) translate(-5px, -5px) !important;
 		box-shadow: 20px 20px 0 #000;
 		z-index: 10;
+		width: calc(100% - 20px);
 	}
 
 	.brutal-card:active {
 		transform: translate(5px, 5px) !important;
 		box-shadow: 0 0 0 #000;
+		width: 100%;
 	}
 
 	.brutal-card-image {
@@ -117,5 +121,14 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 		padding: 5px 10px;
 		text-transform: uppercase;
 		font-size: 1.2rem;
+	}
+
+	@media (max-width: 768px) {
+		.brutal-card-title {
+			font-size: 1.5rem;
+		}
+		.brutal-card-desc {
+			font-size: 1rem;
+		}
 	}
 </style>
