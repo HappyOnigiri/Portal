@@ -59,11 +59,12 @@ const { project } = Astro.props;
 
 	@media (max-width: 768px) {
 		.terminal-ls-row {
-			flex-wrap: wrap;
-			gap: 8px;
+			flex-direction: column;
+			gap: 4px;
 		}
 		.ls-desc {
-			display: none;
+			display: block;
+			white-space: normal;
 		}
 	}
 </style>
