@@ -11,6 +11,7 @@ describe("sortProjectsByTitle", () => {
 				title: "Quantum Maguro",
 				description: "B",
 				url: "https://example.com/b",
+				image_fit: "cover",
 			},
 			{
 				id: "mesugaki-pong",
@@ -18,6 +19,7 @@ describe("sortProjectsByTitle", () => {
 				title: "Mesugaki Pong",
 				description: "A",
 				url: "https://example.com/a",
+				image_fit: "cover",
 			},
 		];
 
@@ -37,6 +39,7 @@ describe("sortProjectsByTitle", () => {
 				title: "B",
 				description: "B",
 				url: "https://example.com/b",
+				image_fit: "cover",
 			},
 			{
 				id: "a",
@@ -44,6 +47,7 @@ describe("sortProjectsByTitle", () => {
 				title: "A",
 				description: "A",
 				url: "https://example.com/a",
+				image_fit: "cover",
 			},
 		];
 
@@ -63,6 +67,7 @@ describe("sortProjectsByOrder", () => {
 				title: "Quantum Maguro",
 				description: "C",
 				url: "https://example.com/c",
+				image_fit: "cover",
 			},
 			{
 				id: "pixel-refiner",
@@ -70,6 +75,7 @@ describe("sortProjectsByOrder", () => {
 				title: "PixelRefiner",
 				description: "A",
 				url: "https://example.com/a",
+				image_fit: "cover",
 			},
 			{
 				id: "mesugaki-pong",
@@ -77,6 +83,7 @@ describe("sortProjectsByOrder", () => {
 				title: "Mesugaki Pong",
 				description: "B",
 				url: "https://example.com/b",
+				image_fit: "cover",
 			},
 		];
 
@@ -97,6 +104,7 @@ describe("sortProjectsByOrder", () => {
 				title: "B",
 				description: "B",
 				url: "https://example.com/b",
+				image_fit: "cover",
 			},
 			{
 				id: "a",
@@ -104,6 +112,7 @@ describe("sortProjectsByOrder", () => {
 				title: "A",
 				description: "A",
 				url: "https://example.com/a",
+				image_fit: "cover",
 			},
 		];
 

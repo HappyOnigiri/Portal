@@ -87,6 +87,7 @@ describe("structured-data", () => {
 			order: 1,
 			title: "T",
 			description: "D",
+			image_fit: "cover",
 		};
 		const game: Project = {
 			...base,

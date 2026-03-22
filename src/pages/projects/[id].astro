@@ -26,6 +26,11 @@ export async function getStaticPaths() {
 
 const { project, projectId } = Astro.props as Props;
 const detailPath = `/projects/${projectId}`;
+const imageFit = project.image_fit;
+const containBgStyle =
+	imageFit === "contain" && project.image_contain_bg
+		? { "--image-contain-bg": project.image_contain_bg }
+		: undefined;
 
 const jsonLd = buildJsonLdGraph([
 	personHappyOnigiri(SITE_ORIGIN),
@@ -72,7 +77,11 @@ const jsonLd = buildJsonLdGraph([
 
 		{
 			project.image && (
-				<div class="project-detail-image">
+				<div
+					class="project-detail-image"
+					data-image-fit={imageFit}
+					style={containBgStyle}
+				>
 					<img
 						src={project.image}
 						data-lang-ja={`${project.title} のサムネイル`}
