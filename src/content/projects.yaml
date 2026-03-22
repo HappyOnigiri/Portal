@@ -1,4 +1,6 @@
 # category_color の選択肢: cyan / emerald / amber / purple / blue / pink
+# image_fit（省略時 cover）: cover = サムネ枠を塗りつぶし / contain = 全体を枠内に収める
+# image_contain_bg: image_fit が contain のときのレターボックス背景（任意の CSS 色。例 #ffffff / rgb(0 0 0)）。省略時はパネル背景
 
 - id: "mesugaki-pong"
   title: "メスガキポンポン"
@@ -27,6 +29,18 @@
   description_en: "Optimize AI-generated pixel art into high-quality assets and icons. Complete anti-aliasing removal and background transparency in seconds."
   image: "/images/thumbnails/pixel-refiner.png"
   url: "https://www.pixel-refiner.app/"
+  category: "TOOL"
+  category_color: "cyan"
+
+- id: "claude-nano-line"
+  title: "Claude Nano Line"
+  title_en: "Claude Nano Line"
+  description: "Claude Code の statusLine をフォーマット文字列で自由に組み立てられるツールです。"
+  description_en: "A format-string-driven statusLine for Claude Code. Show exactly what you want, the way you want it."
+  image: "/images/thumbnails/claude-nano-line.png"
+  image_fit: contain
+  image_contain_bg: "#000000"
+  url: "https://github.com/HappyOnigiri/ClaudeNanoLine"
   category: "TOOL"
   category_color: "cyan"
 

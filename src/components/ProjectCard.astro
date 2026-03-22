@@ -6,6 +6,8 @@ export interface ProjectData {
 	description: string;
 	description_en?: string;
 	image?: string;
+	image_fit?: "cover" | "contain";
+	image_contain_bg?: string;
 	url?: string;
 	category?: string;
 	category_color?: string;
@@ -19,13 +21,22 @@ interface Props {
 const { project, hrefMode = "external" } = Astro.props as Props;
 const detailHref = `/projects/${project.id}`;
 const isDetailMode = hrefMode === "detail";
+const imageFit = project.image_fit ?? "cover";
+const containBgStyle =
+	imageFit === "contain" && project.image_contain_bg
+		? { "--image-contain-bg": project.image_contain_bg }
+		: undefined;
 ---
 
 {
 	isDetailMode ? (
 		<a class="card card--link" href={detailHref}>
 			{project.image && (
-				<div class="card-image">
+				<div
+					class="card-image"
+					data-image-fit={imageFit}
+					style={containBgStyle}
+				>
 					<img
 						src={project.image}
 						data-lang-ja={`${project.title} のサムネイル`}
@@ -63,7 +74,11 @@ const isDetailMode = hrefMode === "detail";
 			rel="noopener noreferrer"
 		>
 			{project.image && (
-				<div class="card-image">
+				<div
+					class="card-image"
+					data-image-fit={imageFit}
+					style={containBgStyle}
+				>
 					<img
 						src={project.image}
 						data-lang-ja={`${project.title} のサムネイル`}
@@ -96,7 +111,11 @@ const isDetailMode = hrefMode === "detail";
 	) : (
 		<div class="card">
 			{project.image && (
-				<div class="card-image">
+				<div
+					class="card-image"
+					data-image-fit={imageFit}
+					style={containBgStyle}
+				>
 					<img
 						src={project.image}
 						data-lang-ja={`${project.title} のサムネイル`}

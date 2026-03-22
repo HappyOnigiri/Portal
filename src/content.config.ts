@@ -63,6 +63,8 @@ const projects = defineCollection({
 		description: z.string(),
 		description_en: z.string().optional(),
 		image: z.string().optional(),
+		image_fit: z.enum(["cover", "contain"]).default("cover"),
+		image_contain_bg: z.string().optional(),
 		url: z.string().url().optional(),
 		category: z.string().optional(),
 		category_color: z.string().optional(),
