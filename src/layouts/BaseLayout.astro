@@ -68,17 +68,13 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 	</head>
 	<body>
 		<div class="cyber-container">
-			<div class="cyber-header-top">
-				<div
-					style="display: flex; align-items: center; gap: 1rem; margin-left: auto;"
-				>
-					<ThemeSwitcher theme={theme} />
-					<div class="lang-switcher">
-						<button data-lang-btn="en" class="lang-btn">EN</button>
-						<span class="lang-divider">|</span>
-						<button data-lang-btn="ja" class="lang-btn">JP</button>
-					</div>
+			<div class="floating-ui-pill">
+				<div class="lang-switcher" style="margin-top: 0; opacity: 1;">
+					<button data-lang-btn="en" class="lang-btn">EN</button>
+					<span class="lang-divider">|</span>
+					<button data-lang-btn="ja" class="lang-btn">JP</button>
 				</div>
+				<ThemeSwitcher theme={theme} />
 			</div>
 
 			<main id="main-content" class="portal-main">
