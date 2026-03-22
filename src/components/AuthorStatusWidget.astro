@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import avatarImage from "../assets/images/avatar.jpg";
 import statusData from "../data/author-status.json";
 import { translations } from "../utils/translations";
 
@@ -24,12 +26,15 @@ const lastSync = statusData.lastUpdated
 >
 	<div class="p-6 border-b border-[#2dd4bf]/20">
 		<div class="profile-header">
-			<img
-				src="/images/avatar.jpg"
+			<Image
+				src={avatarImage}
 				data-lang-ja={translations.ja["avatar.alt"]}
 				data-lang-en={translations.en["avatar.alt"]}
 				alt={translations.ja["avatar.alt"]}
 				class="profile-avatar"
+				width={80}
+				height={80}
+				loading="eager"
 			/>
 			<div>
 				<div class="flex items-center gap-3">
