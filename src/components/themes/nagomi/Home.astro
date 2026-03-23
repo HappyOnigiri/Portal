@@ -1,9 +1,12 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { Image, getImage } from "astro:assets";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ArticlesWidget from "../../ArticlesWidget.astro";
 import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
 import ProjectCard from "../../ProjectCard.astro";
+import backgroundImage from "../../../assets/images/themes/nagomi/background.jpeg";
+import logoImage from "../../../assets/images/themes/nagomi/logo.jpg";
 
 export interface Props {
 	projects: CollectionEntry<"projects">["data"][];
@@ -13,6 +16,8 @@ export interface Props {
 }
 const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
 const theme = "nagomi";
+
+const optimizedBg = await getImage({ src: backgroundImage, format: "webp" });
 ---
 
 <BaseLayout
@@ -22,14 +27,19 @@ const theme = "nagomi";
 	canonicalPath="/"
 	jsonLd={jsonLd}
 >
+	<style set:html={`[data-theme="nagomi"] body { background-image: url(${optimizedBg.src}); background-repeat: repeat; background-size: 400px auto; }`}></style>
 	<div class="nagomi-container">
 		<header class="nagomi-header">
 			<div class="nagomi-header-inner">
 				<div class="nagomi-title-block">
-					<h1 class="nagomi-title" data-lang-ja="おにぎりポータル" data-lang-en="ONIGIRI PORTAL">おにぎりポータル</h1>
-					<p class="nagomi-subtitle">
-						<span data-lang-ja="ものづくりの記録" data-lang-en="A record of craftsmanship">ものづくりの記録</span>
-					</p>
+					<h1 class="sr-only">おにぎりポータル — ものづくりの記録</h1>
+					<Image
+						src={logoImage}
+						alt="おにぎりポータル — ものづくりの記録"
+						class="nagomi-logo"
+						widths={[400, 600, 800]}
+						sizes="(max-width: 768px) 90vw, 800px"
+					/>
 				</div>
 			</div>
 			<div class="nagomi-divider" aria-hidden="true"></div>
@@ -90,7 +100,7 @@ const theme = "nagomi";
 	.nagomi-header {
 		text-align: center;
 		padding: 2rem 0 1rem;
-		margin-bottom: 2.5rem;
+		margin-bottom: 3rem;
 	}
 
 	.nagomi-header-inner {
@@ -105,21 +115,24 @@ const theme = "nagomi";
 		align-items: center;
 	}
 
-	.nagomi-title {
-		font-family: "Noto Serif JP", serif;
-		font-size: 3rem;
-		font-weight: 700;
-		color: #2B2B2B;
-		letter-spacing: 8px;
-		margin: 0 0 0.5rem 0;
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
 	}
 
-	.nagomi-subtitle {
-		font-family: "Noto Sans JP", sans-serif;
-		font-size: 1rem;
-		color: #6B5E50;
-		letter-spacing: 4px;
-		margin: 0;
+	.nagomi-logo {
+		max-width: 800px;
+		width: 100%;
+		height: auto;
+		border-radius: 0.5rem;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 	}
 
 	.nagomi-divider {
@@ -131,7 +144,7 @@ const theme = "nagomi";
 	}
 
 	.nagomi-section {
-		margin-bottom: 3.5rem;
+		margin-bottom: 4.5rem;
 	}
 
 	.nagomi-section-heading {
@@ -140,9 +153,28 @@ const theme = "nagomi";
 		font-weight: 700;
 		color: #2B2B2B;
 		margin: 0 0 1.5rem 0;
+		border-left: 3px solid #9E2A2B;
 		border-bottom: 1px solid #D4C5B0;
+		padding-left: 0.75rem;
 		padding-bottom: 0.75rem;
 		letter-spacing: 0.2em;
+	}
+
+	[data-theme="nagomi"] .card {
+		position: relative;
+	}
+
+	[data-theme="nagomi"] .card::before {
+		content: "";
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 3px;
+		background: #9E2A2B;
+		transform: scaleX(1);
+		z-index: 2;
 	}
 
 	[data-theme="nagomi"] .project-grid {
@@ -150,14 +182,8 @@ const theme = "nagomi";
 	}
 
 	@media (max-width: 768px) {
-		.nagomi-title {
-			font-size: 2rem;
-			letter-spacing: 4px;
-		}
-
-		.nagomi-subtitle {
-			font-size: 0.85rem;
-			letter-spacing: 2px;
+		.nagomi-logo {
+			max-width: 90vw;
 		}
 
 		[data-theme="nagomi"] .project-grid {

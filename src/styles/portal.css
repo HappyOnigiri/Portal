@@ -133,10 +133,10 @@
 	--card-border-radius: 8px;
 	--card-border: 1px solid #D4C5B0;
 	--card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	--card-hover-transform: translateY(-4px);
+	--card-hover-transform: translateY(-2px);
 	--card-hover-bg: rgba(255, 255, 255, 0.95);
 	--card-hover-border: #9E2A2B;
-	--card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+	--card-hover-shadow: 0 4px 16px rgba(158, 42, 43, 0.12);
 	--card-before-display: none;
 
 	--category-border-radius: 12px;
