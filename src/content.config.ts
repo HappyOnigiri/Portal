@@ -236,8 +236,19 @@ const zennArticles = defineCollection({
 			} else if (existsSync(jsonUrl)) {
 				// API 失敗時は既存 JSON からフォールバック
 				logger.warn(`Falling back to cached ${ZENN_JSON_FILE}`);
-				const raw = await fs.readFile(jsonPath, "utf-8");
-				articles = JSON.parse(raw) as ZennArticle[];
+				try {
+					const raw = await fs.readFile(jsonPath, "utf-8");
+					const parsed = JSON.parse(raw);
+					if (Array.isArray(parsed)) {
+						articles = parsed as ZennArticle[];
+					} else {
+						logger.error(
+							`Cached ${ZENN_JSON_FILE} is not an array; skipping fallback`,
+						);
+					}
+				} catch (err) {
+					logger.error(`Failed to read/parse cached ${jsonPath}: ${err}`);
+				}
 			} else {
 				logger.warn("No Zenn articles available.");
 				return;
