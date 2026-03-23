@@ -112,7 +112,7 @@
 	--page-title-letter-spacing: 2px;
 
 	--guideline-card-shadow: 8px 8px 0px #000;
-	--social-hover-shadow: none;
+	--social-hover-shadow: 0 0 0 transparent;
 }
 
 body {
