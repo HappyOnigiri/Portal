@@ -142,13 +142,13 @@ body {
 	z-index: 10;
 }
 
-.cyber-header {
+.portal-header {
 	text-align: center;
 	margin-bottom: 40px;
 	position: relative;
 }
 
-.cyber-glitch {
+.portal-title {
 	font-family: var(--font-heading);
 	font-size: 4rem;
 	font-weight: 900;
@@ -160,7 +160,7 @@ body {
 	display: inline-block;
 }
 
-.cyber-subtitle {
+.portal-subtitle {
 	font-family: var(--font-body);
 	font-weight: 500;
 	color: var(--accent-main);
@@ -171,7 +171,7 @@ body {
 }
 
 /* Navigation Additions */
-.cyber-header-top {
+.portal-header-top {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -903,11 +903,11 @@ body {
 ----------------------------------- */
 @media (max-width: 768px) {
 	/* Reduce title size to prevent overflow */
-	html:not([data-theme="cyber"]) .cyber-glitch {
+	html:not([data-theme="cyber"]) .portal-title {
 		font-size: 2.2rem;
 		overflow-wrap: break-word;
 	}
-	html:not([data-theme="cyber"]) .cyber-subtitle {
+	html:not([data-theme="cyber"]) .portal-subtitle {
 		font-size: 0.9rem;
 		letter-spacing: 2px;
 	}
