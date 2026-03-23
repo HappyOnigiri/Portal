@@ -2,11 +2,12 @@
 import type { CollectionEntry } from "astro:content";
 import BrutalWidget from "./themes/brutal/ArticlesWidget.astro";
 import CyberWidget from "./themes/cyber/ArticlesWidget.astro";
+import NagomiWidget from "./themes/nagomi/ArticlesWidget.astro";
 import PopWidget from "./themes/pop/ArticlesWidget.astro";
 
 interface Props {
 	articles: CollectionEntry<"articles">[];
-	theme?: "cyber" | "pop" | "brutal";
+	theme?: "cyber" | "pop" | "brutal" | "nagomi";
 }
 
 const { articles, theme = "cyber" } = Astro.props as Props;
@@ -15,3 +16,4 @@ const { articles, theme = "cyber" } = Astro.props as Props;
 {theme === "cyber" && <CyberWidget articles={articles} />}
 {theme === "pop" && <PopWidget articles={articles} />}
 {theme === "brutal" && <BrutalWidget articles={articles} />}
+{theme === "nagomi" && <NagomiWidget articles={articles} />}

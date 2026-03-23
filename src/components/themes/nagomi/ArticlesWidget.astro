@@ -1,0 +1,84 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+	articles: CollectionEntry<"articles">[];
+}
+
+const { articles } = Astro.props;
+
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString("ja-JP", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		timeZone: "Asia/Tokyo",
+	});
+---
+
+<div class="w-full max-w-[1100px] mx-auto text-sm sm:text-base">
+	<div
+		class="flex flex-col w-full bg-[rgba(255,255,255,0.9)] border border-[#D4C5B0] rounded-lg overflow-hidden"
+		style="box-shadow: 0 2px 8px rgba(0,0,0,0.06);"
+	>
+		<div class="px-6 pt-5 pb-1">
+			<h2
+				class="text-lg font-bold tracking-wide m-0 mb-4 border-b border-[#D4C5B0] pb-3"
+				style="font-family: 'Noto Serif JP', serif; color: #2B2B2B; letter-spacing: 0.2em;"
+				data-lang-ja="記事"
+				data-lang-en="Articles"
+			>
+				記事
+			</h2>
+		</div>
+
+		<div class="px-6 pb-2">
+			<div class="flex flex-col">
+				{
+					articles.map((article) => (
+						<a
+							href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+							class="flex items-center gap-4 py-4 px-2 border-b border-[#D4C5B0] transition-colors group"
+							style="text-decoration: none;"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<div class="text-2xl w-10 shrink-0">{article.data.emoji}</div>
+							<div
+								class="flex-1 transition-colors group-hover:text-[#9E2A2B]"
+								style="color: #2B2B2B;"
+							>
+								<span
+									data-lang-ja={article.data.title}
+									data-lang-en={article.data.title_en || article.data.title}
+								>
+									{article.data.title}
+								</span>
+							</div>
+							<div
+								class="text-xs whitespace-nowrap text-right"
+								style="color: #6B5E50;"
+							>
+								{formatDate(article.data.published_at)}
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</div>
+
+		<div class="px-6 pb-5 text-right">
+			<a
+				href="https://zenn.dev/happy_onigiri"
+				class="text-sm transition-colors hover:text-[#9E2A2B]"
+				style="color: #6B5E50; text-decoration: none;"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<span data-i18n="articles.viewAll">すべての記事を見る →</span>
+			</a>
+		</div>
+	</div>
+</div>

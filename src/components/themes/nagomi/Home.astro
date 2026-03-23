@@ -1,0 +1,209 @@
+---
+import { getImage, Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import backgroundImage from "../../../assets/images/themes/nagomi/background.jpeg";
+import logoImage from "../../../assets/images/themes/nagomi/logo.jpg";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "../../ArticlesWidget.astro";
+import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
+import ProjectCard from "../../ProjectCard.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	articleEntries: CollectionEntry<"articles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "nagomi";
+
+const optimizedBg = await getImage({ src: backgroundImage, format: "webp" });
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | 和"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<style
+		set:html={`[data-theme="nagomi"] body { background-image: url(${optimizedBg.src}); background-repeat: repeat; background-size: 400px auto; }`}
+	></style>
+	<div class="nagomi-container">
+		<header class="nagomi-header">
+			<div class="nagomi-header-inner">
+				<div class="nagomi-title-block">
+					<h1 class="sr-only">おにぎりポータル — ものづくりの記録</h1>
+					<Image
+						src={logoImage}
+						alt="おにぎりポータル — ものづくりの記録"
+						class="nagomi-logo"
+						widths={[400, 600, 800]}
+						sizes="(max-width: 768px) 90vw, 800px"
+					/>
+				</div>
+			</div>
+			<div class="nagomi-divider" aria-hidden="true"></div>
+		</header>
+
+		<section id="projects" aria-label="Projects" class="nagomi-section">
+			<h2
+				class="nagomi-section-heading"
+				data-lang-ja="作品"
+				data-lang-en="Projects"
+			>
+				作品
+			</h2>
+			<div class="project-grid">
+				{
+					projects.map((project) => (
+						<ProjectCard project={project} theme={theme} />
+					))
+				}
+			</div>
+		</section>
+
+		{
+			articleEntries.length > 0 && (
+				<section id="articles" aria-label="Articles" class="nagomi-section">
+					<ArticlesWidget articles={articleEntries} theme={theme} />
+				</section>
+			)
+		}
+
+		<section
+			id="status"
+			aria-label="HappyOnigiri Status"
+			class="nagomi-section"
+		>
+			<AuthorStatusWidget theme={theme} />
+		</section>
+	</div>
+</BaseLayout>
+
+<style is:global>
+	[data-theme="nagomi"] .portal-footer {
+		background: rgba(251, 249, 246, 0.88);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		border: 1px solid #d4c5b0;
+		border-radius: 16px;
+		padding: 14px 32px;
+		max-width: 600px;
+		margin: 80px auto 32px;
+	}
+
+	[data-theme="nagomi"] .social-link img {
+		filter: brightness(0.3);
+	}
+
+	[data-theme="nagomi"] .social-link:hover img {
+		filter: brightness(0) drop-shadow(0 0 0 transparent);
+	}
+
+	[data-theme="nagomi"] .card-image img {
+		image-rendering: auto;
+	}
+
+	.nagomi-container {
+		max-width: 1100px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.nagomi-header {
+		text-align: center;
+		padding: 2rem 0 1rem;
+		margin-bottom: 3rem;
+	}
+
+	.nagomi-header-inner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.nagomi-title-block {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
+	}
+
+	.nagomi-logo {
+		max-width: 800px;
+		width: 100%;
+		height: auto;
+		border-radius: 0.5rem;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+	}
+
+	.nagomi-divider {
+		width: 60px;
+		height: 1px;
+		background: #9e2a2b;
+		margin: 2rem auto 0;
+		opacity: 0.4;
+	}
+
+	.nagomi-section {
+		margin-bottom: 4.5rem;
+	}
+
+	.nagomi-section-heading {
+		font-family: "Noto Serif JP", serif;
+		font-size: 1.3rem;
+		font-weight: 700;
+		color: #2b2b2b;
+		margin: 0 0 1.5rem 0;
+		border-left: 3px solid #9e2a2b;
+		border-bottom: 1px solid #d4c5b0;
+		padding-left: 0.75rem;
+		padding-bottom: 0.75rem;
+		letter-spacing: 0.2em;
+	}
+
+	[data-theme="nagomi"] .card {
+		position: relative;
+	}
+
+	[data-theme="nagomi"] .card::before {
+		content: "";
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 3px;
+		background: #9e2a2b;
+		transform: scaleX(1);
+		z-index: 2;
+	}
+
+	[data-theme="nagomi"] .project-grid {
+		gap: 28px;
+	}
+
+	@media (max-width: 768px) {
+		.nagomi-logo {
+			max-width: 90vw;
+		}
+
+		[data-theme="nagomi"] .project-grid {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+	}
+</style>

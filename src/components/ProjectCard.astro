@@ -1,6 +1,7 @@
 ---
 import BrutalWidget from "./themes/brutal/ProjectCard.astro";
 import CyberWidget from "./themes/cyber/ProjectCard.astro";
+import NagomiWidget from "./themes/nagomi/ProjectCard.astro";
 import PopWidget from "./themes/pop/ProjectCard.astro";
 
 export interface ProjectData {
@@ -20,7 +21,7 @@ export interface ProjectData {
 interface Props {
 	project: ProjectData;
 	hrefMode?: "detail" | "external";
-	theme?: "cyber" | "pop" | "brutal";
+	theme?: "cyber" | "pop" | "brutal" | "nagomi";
 	index?: number;
 }
 
@@ -39,3 +40,4 @@ const {
 		<BrutalWidget project={project} hrefMode={hrefMode} index={index} />
 	)
 }
+{theme === "nagomi" && <NagomiWidget project={project} hrefMode={hrefMode} />}
