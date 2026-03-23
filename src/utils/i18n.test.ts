@@ -209,6 +209,32 @@ describe("initI18n - data-i18n-attr 属性切り替え", () => {
 	});
 });
 
+describe("initI18n - data-href-en リンク切り替え", () => {
+	it("英語設定時は href を data-href-en の値に更新する", () => {
+		store["portal-lang"] = "en";
+		document.body.innerHTML = `<a href="/ja" data-href-ja="/ja" data-href-en="/en">link</a>`;
+		setup();
+		initI18n();
+		expect(document.querySelector("a")?.getAttribute("href")).toBe("/en");
+	});
+
+	it("日本語設定時は href を data-href-ja の値に更新する", () => {
+		store["portal-lang"] = "ja";
+		document.body.innerHTML = `<a href="/en" data-href-ja="/ja" data-href-en="/en">link</a>`;
+		setup();
+		initI18n();
+		expect(document.querySelector("a")?.getAttribute("href")).toBe("/ja");
+	});
+
+	it("data-href-ja または data-href-en が空の場合は href を変更しない", () => {
+		store["portal-lang"] = "en";
+		document.body.innerHTML = `<a href="/original" data-href-en="/en">link</a>`;
+		setup();
+		initI18n();
+		expect(document.querySelector("a")?.getAttribute("href")).toBe("/original");
+	});
+});
+
 describe("initI18n - translations リソース", () => {
 	it("translations オブジェクトに ja と en のキーが存在する", () => {
 		expect(translations.ja).toBeDefined();

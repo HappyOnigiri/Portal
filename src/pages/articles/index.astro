@@ -73,11 +73,20 @@ const jsonLd = buildJsonLdGraph([
 									<td class="py-4 px-2 flex-1">
 										<a
 											href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+											data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+											data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
 											class="article-link"
 											target="_blank"
 											rel="noopener noreferrer"
 										>
-											{article.data.title}
+											<span
+												data-lang-ja={article.data.title}
+												data-lang-en={
+													article.data.title_en || article.data.title
+												}
+											>
+												{article.data.title}
+											</span>
 										</a>
 									</td>
 									<td class="py-4 px-2 text-[#94a3b8] text-xs whitespace-nowrap text-right">

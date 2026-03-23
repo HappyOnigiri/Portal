@@ -78,6 +78,7 @@ const ZENN_JSON_FILE = "src/data/articles/zenn.json";
 const zennArticleSchema = z.object({
 	id: z.number(),
 	title: z.string(),
+	title_en: z.string().optional(),
 	slug: z.string(),
 	emoji: z.string(),
 	article_type: z.string(),
@@ -134,6 +135,84 @@ const zennArticles = defineCollection({
 			let articles = shouldFetch ? await fetchAllZennArticles(logger) : null;
 
 			if (articles !== null) {
+				// 既存 JSON から title_en を引き継ぐ
+				const existingTitleEnMap = new Map<string, string>();
+				if (existsSync(jsonUrl)) {
+					try {
+						const raw = await fs.readFile(jsonPath, "utf-8");
+						const cached = JSON.parse(raw);
+						if (Array.isArray(cached)) {
+							for (const a of cached) {
+								if (
+									a &&
+									typeof a === "object" &&
+									typeof a.slug === "string" &&
+									typeof a.title_en === "string"
+								) {
+									existingTitleEnMap.set(a.slug, a.title_en);
+								}
+							}
+						} else {
+							logger.warn(
+								"Zenn cache JSON is not an array; skipping title_en inheritance",
+							);
+						}
+					} catch (err) {
+						logger.warn(
+							`Failed to read/parse Zenn cache; skipping title_en inheritance: ${err}`,
+						);
+					}
+				}
+				for (const article of articles) {
+					const cached = existingTitleEnMap.get(article.slug);
+					if (cached) article.title_en = cached;
+				}
+
+				// title_en 未取得の記事をスクレイピング
+				let isFirst = true;
+				for (const article of articles) {
+					if (article.title_en) continue;
+					if (!isFirst) {
+						await new Promise<void>((resolve) => setTimeout(resolve, 2000));
+					}
+					isFirst = false;
+					try {
+						const res = await fetch(
+							`https://zenn.dev/happy_onigiri/articles/${article.slug}?locale=en`,
+							{ signal: AbortSignal.timeout(10_000) },
+						);
+						if (res.ok) {
+							const html = await res.text();
+							const match = html.match(
+								/<meta property="og:title" content="([^"]+)"/,
+							);
+							if (match) {
+								const titleEn = match[1]
+									.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+										String.fromCodePoint(parseInt(hex, 16)),
+									)
+									.replace(/&#(\d+);/g, (_, dec) =>
+										String.fromCodePoint(parseInt(dec, 10)),
+									)
+									.replace(/&amp;/g, "&")
+									.replace(/&lt;/g, "<")
+									.replace(/&gt;/g, ">")
+									.replace(/&quot;/g, '"');
+								if (titleEn !== article.title) {
+									article.title_en = titleEn;
+									logger.info(
+										`Fetched English title for ${article.slug}: ${titleEn}`,
+									);
+								}
+							}
+						}
+					} catch (err) {
+						logger.warn(
+							`Failed to fetch English title for ${article.slug}: ${err}`,
+						);
+					}
+				}
+
 				// published_at 降順でソートして JSON に書き出す
 				articles.sort(
 					(a, b) =>
@@ -157,12 +236,25 @@ const zennArticles = defineCollection({
 			} else if (existsSync(jsonUrl)) {
 				// API 失敗時は既存 JSON からフォールバック
 				logger.warn(`Falling back to cached ${ZENN_JSON_FILE}`);
-				const raw = await fs.readFile(jsonPath, "utf-8");
-				articles = JSON.parse(raw) as ZennArticle[];
+				try {
+					const raw = await fs.readFile(jsonPath, "utf-8");
+					const parsed = JSON.parse(raw);
+					if (Array.isArray(parsed)) {
+						articles = parsed as ZennArticle[];
+					} else {
+						logger.error(
+							`Cached ${ZENN_JSON_FILE} is not an array; skipping fallback`,
+						);
+					}
+				} catch (err) {
+					logger.error(`Failed to read/parse cached ${jsonPath}: ${err}`);
+				}
 			} else {
 				logger.warn("No Zenn articles available.");
 				return;
 			}
+
+			if (!articles) return;
 
 			store.clear();
 			for (const article of articles) {

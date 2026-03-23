@@ -5,7 +5,8 @@
 		"slug": "6ca9f26c08d1be",
 		"emoji": "💔",
 		"article_type": "idea",
-		"published_at": "2026-03-22T12:00:05.581+09:00"
+		"published_at": "2026-03-22T12:00:05.581+09:00",
+		"title_en": "My Journey with Antigravity: From Our First Meeting to Our Breakup"
 	},
 	{
 		"id": 547078,
@@ -13,7 +14,8 @@
 		"slug": "9ae9080ba5eb88",
 		"emoji": "⚠️",
 		"article_type": "tech",
-		"published_at": "2026-03-20T15:39:57.482+09:00"
+		"published_at": "2026-03-20T15:39:57.482+09:00",
+		"title_en": "Preventing Mac Freezes Caused by Claude Code Memory Leaks with an Automated Watchdog"
 	},
 	{
 		"id": 543685,
@@ -21,7 +23,8 @@
 		"slug": "2df24dbfb9264a",
 		"emoji": "🔥",
 		"article_type": "idea",
-		"published_at": "2026-03-15T02:55:22.720+09:00"
+		"published_at": "2026-03-15T02:55:22.720+09:00",
+		"title_en": "When I Asked Claude Code to Fix My Code, It Impersonated Me to Reconcile with the Review Bot"
 	},
 	{
 		"id": 537838,
@@ -29,7 +32,8 @@
 		"slug": "a94ae67c605ad5",
 		"emoji": "🚀",
 		"article_type": "tech",
-		"published_at": "2026-03-04T15:08:48.894+09:00"
+		"published_at": "2026-03-04T15:08:48.894+09:00",
+		"title_en": "My 2-Week Deep Dive into Google Antigravity: A $500/Month Cursor Power User's Perspective"
 	},
 	{
 		"id": 535249,
@@ -45,6 +49,7 @@
 		"slug": "399b8d91126587",
 		"emoji": "🍣",
 		"article_type": "tech",
-		"published_at": "2026-02-16T19:39:12.459+09:00"
+		"published_at": "2026-02-16T19:39:12.459+09:00",
+		"title_en": "From AI Brainstorming to Releasing a Browser Game in Half a Day: Developing the Typing Sushi Game 'Quantum Tuna Diner'"
 	}
 ]

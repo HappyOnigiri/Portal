@@ -22,11 +22,18 @@ const { articles } = Astro.props;
 					<span class="article-emoji">{article.data.emoji}</span>
 					<a
 						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="article-title"
 					>
-						{article.data.title}
+						<span
+							data-lang-ja={article.data.title}
+							data-lang-en={article.data.title_en || article.data.title}
+						>
+							{article.data.title}
+						</span>
 					</a>
 				</div>
 			);
