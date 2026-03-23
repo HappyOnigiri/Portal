@@ -76,7 +76,14 @@ const optimizedBg = await getImage({ src: backgroundImage, format: "webp" });
 
 <style is:global>
 	[data-theme="nagomi"] .portal-footer {
-		border-top-color: #D4C5B0;
+		background: rgba(251, 249, 246, 0.88);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		border: 1px solid #D4C5B0;
+		border-radius: 16px;
+		padding: 14px 32px;
+		max-width: 600px;
+		margin: 80px auto 32px;
 	}
 
 	[data-theme="nagomi"] .social-link img {
