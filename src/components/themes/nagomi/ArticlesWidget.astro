@@ -36,6 +36,8 @@ const formatDate = (iso: string) =>
 					articles.map((article) => (
 						<a
 							href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
 							class="flex items-center gap-4 py-4 px-2 border-b border-[#D4C5B0] transition-colors group"
 							style="text-decoration: none;"
 							target="_blank"
@@ -46,7 +48,12 @@ const formatDate = (iso: string) =>
 								class="flex-1 transition-colors group-hover:text-[#9E2A2B]"
 								style="color: #2B2B2B;"
 							>
-								{article.data.title}
+								<span
+									data-lang-ja={article.data.title}
+									data-lang-en={article.data.title_en || article.data.title}
+								>
+									{article.data.title}
+								</span>
 							</div>
 							<div class="text-xs whitespace-nowrap text-right" style="color: #6B5E50;">
 								{formatDate(article.data.published_at)}
