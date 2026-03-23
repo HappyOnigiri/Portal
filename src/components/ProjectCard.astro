@@ -1,6 +1,6 @@
 ---
+import BrutalWidget from "./themes/brutal/ProjectCard.astro";
 import CyberWidget from "./themes/cyber/ProjectCard.astro";
-
 import PopWidget from "./themes/pop/ProjectCard.astro";
 
 export interface ProjectData {
@@ -20,15 +20,22 @@ export interface ProjectData {
 interface Props {
 	project: ProjectData;
 	hrefMode?: "detail" | "external";
-	theme?: "cyber" | "pop";
+	theme?: "cyber" | "pop" | "brutal";
+	index?: number;
 }
 
 const {
 	project,
 	hrefMode = "external",
 	theme = "cyber",
+	index = 0,
 } = Astro.props as Props;
 ---
 
 {theme === "cyber" && <CyberWidget project={project} hrefMode={hrefMode} />}
 {theme === "pop" && <PopWidget project={project} hrefMode={hrefMode} />}
+{
+	theme === "brutal" && (
+		<BrutalWidget project={project as any} theme={theme} index={index} />
+	)
+}
