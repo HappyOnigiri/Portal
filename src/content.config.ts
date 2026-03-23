@@ -254,6 +254,8 @@ const zennArticles = defineCollection({
 				return;
 			}
 
+			if (!articles) return;
+
 			store.clear();
 			for (const article of articles) {
 				const id = String(article.id);
