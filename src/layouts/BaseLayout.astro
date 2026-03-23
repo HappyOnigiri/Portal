@@ -13,6 +13,7 @@ interface Props {
 	robots?: string;
 	ogType?: string;
 	jsonLd?: Record<string, unknown>;
+	theme?: "cyber" | "minimal" | "pop" | "glass" | "terminal" | "brutal";
 }
 
 const {
@@ -23,7 +24,7 @@ const {
 	ogType = "website",
 	jsonLd,
 	theme = "cyber",
-} = Astro.props as Props;
+} = Astro.props;
 
 const currentYear = new Date().getFullYear();
 const site = Astro.site;
@@ -67,7 +68,7 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 		{/* FOUC 対策: JS 実行前に lang と theme を設定 */}
 	</head>
 	<body>
-		<div class="cyber-container">
+		<div class="portal-container">
 			<div class="floating-ui-pill" id="floating-ui-pill">
 				<div class="floating-ui-content">
 					<div class="lang-switcher" style="margin-top: 0; opacity: 1;">
@@ -124,7 +125,7 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 				<slot />
 			</main>
 
-			<footer class="cyber-footer">
+			<footer class="portal-footer">
 				<div class="footer-content">
 					<div class="footer-info">
 						<p class="copyright">
@@ -186,8 +187,16 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 			const pill = document.getElementById("floating-ui-pill");
 			const btn = document.getElementById("mobile-menu-toggle");
 			if (btn && pill) {
+				// テーマ切替直後はアニメーションなしでメニューを展開した状態にする
+				if (sessionStorage.getItem("expandPillOnLoad") === "1") {
+					sessionStorage.removeItem("expandPillOnLoad");
+					pill.classList.add("no-animate", "expanded");
+					btn.setAttribute("aria-expanded", "true");
+				}
+
 				btn.addEventListener("click", (e) => {
 					e.stopPropagation();
+					pill.classList.remove("no-animate");
 					const isExpanded = pill.classList.toggle("expanded");
 					btn.setAttribute("aria-expanded", isExpanded.toString());
 				});

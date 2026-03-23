@@ -176,21 +176,15 @@ body {
 	padding: 0;
 	overflow-y: scroll;
 	background-color: var(--bg-color);
-	background-image:
-		radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08), transparent 40%),
-		radial-gradient(circle at 90% 80%, rgba(255, 0, 60, 0.08), transparent 40%),
-		radial-gradient(
-			circle at 50% 50%,
-			rgba(181, 52, 255, 0.05),
-			transparent 60%
-		);
+	background-image: var(--bg-image);
+	background-size: var(--bg-size, auto);
 	color: var(--text-main);
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
 }
 
-.cyber-container {
+.portal-container {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 0px 20px 60px;
@@ -529,7 +523,7 @@ body {
 	color: var(--accent-main);
 }
 
-.cyber-footer {
+.portal-footer {
 	margin-top: 80px;
 	border-top: 1px solid rgba(255, 255, 255, 0.05);
 	padding: 32px 0;
@@ -633,15 +627,24 @@ body {
 		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Courier, monospace;
 	font-size: 10px;
 	cursor: pointer;
-	padding: 0;
+	padding: 2px 6px;
+	border-radius: 4px;
 	opacity: 0.7;
-	transition: opacity 0.3s ease;
+	transition:
+		opacity 0.3s ease,
+		background-color 0.3s ease,
+		color 0.3s ease;
 	text-transform: uppercase;
 }
 
-.floating-ui-pill .lang-btn:hover,
+.floating-ui-pill .lang-btn:hover {
+	opacity: 1;
+}
+
 .floating-ui-pill .lang-btn.active {
 	opacity: 1;
+	background-color: var(--accent-main);
+	color: var(--bg-color);
 	text-shadow: none;
 }
 
@@ -992,6 +995,8 @@ body {
 
 /* ----------------------------------
    Floating UI Pill (Theme/Lang Switcher)
+   // [Policy] テーマ切り替えなどのボタン類（.floating-ui-pill）は、全テーマで共通のフローティングデザインを維持します。
+   // 個別のテーマで特定のデザインにオーバーライドせず、一貫したUXを提供します。
 ----------------------------------- */
 .floating-ui-pill {
 	position: fixed;
@@ -1027,8 +1032,9 @@ body {
 
 @media (max-width: 768px) {
 	.floating-ui-pill {
-		top: 10px;
-		right: 10px;
+		top: auto;
+		bottom: 1rem;
+		right: 1rem;
 		width: 44px;
 		height: 44px;
 		padding: 0;
@@ -1073,6 +1079,14 @@ body {
 		width: 115px;
 		justify-content: space-between;
 		animation: fadeIn 0.3s forwards;
+	}
+
+	.floating-ui-pill.no-animate {
+		transition: none;
+	}
+
+	.floating-ui-pill.no-animate .floating-ui-content {
+		animation: none;
 	}
 
 	@keyframes fadeIn {

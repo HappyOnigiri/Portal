@@ -27,7 +27,7 @@ if (project.image) {
 
 const colors = ["#eeff00", "#ff00ea", "#0051ff", "#00ff22", "#ff0000", "#fff"];
 const bgColor = colors[index % colors.length];
-const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
+const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 ---
 
 <a
@@ -50,7 +50,7 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 	<div class="brutal-card-content">
 		<h3 class="brutal-card-title">{project.title}</h3>
 		<p class="brutal-card-desc">{project.description}</p>
-		{project.category && <div class="brutal-tag">[{project.category}]</div>}
+		{project.category && <div class="brutal-tag">{project.category}</div>}
 	</div>
 </a>
 
@@ -63,7 +63,8 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 		color: #000;
 		transition: all 0.1s steps(3);
 		position: relative;
-		width: calc(100% - 12px); /* Prevent shadow from causing overflow */
+		width: calc(100% - 32px);
+		margin: 0 auto;
 		box-sizing: border-box;
 	}
 
@@ -71,13 +72,13 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 		transform: rotate(0deg) scale(1.02) translate(-5px, -5px) !important;
 		box-shadow: 20px 20px 0 #000;
 		z-index: 10;
-		width: calc(100% - 20px);
+		width: calc(100% - 32px);
 	}
 
 	.brutal-card:active {
 		transform: translate(5px, 5px) !important;
 		box-shadow: 0 0 0 #000;
-		width: 100%;
+		width: calc(100% - 32px);
 	}
 
 	.brutal-card-image {
@@ -95,15 +96,15 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 4 + 1);
 	}
 
 	.brutal-card-content {
-		padding: 20px;
+		padding: 30px;
 	}
 
 	.brutal-card-title {
 		font-family: var(--font-brutal);
 		font-size: 2rem;
-		text-transform: uppercase;
 		margin: 0 0 15px 0;
 		line-height: 1.1;
+		word-break: break-word;
 	}
 
 	.brutal-card-desc {

@@ -22,7 +22,7 @@ const { articles } = Astro.props;
 					<span class="article-date">[{date}]</span>
 					<span class="article-emoji">{article.data.emoji}</span>
 					<a
-						href={`https://zenn.dev${article.data.path}`}
+						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="article-title"

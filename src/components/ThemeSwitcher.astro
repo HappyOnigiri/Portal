@@ -4,36 +4,18 @@ export interface Props {
 }
 const { theme = "cyber" } = Astro.props;
 
-let nextUrl = "/";
-let label = "";
-
-if (theme === "cyber") {
-	nextUrl = "/minimal";
-	label = "THEME: CYBER";
-} else if (theme === "minimal") {
-	nextUrl = "/pop";
-	label = "Theme: Minimal";
-} else if (theme === "pop") {
-	nextUrl = "/glass";
-	label = "THEME: POP";
-} else if (theme === "glass") {
-	nextUrl = "/terminal";
-	label = "Theme: Glass";
-} else if (theme === "terminal") {
-	nextUrl = "/brutal";
-	label = "THEME: TERMINAL";
-} else if (theme === "brutal") {
-	nextUrl = "/";
-	label = "THEME: BRUTAL";
-}
+const themeOrder = ["cyber", "minimal", "pop", "glass", "terminal", "brutal"];
+const currentIndex = themeOrder.indexOf(theme);
+const nextTheme = themeOrder[(currentIndex + 1) % themeOrder.length];
+const nextUrl = nextTheme === "cyber" ? "/" : `/${nextTheme}`;
 ---
 
 <div class="flex">
 	<a
 		href={nextUrl}
-		class="text-[10px] opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 cursor-pointer"
+		class="theme-switcher-link text-[10px] opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 cursor-pointer"
 		style="color: var(--text-main); text-decoration: none; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Courier, monospace !important;"
-		title={`Next Theme: ${label.replace("THEME: ", "").replace("Theme: ", "").toLowerCase()}`}
+		title={`Next: ${nextTheme}`}
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -46,8 +28,21 @@ if (theme === "cyber") {
 			stroke-linecap="round"
 			stroke-linejoin="round"
 		>
-			<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+			<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+			<circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+			<circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+			<circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+			<path
+				d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"
+			></path>
 		</svg>
-		<span>theme</span>
 	</a>
 </div>
+
+<script>
+	document
+		.querySelector(".theme-switcher-link")
+		?.addEventListener("click", () => {
+			sessionStorage.setItem("expandPillOnLoad", "1");
+		});
+</script>

@@ -24,15 +24,8 @@ const theme = "brutal";
 >
 	<div class="brutal-root">
 		<header class="brutal-header">
-			<div class="brutal-marquee">
-				<div class="marquee-content">
-					PORTAL PORTAL PORTAL PORTAL PORTAL PORTAL PORTAL PORTAL PORTAL PORTAL
-					PORTAL
-				</div>
-			</div>
 			<div class="brutal-hero-box">
 				<h1 class="brutal-title">HAPPY<br />ONIGIRI</h1>
-				<div class="brutal-badge">WARNING: BRUTAL</div>
 			</div>
 		</header>
 
@@ -43,7 +36,7 @@ const theme = "brutal";
 					aria-label="Projects"
 					class="brutal-section project-section"
 				>
-					<h2 class="brutal-heading">PROJECTS.EXE</h2>
+					<h2 class="brutal-heading">Projects</h2>
 					<div class="brutal-projects">
 						{
 							projects.map((project, index) => (
@@ -60,7 +53,7 @@ const theme = "brutal";
 					aria-label="Status"
 					class="brutal-section status-section"
 				>
-					<h2 class="brutal-heading">STATUS_</h2>
+					<h2 class="brutal-heading">Status</h2>
 					<AuthorStatusWidget theme={theme} />
 				</section>
 
@@ -71,7 +64,7 @@ const theme = "brutal";
 							aria-label="Articles"
 							class="brutal-section articles-section"
 						>
-							<h2 class="brutal-heading">LOG.TXT</h2>
+							<h2 class="brutal-heading">Articles</h2>
 							<ZennArticlesWidget articles={zennEntries} theme={theme} />
 						</section>
 					)
@@ -84,6 +77,8 @@ const theme = "brutal";
 <style is:global>
 	[data-theme="brutal"] {
 		--bg-color: #f4f4f0;
+		--bg-image: radial-gradient(#000 1px, transparent 1px);
+		--bg-size: 20px 20px;
 		--text-main: #000;
 		--text-muted: #555;
 		--brutal-yellow: #eeff00;
@@ -97,27 +92,46 @@ const theme = "brutal";
 		--panel-bg: #fff;
 		--card-border: 4px solid #000;
 		--card-shadow: 6px 6px 0 #000;
+		overflow-x: hidden;
 	}
 
 	[data-theme="brutal"] body {
-		background-color: var(--bg-color);
-		background-image: radial-gradient(#000 1px, transparent 1px);
-		background-size: 20px 20px;
 		color: var(--text-main);
 		font-family: "Helvetica Neue", Arial, sans-serif;
+		overflow-x: hidden;
 	}
 
-	[data-theme="brutal"] .cyber-container {
+	[data-theme="brutal"] .portal-container {
 		max-width: 1400px;
 		padding: 0;
 	}
 
-	[data-theme="brutal"] .cyber-footer {
-		background: #000;
-		color: #fff;
-		border-top: 5px solid #000;
-		padding: 40px;
-		margin-top: 100px;
+	[data-theme="brutal"] .portal-footer {
+		background: var(--brutal-yellow);
+		color: #000;
+		border-top: 8px solid #000;
+		margin-top: 120px;
+		font-family: var(--font-brutal);
+
+		/* 横幅いっぱいにする */
+		width: 100vw;
+		position: relative;
+		left: 50%;
+		right: 50%;
+		margin-left: -50vw;
+		margin-right: -50vw;
+		box-sizing: border-box;
+	}
+
+	[data-theme="brutal"] .footer-content {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0 40px;
+		width: 100%;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.brutal-root {
@@ -128,6 +142,7 @@ const theme = "brutal";
 	.brutal-header {
 		margin-bottom: 60px;
 		position: relative;
+		overflow: hidden;
 	}
 
 	.brutal-marquee {
@@ -138,7 +153,8 @@ const theme = "brutal";
 		overflow: hidden;
 		white-space: nowrap;
 		transform: rotate(-2deg);
-		margin: 20px -20px;
+		margin: 20px -50px;
+		width: calc(100% + 100px);
 		box-shadow: 0 10px 0 rgba(0, 0, 0, 1);
 	}
 
@@ -162,7 +178,7 @@ const theme = "brutal";
 	.brutal-hero-box {
 		padding: 60px 20px;
 		border: 8px solid #000;
-		background: #fff;
+		background: var(--brutal-yellow);
 		box-shadow: 20px 20px 0 #000;
 		max-width: 800px;
 		margin: 40px auto;
@@ -206,26 +222,40 @@ const theme = "brutal";
 	.brutal-heading {
 		font-family: var(--font-brutal);
 		font-size: 3rem;
-		text-transform: uppercase;
 		background: #000;
 		color: #fff;
 		display: inline-block;
-		padding: 10px 20px;
-		margin-bottom: 40px;
+		padding: 10px 20px 10px 30px;
+		margin-bottom: 60px;
+		margin-left: 10px;
 		transform: skewX(-10deg);
 		box-shadow: 10px 10px 0 var(--brutal-blue);
 	}
 
 	.brutal-projects {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 		gap: 40px;
+		padding-bottom: 80px;
+	}
+
+	.brutal-main {
+		min-width: 0;
+	}
+
+	.brutal-section {
+		overflow: hidden;
+	}
+
+	.brutal-sidebar .brutal-section {
+		overflow: visible;
 	}
 
 	.brutal-sidebar {
 		display: flex;
 		flex-direction: column;
 		gap: 80px;
+		min-width: 0;
 	}
 
 	@media (max-width: 1024px) {
@@ -246,7 +276,7 @@ const theme = "brutal";
 			padding: 8px 15px;
 		}
 		.brutal-grid {
-			padding: 0 15px;
+			padding: 0 25px;
 			gap: 30px;
 		}
 		.brutal-projects {
@@ -255,7 +285,14 @@ const theme = "brutal";
 		}
 		.brutal-hero-box {
 			padding: 30px 15px;
-			margin: 20px auto;
+			margin: 20px 25px;
+			box-shadow: 12px 12px 0 #000;
+		}
+		.brutal-badge {
+			right: 5px;
+			top: -15px;
+			font-size: 1rem;
+			padding: 6px 12px;
 		}
 	}
 </style>
