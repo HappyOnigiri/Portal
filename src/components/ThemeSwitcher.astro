@@ -1,10 +1,10 @@
 ---
 export interface Props {
-	theme?: "cyber" | "pop" | "terminal" | "brutal";
+	theme?: "cyber" | "pop" | "terminal" | "brutal" | "nagomi";
 }
 const { theme = "cyber" } = Astro.props;
 
-const themeOrder = ["cyber", "pop", "terminal", "brutal"];
+const themeOrder = ["cyber", "pop", "terminal", "brutal", "nagomi"];
 const currentIndex = themeOrder.indexOf(theme);
 const nextTheme = themeOrder[(currentIndex + 1) % themeOrder.length];
 const nextUrl = nextTheme === "cyber" ? "/" : `/${nextTheme}`;

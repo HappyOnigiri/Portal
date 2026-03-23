@@ -115,6 +115,59 @@
 	--social-hover-shadow: 0 0 0 transparent;
 }
 
+:root[data-theme="nagomi"] {
+	--bg-color: #FBF9F6;
+	--bg-image: none;
+	--bg-size: auto;
+	--panel-bg: rgba(255, 255, 255, 0.9);
+	--panel-border: #D4C5B0;
+	--text-main: #2B2B2B;
+	--text-muted: #6B5E50;
+	--accent-main: #9E2A2B;
+	--accent-sub: #4A5D23;
+	--accent-purple: #5B4A6F;
+
+	--font-heading: "Noto Serif JP", serif;
+	--font-body: "Noto Sans JP", sans-serif;
+
+	--card-border-radius: 8px;
+	--card-border: 1px solid #D4C5B0;
+	--card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	--card-hover-transform: translateY(-4px);
+	--card-hover-bg: rgba(255, 255, 255, 0.95);
+	--card-hover-border: #9E2A2B;
+	--card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+	--card-before-display: none;
+
+	--category-border-radius: 12px;
+	--category-border: none;
+	--category-font: "Noto Sans JP", sans-serif;
+	--category-text-transform: none;
+	--category-shadow: none;
+	--category-text-shadow: none;
+	--category-bg: #9E2A2B;
+	--category-text-color: #fff;
+
+	--title-color: #2B2B2B;
+	--title-shadow: none;
+	--title-letter-spacing: 8px;
+
+	--card-title-color: #2B2B2B;
+	--card-title-shadow: none;
+	--card-image-border-bottom: 1px solid #D4C5B0;
+
+	--btn-external-bg: #9E2A2B;
+	--btn-external-text: #fff;
+	--btn-external-shadow: 0 4px 12px rgba(158, 42, 43, 0.3);
+	--btn-external-border: 1px solid #9E2A2B;
+
+	--profile-name-letter-spacing: 2px;
+	--page-title-letter-spacing: 4px;
+
+	--guideline-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	--social-hover-shadow: 0 0 0 transparent;
+}
+
 body {
 	font-family: var(--font-body);
 	margin: 0;

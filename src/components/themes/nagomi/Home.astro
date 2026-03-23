@@ -1,0 +1,168 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "../../ArticlesWidget.astro";
+import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
+import ProjectCard from "../../ProjectCard.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	articleEntries: CollectionEntry<"articles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "nagomi";
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | 和"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<div class="nagomi-container">
+		<header class="nagomi-header">
+			<div class="nagomi-header-inner">
+				<div class="nagomi-title-block">
+					<h1 class="nagomi-title" data-lang-ja="おにぎりポータル" data-lang-en="ONIGIRI PORTAL">おにぎりポータル</h1>
+					<p class="nagomi-subtitle">
+						<span data-lang-ja="ものづくりの記録" data-lang-en="A record of craftsmanship">ものづくりの記録</span>
+					</p>
+				</div>
+			</div>
+			<div class="nagomi-divider" aria-hidden="true"></div>
+		</header>
+
+		<section id="projects" aria-label="Projects" class="nagomi-section">
+			<h2 class="nagomi-section-heading" data-lang-ja="作品" data-lang-en="Projects">作品</h2>
+			<div class="project-grid">
+				{
+					projects.map((project) => (
+						<ProjectCard project={project} theme={theme} />
+					))
+				}
+			</div>
+		</section>
+
+		{
+			articleEntries.length > 0 && (
+				<section id="articles" aria-label="Articles" class="nagomi-section">
+					<ArticlesWidget articles={articleEntries} theme={theme} />
+				</section>
+			)
+		}
+
+		<section
+			id="status"
+			aria-label="HappyOnigiri Status"
+			class="nagomi-section"
+		>
+			<AuthorStatusWidget theme={theme} />
+		</section>
+	</div>
+</BaseLayout>
+
+<style is:global>
+	[data-theme="nagomi"] .portal-footer {
+		border-top-color: #D4C5B0;
+	}
+
+	[data-theme="nagomi"] .social-link img {
+		filter: brightness(0.3);
+	}
+
+	[data-theme="nagomi"] .social-link:hover img {
+		filter: brightness(0) drop-shadow(0 0 0 transparent);
+	}
+
+	[data-theme="nagomi"] .card-image img {
+		image-rendering: auto;
+	}
+
+	.nagomi-container {
+		max-width: 1100px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.nagomi-header {
+		text-align: center;
+		padding: 2rem 0 1rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.nagomi-header-inner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.nagomi-title-block {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.nagomi-title {
+		font-family: "Noto Serif JP", serif;
+		font-size: 3rem;
+		font-weight: 700;
+		color: #2B2B2B;
+		letter-spacing: 8px;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.nagomi-subtitle {
+		font-family: "Noto Sans JP", sans-serif;
+		font-size: 1rem;
+		color: #6B5E50;
+		letter-spacing: 4px;
+		margin: 0;
+	}
+
+	.nagomi-divider {
+		width: 60px;
+		height: 1px;
+		background: #9E2A2B;
+		margin: 2rem auto 0;
+		opacity: 0.4;
+	}
+
+	.nagomi-section {
+		margin-bottom: 3.5rem;
+	}
+
+	.nagomi-section-heading {
+		font-family: "Noto Serif JP", serif;
+		font-size: 1.3rem;
+		font-weight: 700;
+		color: #2B2B2B;
+		margin: 0 0 1.5rem 0;
+		border-bottom: 1px solid #D4C5B0;
+		padding-bottom: 0.75rem;
+		letter-spacing: 0.2em;
+	}
+
+	[data-theme="nagomi"] .project-grid {
+		gap: 28px;
+	}
+
+	@media (max-width: 768px) {
+		.nagomi-title {
+			font-size: 2rem;
+			letter-spacing: 4px;
+		}
+
+		.nagomi-subtitle {
+			font-size: 0.85rem;
+			letter-spacing: 2px;
+		}
+
+		[data-theme="nagomi"] .project-grid {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+	}
+</style>

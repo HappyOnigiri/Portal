@@ -27,6 +27,8 @@
 		"@astrojs/react": "^5.0.0",
 		"@astrojs/sitemap": "^3.7.1",
 		"@fontsource/inter": "^5.2.8",
+		"@fontsource/noto-sans-jp": "^5.2.9",
+		"@fontsource/noto-serif-jp": "^5.2.8",
 		"@fontsource/orbitron": "^5.2.8",
 		"@tailwindcss/vite": "^4.2.1",
 		"astro": "^6.0.2",

@@ -1,13 +1,14 @@
 ---
 import CyberWidget from "./themes/cyber/AuthorStatusWidget.astro";
-
+import NagomiWidget from "./themes/nagomi/AuthorStatusWidget.astro";
 import PopWidget from "./themes/pop/AuthorStatusWidget.astro";
 
 export interface Props {
-	theme?: "cyber" | "pop";
+	theme?: "cyber" | "pop" | "nagomi";
 }
 const { theme = "cyber" } = Astro.props;
 ---
 
 {theme === "cyber" && <CyberWidget />}
 {theme === "pop" && <PopWidget />}
+{theme === "nagomi" && <NagomiWidget />}
