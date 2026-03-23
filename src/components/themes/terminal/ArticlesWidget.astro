@@ -11,9 +11,8 @@ const { articles } = Astro.props;
 <div class="terminal-cat-output">
 	{
 		articles.map((article, index) => {
-			const date = new Date(article.data.published_at)
-				.toISOString()
-				.split("T")[0];
+			const d = new Date(article.data.published_at);
+			const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 			return (
 				<div class="article-line">
 					<span class="line-num">
