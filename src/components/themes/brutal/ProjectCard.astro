@@ -48,7 +48,9 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 			<div class="brutal-card-image" style={containBgStyle}>
 				<Image
 					src={resolvedImage}
-					alt={`${project.title} thumbnail`}
+					alt={`${project.title} のサムネイル`}
+					data-lang-ja={`${project.title} のサムネイル`}
+					data-lang-en={`${project.title_en || project.title} thumbnail`}
 					loading="lazy"
 					width={600}
 					style={`object-fit: ${imageFit};`}
@@ -57,8 +59,20 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 		)
 	}
 	<div class="brutal-card-content">
-		<h3 class="brutal-card-title">{project.title}</h3>
-		<p class="brutal-card-desc">{project.description}</p>
+		<h3
+			class="brutal-card-title"
+			data-lang-ja={project.title}
+			data-lang-en={project.title_en || project.title}
+		>
+			{project.title}
+		</h3>
+		<p
+			class="brutal-card-desc"
+			data-lang-ja={project.description}
+			data-lang-en={project.description_en || project.description}
+		>
+			{project.description}
+		</p>
 		{project.category && <div class="brutal-tag">{project.category}</div>}
 	</div>
 </a>
