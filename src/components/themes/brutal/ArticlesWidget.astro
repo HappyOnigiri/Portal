@@ -15,6 +15,8 @@ const { articles } = Astro.props;
 				return (
 					<a
 						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="brutal-article-link"
@@ -22,7 +24,13 @@ const { articles } = Astro.props;
 					>
 						<div class="brutal-article-emoji">{article.data.emoji}</div>
 						<div class="brutal-article-content">
-							<span class="brutal-article-title">{article.data.title}</span>
+							<span
+								class="brutal-article-title"
+								data-lang-ja={article.data.title}
+								data-lang-en={article.data.title_en || article.data.title}
+							>
+								{article.data.title}
+							</span>
 						</div>
 					</a>
 				);
