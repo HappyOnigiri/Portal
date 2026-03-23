@@ -213,6 +213,22 @@ body {
 	display: inline-block;
 }
 
+.pop-logo {
+	display: block;
+	margin: 1rem auto 0;
+	max-width: 1000px;
+	width: 100%;
+	height: auto;
+	box-shadow: 6px 6px 0px #000000;
+	border: 2px solid #000000;
+}
+
+@media (max-width: 768px) {
+	.pop-logo {
+		max-width: 90vw;
+	}
+}
+
 .portal-subtitle {
 	font-family: var(--font-body);
 	font-weight: 500;

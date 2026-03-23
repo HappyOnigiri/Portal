@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import logoImage from "../../../assets/images/themes/pop/logo.jpg";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ArticlesWidget from "../../ArticlesWidget.astro";
 import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
@@ -23,7 +25,15 @@ const theme = "pop";
 	jsonLd={jsonLd}
 >
 	<section class="portal-header">
-		<h1 class="portal-title">ONIGIRI PORTAL</h1>
+		<h1 class="sr-only">ONIGIRI PORTAL</h1>
+		<Image
+			src={logoImage}
+			alt="ONIGIRI PORTAL"
+			class="pop-logo"
+			widths={[600, 800, 1200]}
+			sizes="(max-width: 768px) 90vw, 1000px"
+			quality={95}
+		/>
 	</section>
 
 	<section id="projects" aria-label="Projects" style="margin-bottom: 3rem;">
