@@ -21,36 +21,30 @@ const formatDate = (iso: string) =>
 		class="flex flex-col w-full bg-[color:var(--panel-bg)] border border-[color:var(--panel-border)] rounded-xl shadow-[var(--card-shadow)] overflow-hidden backdrop-blur-sm"
 	>
 		<div class="px-6 pt-5 pb-1">
-			<h2 class="section-heading">Zenn Articles</h2>
+			<h2 class="section-heading">Articles</h2>
 		</div>
 
-		<div class="p-6 overflow-x-auto">
-			<table class="w-full border-collapse">
-				<tbody class="text-[color:var(--text-main)]">
-					{
-						articles.map((article) => (
-							<tr class="zenn-article-row border-b border-[color:var(--panel-border)] hover:bg-[color:var(--panel-border)] transition-colors group">
-								<td class="py-4 px-2 text-2xl w-10 shrink-0">
-									{article.data.emoji}
-								</td>
-								<td class="py-4 px-2 flex-1">
-									<a
-										href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-										class="zenn-article-link"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										{article.data.title}
-									</a>
-								</td>
-								<td class="py-4 px-2 text-[color:var(--text-muted)] text-xs whitespace-nowrap text-right">
-									{formatDate(article.data.published_at)}
-								</td>
-							</tr>
-						))
-					}
-				</tbody>
-			</table>
+		<div class="p-6">
+			<div class="flex flex-col">
+				{
+					articles.map((article) => (
+						<a
+							href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+							class="flex items-center gap-4 py-4 px-2 border-b border-[color:var(--panel-border)] hover:bg-[color:var(--panel-border)] transition-colors group"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<div class="text-2xl w-10 shrink-0">{article.data.emoji}</div>
+							<div class="flex-1 text-[color:var(--text-main)] group-hover:text-[color:var(--accent-main)] transition-colors">
+								{article.data.title}
+							</div>
+							<div class="text-[color:var(--text-muted)] text-xs whitespace-nowrap text-right">
+								{formatDate(article.data.published_at)}
+							</div>
+						</a>
+					))
+				}
+			</div>
 		</div>
 
 		<div class="px-6 pb-5 text-right">
