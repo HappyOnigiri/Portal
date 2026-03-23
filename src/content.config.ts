@@ -175,4 +175,4 @@ const zennArticles = defineCollection({
 	schema: zennArticleSchema,
 });
 
-export const collections = { projects, zennArticles };
+export const collections = { projects, articles: zennArticles };

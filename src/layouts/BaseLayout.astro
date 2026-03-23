@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/portal.css";
 import { version } from "../../package.json";
+import ThemeSwitcher from "../components/ThemeSwitcher.astro";
 import { translations } from "../utils/translations";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 	robots?: string;
 	ogType?: string;
 	jsonLd?: Record<string, unknown>;
+	theme?: "cyber" | "pop" | "terminal" | "brutal";
 }
 
 const {
@@ -21,7 +23,8 @@ const {
 	robots = "index, follow",
 	ogType = "website",
 	jsonLd,
-} = Astro.props as Props;
+	theme = "cyber",
+} = Astro.props;
 
 const currentYear = new Date().getFullYear();
 const site = Astro.site;
@@ -36,7 +39,7 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme={theme}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -62,35 +65,67 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 				<script type="application/ld+json" set:html={jsonLdSerialized} />
 			)
 		}
-		{/* FOUC 対策: JS 実行前に lang を設定 */}
-		<script is:inline>
-			(function () {
-				var saved = localStorage.getItem("portal-lang");
-				var lang =
-					saved === "ja" || saved === "en"
-						? saved
-						: navigator.language.startsWith("ja")
-							? "ja"
-							: "en";
-				document.documentElement.lang = lang;
-			})();
-		</script>
+		{/* FOUC 対策: JS 実行前に lang と theme を設定 */}
 	</head>
 	<body>
-		<div class="cyber-container">
-			<div class="cyber-header-top">
-				<div class="lang-switcher" style="margin-left: auto;">
-					<button data-lang-btn="en" class="lang-btn">EN</button>
-					<span class="lang-divider">|</span>
-					<button data-lang-btn="ja" class="lang-btn">JP</button>
+		<div class="portal-container">
+			<div class="floating-ui-pill" id="floating-ui-pill">
+				<div class="floating-ui-content">
+					<div class="lang-switcher" style="margin-top: 0; opacity: 1;">
+						<button data-lang-btn="en" class="lang-btn">EN</button>
+						<span class="lang-divider">|</span>
+						<button data-lang-btn="ja" class="lang-btn">JP</button>
+					</div>
+					<ThemeSwitcher theme={theme} />
 				</div>
+				<button
+					id="mobile-menu-toggle"
+					class="mobile-menu-btn"
+					aria-label="Toggle Menu"
+					aria-expanded="false"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="icon-menu"
+						><line x1="3" y1="12" x2="21" y2="12"></line><line
+							x1="3"
+							y1="6"
+							x2="21"
+							y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg
+					>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="icon-close"
+						><line x1="18" y1="6" x2="6" y2="18"></line><line
+							x1="6"
+							y1="6"
+							x2="18"
+							y2="18"></line></svg
+					>
+				</button>
 			</div>
 
 			<main id="main-content" class="portal-main">
 				<slot />
 			</main>
 
-			<footer class="cyber-footer">
+			<footer class="portal-footer">
 				<div class="footer-content">
 					<div class="footer-info">
 						<p class="copyright">
@@ -148,6 +183,30 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 		<script>
 			import { initI18n } from "../utils/i18n";
 			initI18n();
+
+			const pill = document.getElementById("floating-ui-pill");
+			const btn = document.getElementById("mobile-menu-toggle");
+			if (btn && pill) {
+				// テーマ切替直後はアニメーションなしでメニューを展開した状態にする
+				if (sessionStorage.getItem("expandPillOnLoad") === "1") {
+					sessionStorage.removeItem("expandPillOnLoad");
+					pill.classList.add("no-animate", "expanded");
+					btn.setAttribute("aria-expanded", "true");
+				}
+
+				btn.addEventListener("click", (e) => {
+					e.stopPropagation();
+					pill.classList.remove("no-animate");
+					const isExpanded = pill.classList.toggle("expanded");
+					btn.setAttribute("aria-expanded", isExpanded.toString());
+				});
+				document.addEventListener("click", (e) => {
+					if (!pill.contains(e.target as Node)) {
+						pill.classList.remove("expanded");
+						btn.setAttribute("aria-expanded", "false");
+					}
+				});
+			}
 		</script>
 	</body>
 </html>

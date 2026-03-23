@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "../../ArticlesWidget.astro";
+import AuthorStatusWidget from "../../AuthorStatusWidget.astro";
+import ProjectCard from "../../ProjectCard.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	articleEntries: CollectionEntry<"articles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "cyber";
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | トップ"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<section class="portal-header">
+		<h1 class="portal-title">ONIGIRI PORTAL</h1>
+	</section>
+
+	<section id="projects" aria-label="Projects" style="margin-bottom: 3rem;">
+		<h2 class="section-heading">Projects</h2>
+		<div class="project-grid">
+			{
+				projects.map((project) => (
+					<ProjectCard project={project} theme={theme} />
+				))
+			}
+		</div>
+	</section>
+
+	{
+		articleEntries.length > 0 && (
+			<section id="articles" aria-label="Articles" style="margin-bottom: 3rem;">
+				<ArticlesWidget articles={articleEntries} theme={theme} />
+			</section>
+		)
+	}
+
+	<section
+		id="status"
+		aria-label="HappyOnigiri Status"
+		style="margin-bottom: 3rem;"
+	>
+		<AuthorStatusWidget theme={theme} />
+	</section>
+</BaseLayout>

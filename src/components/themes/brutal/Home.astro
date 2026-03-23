@@ -1,0 +1,296 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "./ArticlesWidget.astro";
+import AuthorStatusWidget from "./AuthorStatusWidget.astro";
+import ProjectCard from "./ProjectCard.astro";
+
+export interface Props {
+	projects: CollectionEntry<"projects">["data"][];
+	articleEntries: CollectionEntry<"articles">[];
+	jsonLd: Record<string, unknown>;
+	metaDescriptionJa: string;
+}
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const theme = "brutal";
+---
+
+<BaseLayout
+	theme={theme}
+	title="ONIGIRI PORTAL | BRUTAL"
+	description={metaDescriptionJa}
+	canonicalPath="/"
+	jsonLd={jsonLd}
+>
+	<div class="brutal-root">
+		<header class="brutal-header">
+			<div class="brutal-hero-box">
+				<h1 class="brutal-title">ONIGIRI PORTAL</h1>
+			</div>
+		</header>
+
+		<div class="brutal-grid">
+			<main class="brutal-main">
+				<section
+					id="projects"
+					aria-label="Projects"
+					class="brutal-section project-section"
+				>
+					<h2 class="brutal-heading">Projects</h2>
+					<div class="brutal-projects">
+						{
+							projects.map((project, index) => (
+								<ProjectCard project={project} theme={theme} index={index} />
+							))
+						}
+					</div>
+				</section>
+			</main>
+
+			<aside class="brutal-sidebar">
+				<section
+					id="status"
+					aria-label="Status"
+					class="brutal-section status-section"
+				>
+					<h2 class="brutal-heading">Status</h2>
+					<AuthorStatusWidget theme={theme} />
+				</section>
+
+				{
+					articleEntries.length > 0 && (
+						<section
+							id="articles"
+							aria-label="Articles"
+							class="brutal-section articles-section"
+						>
+							<h2 class="brutal-heading">Articles</h2>
+							<ArticlesWidget articles={articleEntries} theme={theme} />
+						</section>
+					)
+				}
+			</aside>
+		</div>
+	</div>
+</BaseLayout>
+
+<style is:global>
+	[data-theme="brutal"] {
+		--bg-color: #f4f4f0;
+		--bg-image: radial-gradient(#000 1px, transparent 1px);
+		--bg-size: 20px 20px;
+		--text-main: #000;
+		--text-muted: #555;
+		--brutal-yellow: #eeff00;
+		--brutal-pink: #ff00ea;
+		--brutal-blue: #0051ff;
+		--brutal-green: #00ff22;
+		--brutal-red: #ff0000;
+		--font-brutal: "Impact", "Arial Black", sans-serif;
+
+		/* Standard UI vars mapped to Brutal */
+		--panel-bg: #fff;
+		--card-border: 4px solid #000;
+		--card-shadow: 6px 6px 0 #000;
+		overflow-x: hidden;
+	}
+
+	[data-theme="brutal"] body {
+		color: var(--text-main);
+		font-family: "Helvetica Neue", Arial, sans-serif;
+		overflow-x: hidden;
+	}
+
+	[data-theme="brutal"] .portal-container {
+		max-width: 1400px;
+		padding: 0;
+	}
+
+	[data-theme="brutal"] .portal-footer {
+		background: var(--brutal-yellow);
+		color: #000;
+		border-top: 8px solid #000;
+		margin-top: 120px;
+		font-family: var(--font-brutal);
+
+		/* 横幅いっぱいにする */
+		width: 100vw;
+		position: relative;
+		left: 50%;
+		right: 50%;
+		margin-left: -50vw;
+		margin-right: -50vw;
+		box-sizing: border-box;
+	}
+
+	[data-theme="brutal"] .footer-content {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0 40px;
+		width: 100%;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.brutal-root {
+		overflow: hidden;
+		padding-bottom: 50px;
+	}
+
+	.brutal-header {
+		margin-bottom: 60px;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.brutal-marquee {
+		background: var(--brutal-yellow);
+		border-top: 4px solid #000;
+		border-bottom: 4px solid #000;
+		padding: 10px 0;
+		overflow: hidden;
+		white-space: nowrap;
+		transform: rotate(-2deg);
+		margin: 20px -50px;
+		width: calc(100% + 100px);
+		box-shadow: 0 10px 0 rgba(0, 0, 0, 1);
+	}
+
+	.marquee-content {
+		font-family: var(--font-brutal);
+		font-size: 3rem;
+		display: inline-block;
+		animation: scroll 15s linear infinite;
+	}
+
+	@keyframes scroll {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%);
+		}
+	}
+
+	.brutal-hero-box {
+		padding: 60px 20px;
+		border: 8px solid #000;
+		background: var(--brutal-yellow);
+		box-shadow: 20px 20px 0 #000;
+		max-width: 800px;
+		margin: 40px auto;
+		position: relative;
+		transform: rotate(1deg);
+	}
+
+	.brutal-title {
+		font-family: var(--font-brutal);
+		font-size: 8rem;
+		line-height: 0.9;
+		margin: 0;
+		letter-spacing: -5px;
+		-webkit-text-stroke: 3px #000;
+		color: var(--brutal-pink);
+		text-shadow: 8px 8px 0 #000;
+	}
+
+	.brutal-badge {
+		position: absolute;
+		top: -20px;
+		right: -20px;
+		background: var(--brutal-red);
+		color: #fff;
+		font-family: var(--font-brutal);
+		font-size: 1.5rem;
+		padding: 10px 20px;
+		border: 4px solid #000;
+		transform: rotate(15deg);
+		box-shadow: 5px 5px 0 #000;
+	}
+
+	.brutal-grid {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 60px;
+		padding: 0 40px;
+	}
+
+	.brutal-heading {
+		font-family: var(--font-brutal);
+		font-size: 3rem;
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 10px 20px 10px 30px;
+		margin-bottom: 60px;
+		margin-left: 10px;
+		transform: skewX(-10deg);
+		box-shadow: 10px 10px 0 var(--brutal-blue);
+	}
+
+	.brutal-projects {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+		gap: 40px;
+		padding-bottom: 80px;
+	}
+
+	.brutal-main {
+		min-width: 0;
+	}
+
+	.brutal-section {
+		overflow: hidden;
+	}
+
+	.brutal-sidebar .brutal-section {
+		overflow: visible;
+	}
+
+	.brutal-sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: 80px;
+		min-width: 0;
+	}
+
+	@media (max-width: 1024px) {
+		.brutal-grid {
+			grid-template-columns: 1fr;
+		}
+		.brutal-title {
+			font-size: 5rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.brutal-title {
+			font-size: 3.5rem;
+		}
+		.brutal-heading {
+			font-size: 2rem;
+			padding: 8px 15px;
+		}
+		.brutal-grid {
+			padding: 0 25px;
+			gap: 30px;
+		}
+		.brutal-projects {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+		.brutal-hero-box {
+			padding: 30px 15px;
+			margin: 20px 25px;
+			box-shadow: 12px 12px 0 #000;
+		}
+		.brutal-badge {
+			right: 5px;
+			top: -15px;
+			font-size: 1rem;
+			padding: 6px 12px;
+		}
+	}
+</style>

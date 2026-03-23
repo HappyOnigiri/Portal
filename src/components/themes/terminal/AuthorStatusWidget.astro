@@ -1,0 +1,177 @@
+---
+import statusData from "../../../data/author-status.json";
+
+export interface Props {
+	theme: string;
+}
+
+const stats = [
+	{ label: "Commits", value: statusData.commits },
+	{ label: "Merged PRs", value: statusData.mergedPRs },
+	{ label: "CI Runs", value: statusData.ciRuns },
+	{ label: "Added Lines", value: statusData.addedLines },
+	{ label: "Deleted Lines", value: statusData.deletedLines },
+];
+---
+
+<div class="neofetch-output">
+	<div class="left-col">
+		<pre
+			class="ascii-art">
+Δ~~~~Δ
+ξ ･ェ･ ξ
+ξ　~　ξ
+ ξ　　 ξ
+ ξ　　　“~～~～〇
+ ξ　　　　　　 ξ
+ ξ　ξ　ξ~～~ξ　ξ
+　ξ_ξξ_ξ　ξ_ξξ_ξ
+　　ヽ(´･ω･)ﾉ
+　　　 |　 /
+　　　 UU”
+<span data-lang-ja="アルパカぶつけるぞ" data-lang-en="I'll throw an alpaca\n at you!">アルパカぶつけるぞ</span>
+		</pre>
+	</div>
+	<div class="right-col">
+		<div class="user-host">
+			<span class="user">root</span>@<span class="host">portal</span>
+		</div>
+		<div class="separator">-----------</div>
+		{
+			stats.map((s) => (
+				<div class="info-line">
+					<span class="label title">{s.label}</span>:{" "}
+					<span class="value">{s.value}</span>
+				</div>
+			))
+		}
+
+		<div class="color-blocks">
+			<div class="block b-black"></div><div class="block b-red"></div><div
+				class="block b-green"
+			>
+			</div><div class="block b-yellow"></div><div class="block b-blue">
+			</div><div class="block b-magenta"></div><div class="block b-cyan">
+			</div><div class="block b-white"></div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.neofetch-output {
+		display: flex;
+		gap: 30px;
+		font-family: var(--terminal-font);
+		font-size: 14px;
+	}
+
+	.left-col {
+		color: var(--text-main);
+	}
+
+	.ascii-art {
+		margin: 0;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: 1.2;
+		white-space: pre;
+	}
+
+	.user-host {
+		font-weight: bold;
+	}
+
+	.user {
+		color: var(--text-main);
+	}
+	.host {
+		color: var(--text-main);
+	}
+
+	.separator {
+		color: #555555;
+	}
+
+	.info-line {
+		margin: 2px 0;
+	}
+	.label {
+		color: var(--text-main);
+		font-weight: bold;
+	}
+
+	.title {
+		color: #66b3ff;
+	}
+
+	.color-yellow {
+		color: #ffff55;
+	}
+	.color-green {
+		color: #55ff55;
+	}
+	.color-cyan {
+		color: #55ffff;
+	}
+	.color-red {
+		color: #ff5555;
+	}
+	.color-magenta {
+		color: #ff55ff;
+	}
+	.color-blue {
+		color: #5555ff;
+	}
+
+	.color-blocks {
+		display: flex;
+		margin-top: 15px;
+		gap: 2px;
+	}
+
+	.block {
+		width: 25px;
+		height: 15px;
+	}
+
+	.b-black {
+		background: #000000;
+	}
+	.b-red {
+		background: #ff5555;
+	}
+	.b-green {
+		background: #55ff55;
+	}
+	.b-yellow {
+		background: #ffff55;
+	}
+	.b-blue {
+		background: #5555ff;
+	}
+	.b-magenta {
+		background: #ff55ff;
+	}
+	.b-cyan {
+		background: #55ffff;
+	}
+	.b-white {
+		background: #ffffff;
+	}
+
+	@media (max-width: 768px) {
+		.neofetch-output {
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.left-col {
+			overflow-x: auto;
+			padding-bottom: 5px;
+		}
+
+		.ascii-art {
+			font-size: inherit;
+		}
+	}
+</style>

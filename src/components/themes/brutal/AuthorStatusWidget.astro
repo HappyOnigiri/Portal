@@ -1,0 +1,207 @@
+---
+import statusData from "../../../data/author-status.json";
+
+export interface Props {
+	theme: string;
+}
+
+const stats = [
+	{ label: "Commits", value: statusData.commits, color: "var(--brutal-blue)" },
+	{
+		label: "Merged PRs",
+		value: statusData.mergedPRs,
+		color: "var(--brutal-pink)",
+	},
+	{ label: "CI Runs", value: statusData.ciRuns, color: "#fff" },
+	{
+		label: "Lines Added",
+		value: statusData.addedLines,
+		color: "var(--brutal-yellow)",
+	},
+	{
+		label: "Lines Deleted",
+		value: statusData.deletedLines,
+		color: "var(--brutal-green)",
+	},
+];
+
+const heroRotation =
+	(Math.random() * 1.5 + 0.5) * (Math.random() > 0.5 ? 1 : -1);
+---
+
+<div class="brutal-status-widget">
+	<div
+		class="brutal-status-hero"
+		style={`background-color: ${stats[0].color}; transform: rotate(${heroRotation}deg);`}
+	>
+		<div class="brutal-status-value">{stats[0].value}</div>
+		<div class="brutal-status-label">{stats[0].label}</div>
+	</div>
+
+	<div class="brutal-status-metrics">
+		{
+			stats.slice(1).map((stat, i) => {
+				const rotation = (i % 2 === 0 ? 1 : -1) * (Math.random() * 2 + 1);
+				return (
+					<div
+						class="brutal-status-metric"
+						style={`background-color: ${stat.color}; transform: rotate(${rotation}deg);`}
+					>
+						<div class="brutal-metric-value">{stat.value}</div>
+						<div class="brutal-metric-label">{stat.label}</div>
+					</div>
+				);
+			})
+		}
+	</div>
+</div>
+
+<style>
+	.brutal-status-widget {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding: 0 8px 8px 0;
+	}
+
+	/* ---- ヒーローカード (COMMITS) ---- */
+	.brutal-status-hero {
+		border: 5px solid #000;
+		padding: 24px 16px;
+		text-align: center;
+		box-shadow: 8px 8px 0 #000;
+		box-sizing: border-box;
+		width: calc(100% - 8px);
+		transition: all 0.1s;
+	}
+
+	.brutal-status-hero:hover {
+		transform: scale(1.05) rotate(0deg) !important;
+		box-shadow: 12px 12px 0 #000;
+		width: calc(100% - 12px);
+		z-index: 10;
+	}
+
+	.brutal-status-hero .brutal-status-value {
+		font-family: var(--font-brutal);
+		font-size: 4.5rem;
+		line-height: 1;
+		margin-bottom: 8px;
+		-webkit-text-stroke: 2px #000;
+		color: #fff;
+		text-shadow: 3px 3px 0 #000;
+	}
+
+	.brutal-status-hero .brutal-status-label {
+		font-family: var(--font-brutal);
+		font-size: 1.4rem;
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 4px 12px;
+	}
+
+	/* ---- メトリクスグリッド (残り4つ) ---- */
+	.brutal-status-metrics {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px;
+	}
+
+	.brutal-status-metric {
+		border: 4px solid #000;
+		padding: 12px 8px;
+		text-align: center;
+		box-shadow: 6px 6px 0 #000;
+		box-sizing: border-box;
+		width: calc(100% - 6px);
+		transition: all 0.1s;
+	}
+
+	.brutal-status-metric:hover {
+		transform: scale(1.08) rotate(0deg) !important;
+		box-shadow: 10px 10px 0 #000;
+		width: calc(100% - 10px);
+		z-index: 10;
+	}
+
+	.brutal-metric-value {
+		font-family: var(--font-brutal);
+		font-size: 2.2rem;
+		line-height: 1;
+		margin-bottom: 6px;
+		-webkit-text-stroke: 1.5px #000;
+		color: #fff;
+		text-shadow: 2px 2px 0 #000;
+	}
+
+	.brutal-metric-label {
+		font-family: var(--font-brutal);
+		font-size: 0.85rem;
+		background: #000;
+		color: #fff;
+		display: inline-block;
+		padding: 2px 6px;
+		white-space: nowrap;
+	}
+
+	/* ---- モバイル ---- */
+	@media (max-width: 768px) {
+		.brutal-status-widget {
+			gap: 14px;
+			padding: 0 6px 6px 0;
+		}
+
+		.brutal-status-hero {
+			padding: 16px 12px;
+			box-shadow: 6px 6px 0 #000;
+			border-width: 4px;
+			width: calc(100% - 6px);
+		}
+
+		.brutal-status-hero:hover {
+			transform: scale(1.03) rotate(0deg) !important;
+			box-shadow: 8px 8px 0 #000;
+			width: calc(100% - 8px);
+		}
+
+		.brutal-status-hero .brutal-status-value {
+			font-size: 3rem;
+			-webkit-text-stroke: 1.5px #000;
+			text-shadow: 2px 2px 0 #000;
+		}
+
+		.brutal-status-hero .brutal-status-label {
+			font-size: 1.1rem;
+			padding: 3px 8px;
+		}
+
+		.brutal-status-metrics {
+			gap: 12px;
+		}
+
+		.brutal-status-metric {
+			padding: 10px 6px;
+			box-shadow: 5px 5px 0 #000;
+			border-width: 3px;
+			width: calc(100% - 5px);
+		}
+
+		.brutal-status-metric:hover {
+			transform: scale(1.05) rotate(0deg) !important;
+			box-shadow: 7px 7px 0 #000;
+			width: calc(100% - 7px);
+		}
+
+		.brutal-metric-value {
+			font-size: 1.8rem;
+			-webkit-text-stroke: 1px #000;
+			text-shadow: 2px 2px 0 #000;
+		}
+
+		.brutal-metric-label {
+			font-size: 0.75rem;
+			padding: 2px 5px;
+		}
+	}
+</style>

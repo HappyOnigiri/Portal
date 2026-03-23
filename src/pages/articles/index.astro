@@ -6,14 +6,14 @@ import {
 	breadcrumbList,
 	buildJsonLdGraph,
 	collectionPageArticles,
-	itemListZennArticles,
+	itemListArticles,
 	personHappyOnigiri,
 	webSiteRoot,
 } from "../../utils/structured-data";
 import { translations } from "../../utils/translations";
 
 const metaDescriptionJa = translations.ja["articles.intro"];
-const articles = (await getCollection("zennArticles")).sort(
+const articles = (await getCollection("articles")).sort(
 	(a, b) =>
 		new Date(b.data.published_at).getTime() -
 		new Date(a.data.published_at).getTime(),
@@ -33,9 +33,9 @@ const jsonLd = buildJsonLdGraph([
 	collectionPageArticles(SITE_ORIGIN, metaDescriptionJa),
 	breadcrumbList(SITE_ORIGIN, [
 		{ name: "トップ", path: "/" },
-		{ name: "Zenn 記事一覧", path: "/articles" },
+		{ name: "記事一覧", path: "/articles" },
 	]),
-	itemListZennArticles(
+	itemListArticles(
 		articles.map((a) => ({
 			title: a.data.title,
 			slug: a.data.slug,
@@ -45,13 +45,13 @@ const jsonLd = buildJsonLdGraph([
 ---
 
 <BaseLayout
-	title="Zenn 記事一覧 | ONIGIRI PORTAL"
+	title="記事一覧 | ONIGIRI PORTAL"
 	description={metaDescriptionJa}
 	canonicalPath="/articles"
 	jsonLd={jsonLd}
 >
 	<header class="page-intro">
-		<h1 class="page-title" data-i18n="articles.title">Zenn 記事一覧</h1>
+		<h1 class="page-title" data-i18n="articles.title">記事一覧</h1>
 		<p class="page-lead" data-i18n="articles.intro">
 			{metaDescriptionJa}
 		</p>
@@ -66,14 +66,14 @@ const jsonLd = buildJsonLdGraph([
 					<table class="w-full border-collapse">
 						<tbody class="text-[#e2e8f0]">
 							{articles.map((article) => (
-								<tr class="zenn-article-row border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
+								<tr class="article-row border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
 									<td class="py-4 px-2 text-2xl w-10 shrink-0">
 										{article.data.emoji}
 									</td>
 									<td class="py-4 px-2 flex-1">
 										<a
 											href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-											class="zenn-article-link"
+											class="article-link"
 											target="_blank"
 											rel="noopener noreferrer"
 										>
@@ -91,11 +91,11 @@ const jsonLd = buildJsonLdGraph([
 				<div class="px-6 pb-5 text-right">
 					<a
 						href="https://zenn.dev/happy_onigiri"
-						class="zenn-all-link"
+						class="article-all-link"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						<span data-i18n="articles.profileLink">Zenn プロフィール →</span>
+						<span data-i18n="articles.profileLink">プロフィール →</span>
 					</a>
 				</div>
 			</div>

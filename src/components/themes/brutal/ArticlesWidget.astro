@@ -1,0 +1,158 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+	articles: CollectionEntry<"articles">[];
+}
+const { articles } = Astro.props;
+---
+
+<div class="brutal-article">
+	<div class="brutal-article-list">
+		{
+			articles.map((article, i) => {
+				const rotation = (i % 2 === 0 ? 1 : -1) * (Math.random() * 2);
+				return (
+					<a
+						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="brutal-article-link"
+						style={`transform: rotate(${rotation}deg);`}
+					>
+						<div class="brutal-article-emoji">{article.data.emoji}</div>
+						<div class="brutal-article-content">
+							<span class="brutal-article-title">{article.data.title}</span>
+						</div>
+					</a>
+				);
+			})
+		}
+	</div>
+	<a
+		href="https://zenn.dev/happy_onigiri"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="brutal-article-more btn-brutal"
+	>
+		READ MORE
+	</a>
+</div>
+
+<style>
+	.brutal-article {
+		display: flex;
+		flex-direction: column;
+		gap: 30px;
+	}
+
+	.brutal-article-list {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding: 20px;
+		overflow: hidden;
+	}
+
+	.brutal-article-link {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		background: #fff;
+		border: 4px solid #000;
+		padding: 15px;
+		text-decoration: none;
+		color: #000;
+		box-shadow: 8px 8px 0 #000;
+		transition: all 0.1s;
+	}
+
+	.brutal-article-link:hover {
+		background: var(--brutal-yellow);
+		transform: scale(1.05) rotate(0deg) !important;
+		box-shadow: 15px 15px 0 #000;
+		z-index: 5;
+	}
+
+	.brutal-article-emoji {
+		font-size: 3rem;
+		background: #000;
+		width: 80px;
+		height: 80px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 4px solid #000;
+		flex-shrink: 0;
+	}
+
+	.brutal-article-content {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		overflow: hidden;
+	}
+
+	.brutal-article-title {
+		font-size: 1.2rem;
+		font-weight: 900;
+		line-height: 1.3;
+		word-break: break-word;
+	}
+
+	.btn-brutal {
+		align-self: flex-end;
+		background: #000;
+		color: var(--brutal-green);
+		font-family: var(--font-brutal);
+		font-size: 1.2rem;
+		padding: 8px 20px;
+		text-decoration: none;
+		border: 5px solid #000;
+		box-shadow: 10px 10px 0 var(--brutal-pink);
+		transform: skewX(-10deg);
+		transition: all 0.1s;
+	}
+
+	.btn-brutal:hover {
+		background: var(--brutal-pink);
+		color: #000;
+		box-shadow: 15px 15px 0 var(--brutal-green);
+		transform: skewX(0deg) scale(1.1);
+	}
+
+	@media (max-width: 768px) {
+		.brutal-article-emoji {
+			width: 50px;
+			height: 50px;
+			font-size: 2rem;
+			border-width: 3px;
+		}
+
+		.brutal-article-link {
+			gap: 12px;
+			padding: 10px;
+			box-shadow: 5px 5px 0 #000;
+		}
+
+		.brutal-article-link:hover {
+			box-shadow: 8px 8px 0 #000;
+			transform: scale(1.02) rotate(0deg) !important;
+		}
+
+		.brutal-article-list {
+			padding: 10px;
+		}
+
+		.btn-brutal {
+			font-size: 1rem;
+			padding: 6px 16px;
+			box-shadow: 6px 6px 0 var(--brutal-pink);
+		}
+
+		.btn-brutal:hover {
+			box-shadow: 8px 8px 0 var(--brutal-green);
+			transform: skewX(0deg) scale(1.05);
+		}
+	}
+</style>

@@ -1,0 +1,88 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { ProjectData } from "../../ProjectCard.astro";
+
+interface Props {
+	project: ProjectData;
+	hrefMode?: "detail" | "external";
+}
+
+const { project, hrefMode = "external" } = Astro.props as Props;
+const detailHref = `/projects/${project.id}`;
+const isDetailMode = hrefMode === "detail";
+const imageFit = project.image_fit ?? "cover";
+const containBgStyle =
+	imageFit === "contain" && project.image_contain_bg
+		? { "--image-contain-bg": project.image_contain_bg }
+		: undefined;
+
+const thumbnails = import.meta.glob<{ default: ImageMetadata }>(
+	"../../../assets/images/thumbnails/*.{jpg,jpeg,png,gif,webp,avif,svg}",
+);
+
+let resolvedImage: ImageMetadata | undefined;
+if (project.image) {
+	const filename = project.image.split("/").at(-1);
+	const globKey = `../../../assets/images/thumbnails/${filename}`;
+	const loader = thumbnails[globKey];
+	if (loader) {
+		resolvedImage = (await loader()).default;
+	}
+}
+
+const Wrapper = isDetailMode ? "a" : project.url ? "a" : "div";
+const wrapperProps = isDetailMode
+	? { href: detailHref, class: "card card--link" }
+	: project.url
+		? {
+				href: project.url,
+				class: "card card--link",
+				target: "_blank",
+				rel: "noopener noreferrer",
+			}
+		: { class: "card" };
+---
+
+<Wrapper {...wrapperProps}>
+	<div class="flex flex-col w-full h-full">
+		{
+			resolvedImage && (
+				<div
+					class="card-image"
+					data-image-fit={imageFit}
+					style={containBgStyle}
+				>
+					<Image
+						src={resolvedImage}
+						data-lang-ja={`${project.title} のサムネイル`}
+						data-lang-en={`${project.title_en || project.title} thumbnail`}
+						alt={`${project.title} のサムネイル`}
+						loading="lazy"
+						widths={[400, 800]}
+						sizes="(max-width: 640px) 400px, 800px"
+					/>
+					{project.category && (
+						<span class="card-category" data-color={project.category_color}>
+							{project.category}
+						</span>
+					)}
+				</div>
+			)
+		}
+		<div class="card-content">
+			<h2
+				data-lang-ja={project.title}
+				data-lang-en={project.title_en || project.title}
+			>
+				{project.title}
+			</h2>
+			<p
+				data-lang-ja={project.description}
+				data-lang-en={project.description_en || project.description}
+			>
+				{project.description}
+			</p>
+		</div>
+	</div>
+</Wrapper>
