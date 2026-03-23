@@ -1,14 +1,13 @@
 ---
 import CyberWidget from "./themes/cyber/AuthorStatusWidget.astro";
-import MinimalWidget from "./themes/minimal/AuthorStatusWidget.astro";
+
 import PopWidget from "./themes/pop/AuthorStatusWidget.astro";
 
 export interface Props {
-	theme?: "cyber" | "minimal" | "pop";
+	theme?: "cyber" | "pop";
 }
 const { theme = "cyber" } = Astro.props;
 ---
 
 {theme === "cyber" && <CyberWidget />}
-{theme === "minimal" && <MinimalWidget />}
 {theme === "pop" && <PopWidget />}

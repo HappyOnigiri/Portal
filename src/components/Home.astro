@@ -39,14 +39,12 @@ const jsonLd = buildJsonLdGraph([
 	),
 ]);
 export interface Props {
-	theme?: "cyber" | "minimal" | "pop" | "glass" | "terminal" | "brutal";
+	theme?: "cyber" | "pop" | "terminal" | "brutal";
 }
 const { theme = "cyber" } = Astro.props;
 
 import BrutalHome from "./themes/brutal/Home.astro";
 import CyberHome from "./themes/cyber/Home.astro";
-import GlassHome from "./themes/glass/Home.astro";
-import MinimalHome from "./themes/minimal/Home.astro";
 import PopHome from "./themes/pop/Home.astro";
 import TerminalHome from "./themes/terminal/Home.astro";
 ---
@@ -62,28 +60,8 @@ import TerminalHome from "./themes/terminal/Home.astro";
 	)
 }
 {
-	theme === "minimal" && (
-		<MinimalHome
-			projects={projects}
-			zennEntries={zennEntries}
-			jsonLd={jsonLd}
-			metaDescriptionJa={metaDescriptionJa}
-		/>
-	)
-}
-{
 	theme === "pop" && (
 		<PopHome
-			projects={projects}
-			zennEntries={zennEntries}
-			jsonLd={jsonLd}
-			metaDescriptionJa={metaDescriptionJa}
-		/>
-	)
-}
-{
-	theme === "glass" && (
-		<GlassHome
 			projects={projects}
 			zennEntries={zennEntries}
 			jsonLd={jsonLd}
