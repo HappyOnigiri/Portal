@@ -27,7 +27,9 @@ const formatDate = (iso: string) =>
 				style="font-family: 'Noto Serif JP', serif; color: #2B2B2B; letter-spacing: 0.2em;"
 				data-lang-ja="記事"
 				data-lang-en="Articles"
-			>記事</h2>
+			>
+				記事
+			</h2>
 		</div>
 
 		<div class="px-6 pb-2">
@@ -55,7 +57,10 @@ const formatDate = (iso: string) =>
 									{article.data.title}
 								</span>
 							</div>
-							<div class="text-xs whitespace-nowrap text-right" style="color: #6B5E50;">
+							<div
+								class="text-xs whitespace-nowrap text-right"
+								style="color: #6B5E50;"
+							>
 								{formatDate(article.data.published_at)}
 							</div>
 						</a>

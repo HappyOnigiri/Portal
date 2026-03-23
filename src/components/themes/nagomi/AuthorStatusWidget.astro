@@ -39,7 +39,12 @@ const lastSync = statusData.lastUpdated
 				/>
 				<div>
 					<div class="flex items-center gap-3">
-						<p class="profile-name" style="margin-bottom: 0; font-family: 'Noto Serif JP', serif;">HappyOnigiri</p>
+						<p
+							class="profile-name"
+							style="margin-bottom: 0; font-family: 'Noto Serif JP', serif;"
+						>
+							HappyOnigiri
+						</p>
 						<div class="flex items-center gap-2">
 							<a
 								href="https://x.com/H_OnigiriWorks"
@@ -115,8 +120,12 @@ const lastSync = statusData.lastUpdated
 				style="font-family: 'Noto Serif JP', serif; color: #2B2B2B; letter-spacing: 0.2em;"
 				data-lang-ja="開発状況"
 				data-lang-en="Development Status"
-			>開発状況</h2>
-			<span class="text-xs" style="color: #6B5E50;">Last Updated: {lastSync}</span>
+			>
+				開発状況
+			</h2>
+			<span class="text-xs" style="color: #6B5E50;"
+				>Last Updated: {lastSync}</span
+			>
 		</div>
 		<div class="p-6 overflow-x-auto">
 			<div class="flex flex-wrap gap-4" style="color: #2B2B2B;">
@@ -124,10 +133,16 @@ const lastSync = statusData.lastUpdated
 					class="flex-1 min-w-[140px] border border-[#D4C5B0] p-4 rounded-lg"
 					style="background: #FBF9F6;"
 				>
-					<div class="text-xs font-semibold tracking-wider mb-2" style="color: #6B5E50;">
+					<div
+						class="text-xs font-semibold tracking-wider mb-2"
+						style="color: #6B5E50;"
+					>
 						Changed Lines
 					</div>
-					<div class="text-2xl font-bold" style="color: #9E2A2B; font-family: 'Noto Sans JP', sans-serif;">
+					<div
+						class="text-2xl font-bold"
+						style="color: #9E2A2B; font-family: 'Noto Sans JP', sans-serif;"
+					>
 						{formatNumber(statusData.addedLines + statusData.deletedLines)}
 					</div>
 				</div>
@@ -135,10 +150,16 @@ const lastSync = statusData.lastUpdated
 					class="flex-1 min-w-[140px] border border-[#D4C5B0] p-4 rounded-lg"
 					style="background: #FBF9F6;"
 				>
-					<div class="text-xs font-semibold tracking-wider mb-2" style="color: #6B5E50;">
+					<div
+						class="text-xs font-semibold tracking-wider mb-2"
+						style="color: #6B5E50;"
+					>
 						Commits
 					</div>
-					<div class="text-2xl font-bold" style="color: #4A5D23; font-family: 'Noto Sans JP', sans-serif;">
+					<div
+						class="text-2xl font-bold"
+						style="color: #4A5D23; font-family: 'Noto Sans JP', sans-serif;"
+					>
 						{formatNumber(statusData.commits)}
 					</div>
 				</div>
@@ -146,10 +167,16 @@ const lastSync = statusData.lastUpdated
 					class="flex-1 min-w-[140px] border border-[#D4C5B0] p-4 rounded-lg"
 					style="background: #FBF9F6;"
 				>
-					<div class="text-xs font-semibold tracking-wider mb-2" style="color: #6B5E50;">
+					<div
+						class="text-xs font-semibold tracking-wider mb-2"
+						style="color: #6B5E50;"
+					>
 						Merged PRs
 					</div>
-					<div class="text-2xl font-bold" style="color: #5B4A6F; font-family: 'Noto Sans JP', sans-serif;">
+					<div
+						class="text-2xl font-bold"
+						style="color: #5B4A6F; font-family: 'Noto Sans JP', sans-serif;"
+					>
 						{formatNumber(statusData.mergedPRs)}
 					</div>
 				</div>
@@ -157,10 +184,16 @@ const lastSync = statusData.lastUpdated
 					class="flex-1 min-w-[140px] border border-[#D4C5B0] p-4 rounded-lg"
 					style="background: #FBF9F6;"
 				>
-					<div class="text-xs font-semibold tracking-wider mb-2" style="color: #6B5E50;">
+					<div
+						class="text-xs font-semibold tracking-wider mb-2"
+						style="color: #6B5E50;"
+					>
 						CI Runs
 					</div>
-					<div class="text-2xl font-bold" style="color: #9E2A2B; font-family: 'Noto Sans JP', sans-serif;">
+					<div
+						class="text-2xl font-bold"
+						style="color: #9E2A2B; font-family: 'Noto Sans JP', sans-serif;"
+					>
 						{formatNumber(statusData.ciRuns)}
 					</div>
 				</div>
@@ -170,10 +203,16 @@ const lastSync = statusData.lastUpdated
 							class="flex-1 min-w-[140px] border border-[#D4C5B0] p-4 rounded-lg"
 							style="background: #FBF9F6;"
 						>
-							<div class="text-xs font-semibold tracking-wider mb-2" style="color: #6B5E50;">
+							<div
+								class="text-xs font-semibold tracking-wider mb-2"
+								style="color: #6B5E50;"
+							>
 								OSS PRs
 							</div>
-							<div class="text-2xl font-bold" style="color: #4A5D23; font-family: 'Noto Sans JP', sans-serif;">
+							<div
+								class="text-2xl font-bold"
+								style="color: #4A5D23; font-family: 'Noto Sans JP', sans-serif;"
+							>
 								{formatNumber((statusData as { ossPRs?: number }).ossPRs!)}
 							</div>
 						</div>
@@ -185,7 +224,10 @@ const lastSync = statusData.lastUpdated
 				style="background: #FBF9F6;"
 			>
 				<div class="flex items-center gap-4 mb-3">
-					<div class="text-xs font-semibold tracking-wider whitespace-nowrap" style="color: #6B5E50;">
+					<div
+						class="text-xs font-semibold tracking-wider whitespace-nowrap"
+						style="color: #6B5E50;"
+					>
 						Languages
 					</div>
 					<div
