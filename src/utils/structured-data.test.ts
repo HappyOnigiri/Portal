@@ -4,8 +4,8 @@ import {
 	breadcrumbList,
 	buildJsonLdGraph,
 	collectionPageArticles,
+	itemListArticles,
 	itemListProjects,
-	itemListZennArticles,
 	personHappyOnigiri,
 	softwareApplicationProject,
 	toAbsoluteUrl,
@@ -55,8 +55,8 @@ describe("structured-data", () => {
 		expect(list.numberOfItems).toBe(1);
 	});
 
-	it("itemListZennArticles は Zenn の記事 URL を列挙する", () => {
-		const list = itemListZennArticles([{ title: "A", slug: "a-slug" }]);
+	it("itemListArticles は記事 URL を列挙する", () => {
+		const list = itemListArticles([{ title: "A", slug: "a-slug" }]);
 		const elements = list.itemListElement as Record<string, unknown>[];
 		expect(elements[0]?.item).toBe(
 			"https://zenn.dev/happy_onigiri/articles/a-slug",

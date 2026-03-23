@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-	articles: CollectionEntry<"zennArticles">[];
+	articles: CollectionEntry<"articles">[];
 }
 
 const { articles } = Astro.props;
@@ -50,11 +50,11 @@ const formatDate = (iso: string) =>
 		<div class="px-6 pb-5 text-right">
 			<a
 				href="https://zenn.dev/happy_onigiri"
-				class="zenn-all-link"
+				class="article-all-link"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<span data-i18n="zenn.viewAll">すべての記事を見る →</span>
+				<span data-i18n="articles.viewAll">すべての記事を見る →</span>
 			</a>
 		</div>
 	</div>

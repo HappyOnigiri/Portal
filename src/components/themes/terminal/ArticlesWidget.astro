@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 
 export interface Props {
-	articles: CollectionEntry<"zennArticles">[];
+	articles: CollectionEntry<"articles">[];
 	theme: string;
 }
 const { articles } = Astro.props;
@@ -15,7 +15,7 @@ const { articles } = Astro.props;
 				.toISOString()
 				.split("T")[0];
 			return (
-				<div class="zenn-line">
+				<div class="article-line">
 					<span class="line-num">
 						{(index + 1).toString().padStart(2, "0")}
 					</span>
@@ -33,7 +33,7 @@ const { articles } = Astro.props;
 			);
 		})
 	}
-	<div class="zenn-line">
+	<div class="article-line">
 		<span class="line-num"
 			>{(articles.length + 1).toString().padStart(2, "0")}</span
 		>
@@ -56,7 +56,7 @@ const { articles } = Astro.props;
 		line-height: 1.6;
 	}
 
-	.zenn-line {
+	.article-line {
 		display: flex;
 		gap: 15px;
 	}

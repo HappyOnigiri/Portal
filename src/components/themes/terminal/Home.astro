@@ -2,17 +2,17 @@
 import type { CollectionEntry } from "astro:content";
 import packageJson from "../../../../package.json";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "./ArticlesWidget.astro";
 import AuthorStatusWidget from "./AuthorStatusWidget.astro";
 import ProjectCard from "./ProjectCard.astro";
-import ZennArticlesWidget from "./ZennArticlesWidget.astro";
 
 export interface Props {
 	projects: CollectionEntry<"projects">["data"][];
-	zennEntries: CollectionEntry<"zennArticles">[];
+	articleEntries: CollectionEntry<"articles">[];
 	jsonLd: Record<string, unknown>;
 	metaDescriptionJa: string;
 }
-const { projects, zennEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
 const theme = "terminal";
 ---
 
@@ -76,14 +76,14 @@ const theme = "terminal";
 			</div>
 
 			{
-				zennEntries.length > 0 && (
+				articleEntries.length > 0 && (
 					<div class="command-block">
 						<div class="prompt">
 							<span class="user">root@portal</span>:
 							<span class="dir">~/articles</span>$ cat latest.txt
 						</div>
 						<div class="output">
-							<ZennArticlesWidget articles={zennEntries} theme={theme} />
+							<ArticlesWidget articles={articleEntries} theme={theme} />
 						</div>
 					</div>
 				)

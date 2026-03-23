@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-	articles: CollectionEntry<"zennArticles">[];
+	articles: CollectionEntry<"articles">[];
 }
 
 const { articles } = Astro.props;
@@ -64,7 +64,7 @@ const formatDate = (iso: string) =>
 			class="mt-8 font-black text-lg text-center block border-4 border-black py-4 bg-[var(--accent-main)] text-[#000] shadow-[6px_6px_0_#000] hover:-translate-y-1 hover:-translate-x-1 transition-transform"
 			style="font-family: var(--font-heading);"
 		>
-			Read More on Zenn
+			Read More
 		</a>
 	</div>
 </div>

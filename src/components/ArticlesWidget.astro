@@ -1,11 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import BrutalWidget from "./themes/brutal/ZennArticlesWidget.astro";
-import CyberWidget from "./themes/cyber/ZennArticlesWidget.astro";
-import PopWidget from "./themes/pop/ZennArticlesWidget.astro";
+import BrutalWidget from "./themes/brutal/ArticlesWidget.astro";
+import CyberWidget from "./themes/cyber/ArticlesWidget.astro";
+import PopWidget from "./themes/pop/ArticlesWidget.astro";
 
 interface Props {
-	articles: CollectionEntry<"zennArticles">[];
+	articles: CollectionEntry<"articles">[];
 	theme?: "cyber" | "pop" | "brutal";
 }
 

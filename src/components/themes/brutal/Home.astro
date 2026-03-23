@@ -1,17 +1,17 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticlesWidget from "./ArticlesWidget.astro";
 import AuthorStatusWidget from "./AuthorStatusWidget.astro";
 import ProjectCard from "./ProjectCard.astro";
-import ZennArticlesWidget from "./ZennArticlesWidget.astro";
 
 export interface Props {
 	projects: CollectionEntry<"projects">["data"][];
-	zennEntries: CollectionEntry<"zennArticles">[];
+	articleEntries: CollectionEntry<"articles">[];
 	jsonLd: Record<string, unknown>;
 	metaDescriptionJa: string;
 }
-const { projects, zennEntries, jsonLd, metaDescriptionJa } = Astro.props;
+const { projects, articleEntries, jsonLd, metaDescriptionJa } = Astro.props;
 const theme = "brutal";
 ---
 
@@ -58,14 +58,14 @@ const theme = "brutal";
 				</section>
 
 				{
-					zennEntries.length > 0 && (
+					articleEntries.length > 0 && (
 						<section
 							id="articles"
 							aria-label="Articles"
 							class="brutal-section articles-section"
 						>
 							<h2 class="brutal-heading">Articles</h2>
-							<ZennArticlesWidget articles={zennEntries} theme={theme} />
+							<ArticlesWidget articles={articleEntries} theme={theme} />
 						</section>
 					)
 				}

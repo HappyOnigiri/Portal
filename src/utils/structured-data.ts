@@ -128,7 +128,7 @@ export function breadcrumbList(
 	};
 }
 
-export function itemListZennArticles(
+export function itemListArticles(
 	articles: { title: string; slug: string }[],
 ): Record<string, unknown> {
 	return {
@@ -154,7 +154,7 @@ export function collectionPageArticles(
 		"@type": "CollectionPage",
 		"@id": `${origin}/articles#webpage`,
 		url: `${origin}/articles`,
-		name: "Zenn 記事一覧 | ONIGIRI PORTAL",
+		name: "記事一覧 | ONIGIRI PORTAL",
 		description,
 		isPartOf: { "@id": `${origin}/#website` },
 		author: { "@id": `${origin}${PERSON_ID_SUFFIX}` },
