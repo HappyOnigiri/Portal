@@ -1,12 +1,12 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import BrutalWidget from "./themes/brutal/ZennArticlesWidget.astro";
 import CyberWidget from "./themes/cyber/ZennArticlesWidget.astro";
-
 import PopWidget from "./themes/pop/ZennArticlesWidget.astro";
 
 interface Props {
 	articles: CollectionEntry<"zennArticles">[];
-	theme?: "cyber" | "pop";
+	theme?: "cyber" | "pop" | "brutal";
 }
 
 const { articles, theme = "cyber" } = Astro.props as Props;
@@ -14,3 +14,4 @@ const { articles, theme = "cyber" } = Astro.props as Props;
 
 {theme === "cyber" && <CyberWidget articles={articles} />}
 {theme === "pop" && <PopWidget articles={articles} />}
+{theme === "brutal" && <BrutalWidget articles={articles} />}
