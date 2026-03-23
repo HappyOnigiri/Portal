@@ -11,6 +11,12 @@ export interface Props {
 
 const { project, index = 0 } = Astro.props;
 
+const imageFit = project.image_fit ?? "cover";
+const containBgStyle =
+	imageFit === "contain" && project.image_contain_bg
+		? `background-color: ${project.image_contain_bg};`
+		: undefined;
+
 const thumbnails = import.meta.glob<{ default: ImageMetadata }>(
 	"../../../assets/images/thumbnails/*.{jpg,jpeg,png,gif,webp,avif,svg}",
 );
@@ -37,12 +43,13 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 >
 	{
 		resolvedImage && (
-			<div class="brutal-card-image">
+			<div class="brutal-card-image" style={containBgStyle}>
 				<Image
 					src={resolvedImage}
 					alt={`${project.title} thumbnail`}
 					loading="lazy"
 					width={600}
+					style={`object-fit: ${imageFit};`}
 				/>
 			</div>
 		)
@@ -88,10 +95,9 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 		overflow: hidden;
 	}
 
-	.brutal-card-image img {
+	.brutal-card-image :global(img) {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
 		filter: contrast(150%) saturate(120%) grayscale(20%);
 	}
 
