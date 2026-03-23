@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import { SITE_ORIGIN } from "../constants/site";
-import BaseLayout from "../layouts/BaseLayout.astro";
 import { sortProjectsByOrder } from "../utils/project";
 import {
 	buildJsonLdGraph,
@@ -10,9 +9,6 @@ import {
 	webSiteRoot,
 } from "../utils/structured-data";
 import { translations } from "../utils/translations";
-import AuthorStatusWidget from "./AuthorStatusWidget.astro";
-import ProjectCard from "./ProjectCard.astro";
-import ZennArticlesWidget from "./ZennArticlesWidget.astro";
 
 const metaDescriptionJa = translations.ja["meta.description"];
 
