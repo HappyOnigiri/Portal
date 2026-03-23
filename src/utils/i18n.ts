@@ -33,6 +33,17 @@ function updatePage(): void {
 		}
 	}
 
+	// data-href-en によるリンク先切り替え
+	for (const el of document.querySelectorAll<HTMLAnchorElement>(
+		"a[data-href-en]",
+	)) {
+		const enHref = el.getAttribute("data-href-en") ?? "";
+		const jaHref = el.getAttribute("data-href-ja") ?? "";
+		if (enHref && jaHref) {
+			el.href = currentLang === "en" ? enHref : jaHref;
+		}
+	}
+
 	// data-i18n によるテキスト切り替え
 	for (const el of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
 		const key = el.getAttribute("data-i18n");
