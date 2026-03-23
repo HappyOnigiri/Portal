@@ -36,6 +36,6 @@ const {
 {theme === "pop" && <PopWidget project={project} hrefMode={hrefMode} />}
 {
 	theme === "brutal" && (
-		<BrutalWidget project={project as any} theme={theme} index={index} />
+		<BrutalWidget project={project} hrefMode={hrefMode} index={index} />
 	)
 }

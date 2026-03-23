@@ -1,15 +1,17 @@
 ---
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import type { Project } from "../../../utils/project";
+import type { ProjectData } from "../../ProjectCard.astro";
 
 export interface Props {
-	project: Project;
-	theme: string;
+	project: ProjectData;
+	hrefMode?: "detail" | "external";
 	index?: number;
 }
 
-const { project, index = 0 } = Astro.props;
+const { project, hrefMode = "external", index = 0 } = Astro.props;
+const detailHref = `/projects/${project.id}`;
+const href = hrefMode === "detail" ? detailHref : (project.url ?? detailHref);
 
 const imageFit = project.image_fit ?? "cover";
 const containBgStyle =
@@ -37,7 +39,7 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 ---
 
 <a
-	href={`/projects/${project.id}`}
+	href={href}
 	class="brutal-card"
 	style={`background-color: ${bgColor}; transform: rotate(${rotation}deg);`}
 >
