@@ -35,7 +35,7 @@
 	--category-border-radius: 4px;
 	--category-border: 1px solid var(--category-color);
 	--category-font: Orbitron, sans-serif;
-	--category-text-transform: uppercase;
+	--category-text-transform: none;
 	--category-shadow: 0 0 10px rgba(var(--category-color-rgb), 0.2);
 	--category-text-shadow: 0 0 5px rgba(var(--category-color-rgb), 0.5);
 	--category-bg: rgba(13, 14, 21, 0.8);
@@ -89,7 +89,7 @@
 	--category-border-radius: 0px;
 	--category-border: 2px solid #000000;
 	--category-font: Orbitron, sans-serif;
-	--category-text-transform: uppercase;
+	--category-text-transform: none;
 	--category-shadow: 2px 2px 0px #000;
 	--category-text-shadow: none;
 	--category-bg: var(--category-color);
@@ -153,7 +153,6 @@ body {
 	font-size: 4rem;
 	font-weight: 900;
 	color: var(--title-color);
-	text-transform: uppercase;
 	letter-spacing: var(--title-letter-spacing);
 	text-shadow: var(--title-shadow);
 	margin-bottom: 10px;
