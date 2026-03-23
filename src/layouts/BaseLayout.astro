@@ -68,13 +68,56 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 	</head>
 	<body>
 		<div class="cyber-container">
-			<div class="floating-ui-pill">
-				<div class="lang-switcher" style="margin-top: 0; opacity: 1;">
-					<button data-lang-btn="en" class="lang-btn">EN</button>
-					<span class="lang-divider">|</span>
-					<button data-lang-btn="ja" class="lang-btn">JP</button>
+			<div class="floating-ui-pill" id="floating-ui-pill">
+				<div class="floating-ui-content">
+					<div class="lang-switcher" style="margin-top: 0; opacity: 1;">
+						<button data-lang-btn="en" class="lang-btn">EN</button>
+						<span class="lang-divider">|</span>
+						<button data-lang-btn="ja" class="lang-btn">JP</button>
+					</div>
+					<ThemeSwitcher theme={theme} />
 				</div>
-				<ThemeSwitcher theme={theme} />
+				<button
+					id="mobile-menu-toggle"
+					class="mobile-menu-btn"
+					aria-label="Toggle Menu"
+					aria-expanded="false"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="icon-menu"
+						><line x1="3" y1="12" x2="21" y2="12"></line><line
+							x1="3"
+							y1="6"
+							x2="21"
+							y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg
+					>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="icon-close"
+						><line x1="18" y1="6" x2="6" y2="18"></line><line
+							x1="6"
+							y1="6"
+							x2="18"
+							y2="18"></line></svg
+					>
+				</button>
 			</div>
 
 			<main id="main-content" class="portal-main">
@@ -139,6 +182,22 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 		<script>
 			import { initI18n } from "../utils/i18n";
 			initI18n();
+
+			const pill = document.getElementById("floating-ui-pill");
+			const btn = document.getElementById("mobile-menu-toggle");
+			if (btn && pill) {
+				btn.addEventListener("click", (e) => {
+					e.stopPropagation();
+					const isExpanded = pill.classList.toggle("expanded");
+					btn.setAttribute("aria-expanded", isExpanded.toString());
+				});
+				document.addEventListener("click", (e) => {
+					if (!pill.contains(e.target as Node)) {
+						pill.classList.remove("expanded");
+						btn.setAttribute("aria-expanded", "false");
+					}
+				});
+			}
 		</script>
 	</body>
 </html>
