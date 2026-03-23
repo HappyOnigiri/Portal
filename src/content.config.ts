@@ -138,13 +138,29 @@ const zennArticles = defineCollection({
 				// 既存 JSON から title_en を引き継ぐ
 				const existingTitleEnMap = new Map<string, string>();
 				if (existsSync(jsonUrl)) {
-					const raw = await fs.readFile(jsonPath, "utf-8");
-					const cached = JSON.parse(raw) as Array<{
-						slug: string;
-						title_en?: string;
-					}>;
-					for (const a of cached) {
-						if (a.title_en) existingTitleEnMap.set(a.slug, a.title_en);
+					try {
+						const raw = await fs.readFile(jsonPath, "utf-8");
+						const cached = JSON.parse(raw);
+						if (Array.isArray(cached)) {
+							for (const a of cached) {
+								if (
+									a &&
+									typeof a === "object" &&
+									typeof a.slug === "string" &&
+									typeof a.title_en === "string"
+								) {
+									existingTitleEnMap.set(a.slug, a.title_en);
+								}
+							}
+						} else {
+							logger.warn(
+								"Zenn cache JSON is not an array; skipping title_en inheritance",
+							);
+						}
+					} catch (err) {
+						logger.warn(
+							`Failed to read/parse Zenn cache; skipping title_en inheritance: ${err}`,
+						);
 					}
 				}
 				for (const article of articles) {
