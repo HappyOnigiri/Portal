@@ -171,7 +171,17 @@ const zennArticles = defineCollection({
 								/<meta property="og:title" content="([^"]+)"/,
 							);
 							if (match) {
-								const titleEn = match[1];
+								const titleEn = match[1]
+									.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+										String.fromCodePoint(parseInt(hex, 16)),
+									)
+									.replace(/&#(\d+);/g, (_, dec) =>
+										String.fromCodePoint(parseInt(dec, 10)),
+									)
+									.replace(/&amp;/g, "&")
+									.replace(/&lt;/g, "<")
+									.replace(/&gt;/g, ">")
+									.replace(/&quot;/g, '"');
 								if (titleEn !== article.title) {
 									article.title_en = titleEn;
 									logger.info(
