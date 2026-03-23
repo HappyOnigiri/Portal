@@ -4,7 +4,7 @@ export interface Props {
 }
 const { theme = "cyber" } = Astro.props;
 
-const themeOrder = ["cyber", "pop", "terminal", "brutal", "nagomi"];
+const themeOrder = ["cyber", "pop", "nagomi", "brutal", "terminal"];
 const currentIndex = themeOrder.indexOf(theme);
 const nextTheme = themeOrder[(currentIndex + 1) % themeOrder.length];
 const nextUrl = nextTheme === "cyber" ? "/" : `/${nextTheme}`;
