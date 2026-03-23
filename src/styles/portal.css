@@ -41,7 +41,7 @@
 	--category-bg: rgba(13, 14, 21, 0.8);
 	--category-text-color: var(--category-color);
 
-	--title-color: var(--title-color);
+	--title-color: var(--text-main);
 	--title-shadow:
 		0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
 	--title-letter-spacing: 6px;
@@ -55,8 +55,8 @@
 	--btn-external-shadow: 0 0 12px rgba(0, 240, 255, 0.45);
 	--btn-external-border: 1px solid var(--accent-main);
 
-	--profile-name-letter-spacing: var(--profile-name-letter-spacing);
-	--page-title-letter-spacing: var(--page-title-letter-spacing);
+	--profile-name-letter-spacing: 4px;
+	--page-title-letter-spacing: 4px;
 
 	--guideline-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 	--social-hover-shadow: 0 0 5px var(--accent-main);
@@ -904,17 +904,17 @@ body {
 ----------------------------------- */
 @media (max-width: 768px) {
 	/* Reduce title size to prevent overflow */
-	body:not([data-theme="cyber"]) .cyber-glitch {
+	html:not([data-theme="cyber"]) .cyber-glitch {
 		font-size: 2.2rem;
-		word-break: break-word;
+		overflow-wrap: break-word;
 	}
-	body:not([data-theme="cyber"]) .cyber-subtitle {
+	html:not([data-theme="cyber"]) .cyber-subtitle {
 		font-size: 0.9rem;
 		letter-spacing: 2px;
 	}
 
 	/* Make grids display in a single column or wrap more easily */
-	body:not([data-theme="cyber"]) .project-grid {
+	html:not([data-theme="cyber"]) .project-grid {
 		grid-template-columns: 1fr;
 		gap: 20px;
 	}
