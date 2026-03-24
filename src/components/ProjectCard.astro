@@ -20,24 +20,14 @@ export interface ProjectData {
 
 interface Props {
 	project: ProjectData;
-	hrefMode?: "detail" | "external";
 	theme?: "cyber" | "pop" | "brutal" | "nagomi";
 	index?: number;
 }
 
-const {
-	project,
-	hrefMode = "external",
-	theme = "cyber",
-	index = 0,
-} = Astro.props as Props;
+const { project, theme = "cyber", index = 0 } = Astro.props as Props;
 ---
 
-{theme === "cyber" && <CyberWidget project={project} hrefMode={hrefMode} />}
-{theme === "pop" && <PopWidget project={project} hrefMode={hrefMode} />}
-{
-	theme === "brutal" && (
-		<BrutalWidget project={project} hrefMode={hrefMode} index={index} />
-	)
-}
-{theme === "nagomi" && <NagomiWidget project={project} hrefMode={hrefMode} />}
+{theme === "cyber" && <CyberWidget project={project} />}
+{theme === "pop" && <PopWidget project={project} />}
+{theme === "brutal" && <BrutalWidget project={project} index={index} />}
+{theme === "nagomi" && <NagomiWidget project={project} />}

@@ -5,12 +5,9 @@ import type { ProjectData } from "../../ProjectCard.astro";
 
 interface Props {
 	project: ProjectData;
-	hrefMode?: "detail" | "external";
 }
 
-const { project, hrefMode = "external" } = Astro.props as Props;
-const detailHref = `/projects/${project.id}`;
-const isDetailMode = hrefMode === "detail";
+const { project } = Astro.props as Props;
 const imageFit = project.image_fit ?? "cover";
 
 const thumbnails = import.meta.glob<{ default: ImageMetadata }>(
@@ -27,17 +24,15 @@ if (project.image) {
 	}
 }
 
-const Wrapper = isDetailMode ? "a" : project.url ? "a" : "div";
-const wrapperProps = isDetailMode
-	? { href: detailHref, class: "card card--link" }
-	: project.url
-		? {
-				href: project.url,
-				class: "card card--link",
-				target: "_blank",
-				rel: "noopener noreferrer",
-			}
-		: { class: "card" };
+const Wrapper = project.url ? "a" : "div";
+const wrapperProps = project.url
+	? {
+			href: project.url,
+			class: "card card--link",
+			target: "_blank",
+			rel: "noopener noreferrer",
+		}
+	: { class: "card" };
 ---
 
 <Wrapper {...wrapperProps}>
