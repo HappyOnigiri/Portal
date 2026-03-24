@@ -9,62 +9,88 @@ export interface Props {
 const { project } = Astro.props;
 ---
 
-<div class="terminal-ls-row">
-	<span class="ls-name">
-		<a href={`/projects/${project.id}`}>{project.id}</a>
-	</span>
-	<span class="ls-desc"
-		><span
-			data-lang-ja={project.title}
-			data-lang-en={project.title_en || project.title}>{project.title}</span
-		> - <span
-			data-lang-ja={project.description}
-			data-lang-en={project.description_en || project.description}
-			>{project.description}</span
-		></span
+<div class="terminal-pkg-row">
+	<div class="pkg-header">
+		{
+			project.url ? (
+				<a
+					class="pkg-name"
+					href={project.url}
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{project.title}
+				</a>
+			) : (
+				<span class="pkg-name">{project.title}</span>
+			)
+		}
+		{
+			project.category && (
+				<span class="pkg-category" data-color={project.category_color}>
+					[{project.category}]
+				</span>
+			)
+		}
+	</div>
+	<div
+		class="pkg-desc"
+		data-lang-ja={project.description}
+		data-lang-en={project.description_en || project.description}
 	>
+		{project.description}
+	</div>
 </div>
 
 <style>
-	.terminal-ls-row {
-		display: flex;
-		gap: 15px;
-		margin-bottom: 8px;
+	.terminal-pkg-row {
+		margin-bottom: 12px;
 		font-size: 14px;
 	}
 
-	.ls-name {
-		white-space: nowrap;
-		flex-shrink: 0;
+	.pkg-header {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
 	}
 
-	.ls-name a {
+	.pkg-name {
 		color: #66b3ff;
 		text-decoration: none;
 		font-weight: bold;
 	}
 
-	.ls-name a:hover {
+	.pkg-name:hover {
 		text-decoration: underline;
 		background: #66b3ff;
 		color: #000;
 	}
 
-	.ls-desc {
-		color: #888888;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		flex-grow: 1;
+	.pkg-category {
+		font-weight: bold;
 	}
 
-	@media (max-width: 768px) {
-		.terminal-ls-row {
-			flex-direction: column;
-			gap: 4px;
-		}
-		.ls-desc {
-			display: block;
-			white-space: normal;
-		}
+	.pkg-category[data-color="cyan"] {
+		color: #00f0ff;
+	}
+	.pkg-category[data-color="emerald"] {
+		color: #10b981;
+	}
+	.pkg-category[data-color="amber"] {
+		color: #f59e0b;
+	}
+	.pkg-category[data-color="purple"] {
+		color: #8b46f5;
+	}
+	.pkg-category[data-color="blue"] {
+		color: #3b82f6;
+	}
+	.pkg-category[data-color="pink"] {
+		color: #e879f9;
+	}
+
+	.pkg-desc {
+		color: #888888;
+		padding-left: 2ch;
 	}
 </style>
