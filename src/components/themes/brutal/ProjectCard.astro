@@ -5,13 +5,10 @@ import type { ProjectData } from "../../ProjectCard.astro";
 
 export interface Props {
 	project: ProjectData;
-	hrefMode?: "detail" | "external";
 	index?: number;
 }
 
-const { project, hrefMode = "external", index = 0 } = Astro.props;
-const detailHref = `/projects/${project.id}`;
-const href = hrefMode === "detail" ? detailHref : (project.url ?? detailHref);
+const { project, index = 0 } = Astro.props;
 
 const imageFit = project.image_fit ?? "cover";
 const containBgStyle =
@@ -36,13 +33,23 @@ if (project.image) {
 const colors = ["#eeff00", "#ff00ea", "#0051ff", "#00ff22", "#ff0000", "#fff"];
 const bgColor = colors[index % colors.length];
 const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
+
+const Wrapper = project.url ? "a" : "div";
+const wrapperProps = project.url
+	? {
+			href: project.url,
+			target: "_blank",
+			rel: "noopener noreferrer",
+			class: "brutal-card",
+			style: `background-color: ${bgColor}; transform: rotate(${rotation}deg);`,
+		}
+	: {
+			class: "brutal-card",
+			style: `background-color: ${bgColor}; transform: rotate(${rotation}deg);`,
+		};
 ---
 
-<a
-	href={href}
-	class="brutal-card"
-	style={`background-color: ${bgColor}; transform: rotate(${rotation}deg);`}
->
+<Wrapper {...wrapperProps}>
 	{
 		resolvedImage && (
 			<div class="brutal-card-image" style={containBgStyle}>
@@ -81,7 +88,7 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 			)
 		}
 	</div>
-</a>
+</Wrapper>
 
 <style>
 	.brutal-card {
