@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import logoImage from "../../../assets/images/themes/brutal/logo.jpg";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ArticlesWidget from "./ArticlesWidget.astro";
 import AuthorStatusWidget from "./AuthorStatusWidget.astro";
@@ -24,9 +26,15 @@ const theme = "brutal";
 >
 	<div class="brutal-root">
 		<header class="brutal-header">
-			<div class="brutal-hero-box">
-				<h1 class="brutal-title">ONIGIRI PORTAL</h1>
-			</div>
+			<h1 class="sr-only">ONIGIRI PORTAL</h1>
+			<Image
+				src={logoImage}
+				alt="ONIGIRI PORTAL"
+				class="brutal-logo"
+				widths={[600, 800, 1200]}
+				sizes="(max-width: 768px) 90vw, 1000px"
+				quality={95}
+			/>
 		</header>
 
 		<div class="brutal-grid">
@@ -142,7 +150,23 @@ const theme = "brutal";
 	.brutal-header {
 		margin-bottom: 60px;
 		position: relative;
-		overflow: hidden;
+		text-align: center;
+	}
+
+	.brutal-logo {
+		display: block;
+		margin: 1rem auto 0;
+		max-width: 1000px;
+		width: 100%;
+		height: auto;
+		border: 4px solid #000;
+		box-shadow: 8px 8px 0 #000;
+	}
+
+	@media (max-width: 768px) {
+		.brutal-logo {
+			max-width: 90vw;
+		}
 	}
 
 	.brutal-marquee {
