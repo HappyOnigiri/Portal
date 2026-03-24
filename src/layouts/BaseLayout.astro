@@ -181,6 +181,10 @@ const jsonLdSerialized = jsonLd ? JSON.stringify(jsonLd) : null;
 			window.__portalI18nResources = translations;
 		</script>
 		<script>
+			import { inject } from "@vercel/analytics";
+			inject();
+		</script>
+		<script>
 			import { initI18n } from "../utils/i18n";
 			initI18n();
 
