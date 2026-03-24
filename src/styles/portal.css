@@ -33,13 +33,13 @@
 	--card-before-display: block;
 
 	--category-border-radius: 4px;
-	--category-border: 1px solid var(--category-color);
+	--category-border: 1px solid var(--accent-main);
 	--category-font: Orbitron, sans-serif;
 	--category-text-transform: none;
-	--category-shadow: 0 0 10px rgba(var(--category-color-rgb), 0.2);
-	--category-text-shadow: 0 0 5px rgba(var(--category-color-rgb), 0.5);
-	--category-bg: rgba(13, 14, 21, 0.8);
-	--category-text-color: var(--category-color);
+	--category-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+	--category-text-shadow: none;
+	--category-bg: rgba(13, 14, 21, 0.85);
+	--category-text-color: var(--accent-main);
 
 	--title-color: var(--text-main);
 	--title-shadow:
@@ -335,6 +335,26 @@ body {
 .card-category[data-color="pink"] {
 	--category-color: #e879f9;
 	--category-color-rgb: 232, 121, 249;
+}
+
+:root[data-theme="cyber"] .card-category {
+	--category-bg: rgba(13, 14, 21, 0.85);
+	--category-text-color: var(--category-color);
+	--category-border: 1px solid var(--category-color);
+	--category-shadow: 0 0 8px rgba(var(--category-color-rgb), 0.3);
+	--category-text-shadow: none;
+}
+
+:root[data-theme="pop"] .card-category {
+	--category-bg: var(--category-color);
+	--category-text-color: #000;
+	--category-border: 3px solid #000;
+	--category-shadow: 4px 4px 0 #000;
+	position: static;
+}
+
+:root[data-theme="nagomi"] .card-category {
+	--category-bg: var(--category-color);
 }
 
 .card-image img {

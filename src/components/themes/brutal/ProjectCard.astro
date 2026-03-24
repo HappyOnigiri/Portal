@@ -73,7 +73,13 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 		>
 			{project.description}
 		</p>
-		{project.category && <div class="brutal-tag">{project.category}</div>}
+		{
+			project.category && (
+				<div class="brutal-tag" data-color={project.category_color}>
+					{project.category}
+				</div>
+			)
+		}
 	</div>
 </a>
 
@@ -137,12 +143,38 @@ const rotation = (index % 2 === 0 ? 1 : -1) * (Math.random() * 1.5 + 0.5);
 	}
 
 	.brutal-tag {
+		--tag-color: #000;
 		display: inline-block;
-		background: #000;
-		color: #fff;
+		background: #fff;
+		border: 2px solid #000;
+		color: var(--tag-color);
+		text-shadow:
+			2px 2px 0 #000,
+			-1px -1px 0 #000,
+			1px -1px 0 #000,
+			-1px 1px 0 #000;
 		font-family: var(--font-brutal);
 		padding: 5px 10px;
 		font-size: 1.2rem;
+	}
+
+	.brutal-tag[data-color="cyan"] {
+		--tag-color: #06b6d4;
+	}
+	.brutal-tag[data-color="emerald"] {
+		--tag-color: #10b981;
+	}
+	.brutal-tag[data-color="amber"] {
+		--tag-color: #f59e0b;
+	}
+	.brutal-tag[data-color="purple"] {
+		--tag-color: #8b46f5;
+	}
+	.brutal-tag[data-color="blue"] {
+		--tag-color: #3b82f6;
+	}
+	.brutal-tag[data-color="pink"] {
+		--tag-color: #e879f9;
 	}
 
 	@media (max-width: 768px) {
