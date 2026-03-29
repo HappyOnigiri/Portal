@@ -5,7 +5,8 @@
 		"slug": "4813304a09b575",
 		"emoji": "🔧",
 		"article_type": "tech",
-		"published_at": "2026-03-28T17:59:32.380+09:00"
+		"published_at": "2026-03-28T17:59:32.380+09:00",
+		"title_en": "I created a status line tool for Claude Code that feels like $PS1"
 	},
 	{
 		"id": 549881,
