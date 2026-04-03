@@ -3,7 +3,7 @@
 	"type": "module",
 	"version": "1.5.1",
 	"engines": {
-		"node": ">=24.0.0"
+		"node": "24.x"
 	},
 	"scripts": {
 		"dev": "node --experimental-strip-types scripts/run-dev.ts",
