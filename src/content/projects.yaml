@@ -51,7 +51,7 @@
   description: "メスガキに煽られながらやるカオスなピンポンゲーム。"
   description_en: "A chaotic PONG game where a cheeky brat taunts you."
   image: "/images/thumbnails/mesugaki-pong.png"
-  url: "https://onigiri-game-portal.vercel.app/mesugaki-pong/"
+  url: "https://mesugaki-pong.happy-onigiri.dev"
   category: "GAME"
   category_color: "pink"
 
@@ -61,6 +61,6 @@
   description: "回転寿司がテーマの爽快タイピングゲーム！流れてくる寿司をタイプしよう。"
   description_en: "A typing game themed around endless conveyor belt sushi! (Type Japanese using Romaji)"
   image: "/images/thumbnails/quantum-maguro.png"
-  url: "https://onigiri-game-portal.vercel.app/quantum-maguro/"
+  url: "https://quantum-maguro.happy-onigiri.dev"
   category: "GAME"
   category_color: "pink"
