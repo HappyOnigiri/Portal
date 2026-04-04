@@ -35,6 +35,7 @@ export function personHappyOnigiri(
 			"https://x.com/H_OnigiriWorks",
 			"https://github.com/HappyOnigiri",
 			"https://zenn.dev/happy_onigiri",
+			"https://note.com/happy_onigiri",
 		],
 	};
 }
@@ -129,7 +130,7 @@ export function breadcrumbList(
 }
 
 export function itemListArticles(
-	articles: { title: string; slug: string }[],
+	articles: { title: string; slug: string; url: string }[],
 ): Record<string, unknown> {
 	return {
 		"@type": "ItemList",
@@ -138,7 +139,7 @@ export function itemListArticles(
 			"@type": "ListItem",
 			position: index + 1,
 			name: a.title,
-			item: `https://zenn.dev/happy_onigiri/articles/${a.slug}`,
+			item: a.url,
 		})),
 	};
 }

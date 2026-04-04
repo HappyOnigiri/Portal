@@ -56,7 +56,13 @@ describe("structured-data", () => {
 	});
 
 	it("itemListArticles は記事 URL を列挙する", () => {
-		const list = itemListArticles([{ title: "A", slug: "a-slug" }]);
+		const list = itemListArticles([
+			{
+				title: "A",
+				slug: "a-slug",
+				url: "https://zenn.dev/happy_onigiri/articles/a-slug",
+			},
+		]);
 		const elements = list.itemListElement as Record<string, unknown>[];
 		expect(elements[0]?.item).toBe(
 			"https://zenn.dev/happy_onigiri/articles/a-slug",
