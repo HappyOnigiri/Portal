@@ -7,40 +7,41 @@ check-ts-rules:
 
 # [Intended] CI チェックおよび自動修正を行う
 ci:
-	npm run check:fix
-	npm run format:astro
-	npm run check
-	npm run format:astro:check
-	CI=true npm run typecheck
+	pnpm run check:fix
+	pnpm run format:astro
+	pnpm run check
+	pnpm run format:astro:check
+	CI=true pnpm run typecheck
 	make check-ts-rules
-	npm run test:coverage
+	pnpm run test:coverage
 	CI=true $(MAKE) build
 
 format:
-	npm run format
+	pnpm run format
 
 run-dev:
-	npm run dev
+	pnpm run dev
 
 build:
-	npm run build
+	pnpm run build
 
 repomix:
 	@mkdir -p tmp/repomix
-	npx repomix --output tmp/repomix/repomix-output.txt
+	pnpm dlx repomix --output tmp/repomix/repomix-output.txt
 
 collect:
-	npm run collect-metrics
-	FETCH_ZENN=true npx astro sync
-	npm run format
+	pnpm run collect-metrics
+	FETCH_ZENN=true pnpm exec astro sync
+	pnpm run format
 
 collect-dry-run:
-	npm run collect-metrics -- --dry-run
+	pnpm run collect-metrics -- --dry-run
 
 collect-no-cache:
-	npm run collect-metrics -- --no-cache
-	npm run format
+	pnpm run collect-metrics -- --no-cache
+	pnpm run format
 
 setup:
 	curl -fsSL https://raw.githubusercontent.com/HappyOnigiri/ShareSettings/main/SyncRule/run.sh | bash
-	npm ci
+	corepack enable
+	pnpm install --frozen-lockfile

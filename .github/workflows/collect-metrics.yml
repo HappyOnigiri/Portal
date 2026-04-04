@@ -32,14 +32,17 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Verify GitHub token
         run: |
@@ -55,16 +58,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Collect metrics
-        run: npm run collect-metrics${{ inputs.no-cache == true && ' -- --no-cache' || '' }}
+        run: pnpm run collect-metrics${{ inputs.no-cache == true && ' -- --no-cache' || '' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
 
       - name: Collect Zenn articles
-        run: FETCH_ZENN=true npx astro sync
+        run: FETCH_ZENN=true pnpm exec astro sync
 
       - name: Format
-        run: npx biome format --write .
+        run: pnpm exec biome format --write .
 
       - name: Commit and push if changed
         run: |
