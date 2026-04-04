@@ -29,14 +29,20 @@ const formatDate = (iso: string) =>
 				{
 					articles.map((article) => (
 						<a
-							href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-							data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-							data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+							href={article.data.url}
+							data-href-ja={article.data.url}
+							data-href-en={
+								article.data.platform === "zenn"
+									? `${article.data.url}?locale=en`
+									: article.data.url
+							}
 							class="flex items-center gap-4 py-4 px-2 border-b border-[color:var(--panel-border)] hover:bg-[color:var(--panel-border)] transition-colors group"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							<div class="text-2xl w-10 shrink-0">{article.data.emoji}</div>
+							<div class="text-2xl w-10 shrink-0">
+								{article.data.emoji || "📝"}
+							</div>
 							<div class="flex-1 text-[color:var(--text-main)] group-hover:text-[color:var(--accent-main)] transition-colors">
 								<span
 									data-lang-ja={article.data.title}
@@ -45,6 +51,11 @@ const formatDate = (iso: string) =>
 									{article.data.title}
 								</span>
 							</div>
+							<img
+								src={`/images/logos/logo_${article.data.platform}.svg`}
+								alt={article.data.platform}
+								class="w-4 h-4 shrink-0 opacity-60"
+							/>
 							<div class="text-[color:var(--text-muted)] text-xs whitespace-nowrap text-right">
 								{formatDate(article.data.published_at)}
 							</div>
@@ -54,14 +65,24 @@ const formatDate = (iso: string) =>
 			</div>
 		</div>
 
-		<div class="px-6 pb-5 text-right">
+		<div class="px-6 pb-5 flex justify-end gap-4">
 			<a
 				href="https://zenn.dev/happy_onigiri"
-				class="article-all-link"
+				class="article-all-link inline-flex items-center gap-1"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<span data-i18n="articles.viewAll">すべての記事を見る →</span>
+				<img src="/images/logos/logo_zenn.svg" alt="Zenn" class="w-4 h-4" />
+				<span data-i18n="articles.viewAllZenn">Zenn →</span>
+			</a>
+			<a
+				href="https://note.com/happy_onigiri"
+				class="article-all-link inline-flex items-center gap-1"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<img src="/images/logos/logo_note.svg" alt="note" class="w-4 h-4" />
+				<span data-i18n="articles.viewAllNote">note →</span>
 			</a>
 		</div>
 	</div>

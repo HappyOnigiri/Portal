@@ -19,11 +19,20 @@ const { articles } = Astro.props;
 						{(index + 1).toString().padStart(2, "0")}
 					</span>
 					<span class="article-date">[{date}]</span>
-					<span class="article-emoji">{article.data.emoji}</span>
+					<img
+						src={`/images/logos/logo_${article.data.platform}.svg`}
+						alt={article.data.platform}
+						class="article-platform-icon"
+					/>
+					<span class="article-emoji">{article.data.emoji || "📝"}</span>
 					<a
-						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+						href={article.data.url}
+						data-href-ja={article.data.url}
+						data-href-en={
+							article.data.platform === "zenn"
+								? `${article.data.url}?locale=en`
+								: article.data.url
+						}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="article-title"
@@ -48,9 +57,17 @@ const { articles } = Astro.props;
 			target="_blank"
 			rel="noopener noreferrer"
 			class="article-more"
-			data-lang-ja="-- MORE -- (クリックしてすべて表示)"
-			data-lang-en="-- MORE -- (Please Click to view all)"
-			>-- MORE -- (クリックしてすべて表示)</a
+			data-lang-ja="-- MORE (Zenn) --"
+			data-lang-en="-- MORE (Zenn) --">-- MORE (Zenn) --</a
+		>
+		<span class="more-sep"> / </span>
+		<a
+			href="https://note.com/happy_onigiri"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="article-more"
+			data-lang-ja="-- MORE (note) --"
+			data-lang-en="-- MORE (note) --">-- MORE (note) --</a
 		>
 	</div>
 </div>
@@ -65,6 +82,7 @@ const { articles } = Astro.props;
 	.article-line {
 		display: flex;
 		gap: 15px;
+		align-items: center;
 	}
 
 	.line-num {
@@ -76,6 +94,13 @@ const { articles } = Astro.props;
 		color: #66b3ff;
 		white-space: nowrap;
 		flex-shrink: 0;
+	}
+
+	.article-platform-icon {
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+		opacity: 0.7;
 	}
 
 	.article-emoji {
@@ -103,5 +128,9 @@ const { articles } = Astro.props;
 	.article-more:hover {
 		background: #66b3ff;
 		color: #000;
+	}
+
+	.more-sep {
+		color: #888888;
 	}
 </style>
