@@ -3,7 +3,7 @@ import { watch } from "node:fs";
 import { relative, resolve } from "node:path";
 
 const projectRoot = process.cwd();
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const pnpmCommand = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const forwardedArgs = process.argv.slice(2);
 const ignoredPathPrefixes = [
 	".astro/",
@@ -89,7 +89,7 @@ function stopChild(signal: NodeJS.Signals = "SIGTERM"): Promise<void> {
 function startChild(): void {
 	broken = false;
 	const nextChild = spawn(
-		npmCommand,
+		pnpmCommand,
 		[
 			"run",
 			"dev:raw",

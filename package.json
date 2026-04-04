@@ -5,6 +5,13 @@
 	"engines": {
 		"node": "24.x"
 	},
+	"packageManager": "pnpm@10.33.0",
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild",
+			"sharp"
+		]
+	},
 	"scripts": {
 		"dev": "node --experimental-strip-types scripts/run-dev.ts",
 		"dev:raw": "astro dev",
@@ -14,7 +21,7 @@
 		"check": "biome check . --error-on-warnings",
 		"check:fix": "biome check . --write",
 		"lint": "biome check .",
-		"format": "biome format --write . && npm run format:astro",
+		"format": "biome format --write . && pnpm run format:astro",
 		"format:astro": "prettier --write \"**/*.astro\"",
 		"format:astro:check": "prettier --check \"**/*.astro\"",
 		"typecheck": "astro sync && tsc --noEmit",
