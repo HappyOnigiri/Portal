@@ -11,6 +11,10 @@ export default defineConfig({
 	trailingSlash: "never",
 	integrations: [react(), sitemap()],
 
+	server: {
+		open: false,
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 	},
