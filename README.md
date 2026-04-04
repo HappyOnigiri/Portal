@@ -26,7 +26,7 @@ pnpm install
 | `pnpm run typecheck` | TypeScript 型チェック |
 | `pnpm run test` | Vitest によるテスト実行 |
 | `pnpm run test:coverage` | カバレッジ付きテスト |
-| `ppnpm run collect-metrics` | GitHub メトリクス収集 |
+| `pnpm run collect-metrics` | GitHub メトリクス収集 |
 | `make ci` | lint + typecheck + test + build を一括実行 |
 
 ## SEO と検索向け運用
