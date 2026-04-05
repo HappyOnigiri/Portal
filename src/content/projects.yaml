@@ -2,6 +2,15 @@
 # image_fit（省略時 cover）: cover = サムネ枠を塗りつぶし / contain = 全体を枠内に収める
 # image_contain_bg: image_fit が contain のときのレターボックス背景（任意の CSS 色。例 #ffffff / rgb(0 0 0)）。省略時はパネル背景
 
+- id: "ai-chan"
+  title: "AIちゃん"
+  title_en: "AI-chan"
+  description: "AIを一切使わずに『AIキャラ』を作成できるサービス。"
+  description_en: "A service that lets you create 'AI characters' without using any AI at all."
+  image: "/images/thumbnails/ai-chan.png"
+  url: "https://ai-chan.app"
+  category: "APP"
+  category_color: "emerald"
 
 - id: "refix"
   title: "Refix"
