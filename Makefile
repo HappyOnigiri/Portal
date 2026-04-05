@@ -31,7 +31,7 @@ repomix:
 
 collect:
 	pnpm run collect-metrics
-	FETCH_ZENN=true pnpm exec astro sync
+	FETCH_ARTICLES=true pnpm exec astro sync
 	pnpm run format
 
 collect-dry-run:

@@ -39,6 +39,7 @@ const jsonLd = buildJsonLdGraph([
 		articles.map((a) => ({
 			title: a.data.title,
 			slug: a.data.slug,
+			url: a.data.url,
 		})),
 	),
 ]);
@@ -68,13 +69,17 @@ const jsonLd = buildJsonLdGraph([
 							{articles.map((article) => (
 								<tr class="article-row border-b border-[#2dd4bf]/10 hover:bg-[#00f0ff]/5 transition-colors group">
 									<td class="py-4 px-2 text-2xl w-10 shrink-0">
-										{article.data.emoji}
+										{article.data.emoji || "📝"}
 									</td>
 									<td class="py-4 px-2 flex-1">
 										<a
-											href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-											data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-											data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+											href={article.data.url}
+											data-href-ja={article.data.url}
+											data-href-en={
+												article.data.platform === "zenn"
+													? `${article.data.url}?locale=en`
+													: article.data.url
+											}
 											class="article-link"
 											target="_blank"
 											rel="noopener noreferrer"
@@ -89,6 +94,13 @@ const jsonLd = buildJsonLdGraph([
 											</span>
 										</a>
 									</td>
+									<td class="py-4 px-2">
+										<img
+											src={`/images/logos/logo_${article.data.platform}.svg`}
+											alt={article.data.platform}
+											class="w-4 h-4 opacity-60"
+										/>
+									</td>
 									<td class="py-4 px-2 text-[#94a3b8] text-xs whitespace-nowrap text-right">
 										{formatDate(article.data.published_at)}
 									</td>
@@ -97,14 +109,24 @@ const jsonLd = buildJsonLdGraph([
 						</tbody>
 					</table>
 				</div>
-				<div class="px-6 pb-5 text-right">
+				<div class="px-6 pb-5 flex justify-end gap-4">
 					<a
 						href="https://zenn.dev/happy_onigiri"
-						class="article-all-link"
+						class="article-all-link inline-flex items-center gap-1"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						<span data-i18n="articles.profileLink">プロフィール →</span>
+						<img src="/images/logos/logo_zenn.svg" alt="Zenn" class="w-4 h-4" />
+						<span data-i18n="articles.viewAllZenn">Zenn →</span>
+					</a>
+					<a
+						href="https://note.com/happy_onigiri"
+						class="article-all-link inline-flex items-center gap-1"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<img src="/images/logos/logo_note.svg" alt="note" class="w-4 h-4" />
+						<span data-i18n="articles.viewAllNote">note →</span>
 					</a>
 				</div>
 			</div>

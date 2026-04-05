@@ -35,16 +35,20 @@ const formatDate = (iso: string) =>
 			{
 				articles.map((article) => (
 					<a
-						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+						href={article.data.url}
+						data-href-ja={article.data.url}
+						data-href-en={
+							article.data.platform === "zenn"
+								? `${article.data.url}?locale=en`
+								: article.data.url
+						}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="group block border-2 border-black p-4 transition-transform hover:-translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0_#000] bg-[var(--bg-color)] hover:bg-white"
 					>
 						<div class="flex items-center gap-4">
 							<span class="text-4xl drop-shadow-[2px_2px_0_rgba(0,0,0,0.2)]">
-								{article.data.emoji}
+								{article.data.emoji || "📝"}
 							</span>
 							<div class="flex-1">
 								<h3 class="font-black text-lg sm:text-xl mb-2 text-black leading-tight">
@@ -55,23 +59,43 @@ const formatDate = (iso: string) =>
 										{article.data.title}
 									</span>
 								</h3>
-								<span class="font-bold text-xs bg-black text-white px-2 py-1">
-									{formatDate(article.data.published_at)}
-								</span>
+								<div class="flex items-center gap-2">
+									<img
+										src={`/images/logos/logo_${article.data.platform}.svg`}
+										alt={article.data.platform}
+										class="w-4 h-4 opacity-60"
+									/>
+									<span class="font-bold text-xs bg-black text-white px-2 py-1">
+										{formatDate(article.data.published_at)}
+									</span>
+								</div>
 							</div>
 						</div>
 					</a>
 				))
 			}
 		</div>
-		<a
-			href="https://zenn.dev/happy_onigiri"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="mt-8 font-black text-lg text-center block border-4 border-black py-4 bg-[var(--accent-main)] text-[#000] shadow-[6px_6px_0_#000] hover:-translate-y-1 hover:-translate-x-1 transition-transform"
-			style="font-family: var(--font-heading);"
-		>
-			Read More
-		</a>
+		<div class="mt-8 flex gap-4 justify-end">
+			<a
+				href="https://zenn.dev/happy_onigiri"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="font-black text-lg text-center inline-flex items-center gap-2 border-4 border-black py-4 px-6 bg-[var(--accent-main)] text-[#000] shadow-[6px_6px_0_#000] hover:-translate-y-1 hover:-translate-x-1 transition-transform"
+				style="font-family: var(--font-heading);"
+			>
+				<img src="/images/logos/logo_zenn.svg" alt="Zenn" class="w-5 h-5" />
+				<span data-i18n="articles.viewAllZenn">Zenn →</span>
+			</a>
+			<a
+				href="https://note.com/happy_onigiri"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="font-black text-lg text-center inline-flex items-center gap-2 border-4 border-black py-4 px-6 bg-[var(--accent-main)] text-[#000] shadow-[6px_6px_0_#000] hover:-translate-y-1 hover:-translate-x-1 transition-transform"
+				style="font-family: var(--font-heading);"
+			>
+				<img src="/images/logos/logo_note.svg" alt="note" class="w-5 h-5" />
+				<span data-i18n="articles.viewAllNote">note →</span>
+			</a>
+		</div>
 	</div>
 </div>

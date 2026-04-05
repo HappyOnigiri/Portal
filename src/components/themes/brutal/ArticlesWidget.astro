@@ -14,15 +14,19 @@ const { articles } = Astro.props;
 				const rotation = (i % 2 === 0 ? 1 : -1) * (Math.random() * 2);
 				return (
 					<a
-						href={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-ja={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}`}
-						data-href-en={`https://zenn.dev/happy_onigiri/articles/${article.data.slug}?locale=en`}
+						href={article.data.url}
+						data-href-ja={article.data.url}
+						data-href-en={
+							article.data.platform === "zenn"
+								? `${article.data.url}?locale=en`
+								: article.data.url
+						}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="brutal-article-link"
 						style={`transform: rotate(${rotation}deg);`}
 					>
-						<div class="brutal-article-emoji">{article.data.emoji}</div>
+						<div class="brutal-article-emoji">{article.data.emoji || "📝"}</div>
 						<div class="brutal-article-content">
 							<span
 								class="brutal-article-title"
@@ -37,14 +41,26 @@ const { articles } = Astro.props;
 			})
 		}
 	</div>
-	<a
-		href="https://zenn.dev/happy_onigiri"
-		target="_blank"
-		rel="noopener noreferrer"
-		class="brutal-article-more btn-brutal"
-	>
-		READ MORE
-	</a>
+	<div class="brutal-more-links">
+		<a
+			href="https://zenn.dev/happy_onigiri"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="brutal-article-more btn-brutal"
+		>
+			<img src="/images/logos/logo_zenn.svg" alt="Zenn" class="btn-logo" />
+			<span data-i18n="articles.viewAllZenn">Zenn →</span>
+		</a>
+		<a
+			href="https://note.com/happy_onigiri"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="brutal-article-more btn-brutal"
+		>
+			<img src="/images/logos/logo_note.svg" alt="note" class="btn-logo" />
+			<span data-i18n="articles.viewAllNote">note →</span>
+		</a>
+	</div>
 </div>
 
 <style>
@@ -108,8 +124,16 @@ const { articles } = Astro.props;
 		word-break: break-word;
 	}
 
-	.btn-brutal {
+	.brutal-more-links {
+		display: flex;
+		gap: 16px;
 		align-self: flex-end;
+	}
+
+	.btn-brutal {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
 		background: #000;
 		color: var(--brutal-green);
 		font-family: var(--font-brutal);
@@ -127,6 +151,12 @@ const { articles } = Astro.props;
 		color: #000;
 		box-shadow: 15px 15px 0 var(--brutal-green);
 		transform: skewX(0deg) scale(1.1);
+	}
+
+	.btn-logo {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
 	}
 
 	@media (max-width: 768px) {
