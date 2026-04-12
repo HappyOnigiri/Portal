@@ -7,8 +7,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      NPM_CONFIG_MANAGE_PACKAGE_MANAGER_VERSIONS: "false"
 
     steps:
       - name: Checkout
