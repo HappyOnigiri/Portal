@@ -32,7 +32,7 @@ export function personHappyOnigiri(
 		name: "HappyOnigiri",
 		url: `${origin}/`,
 		sameAs: [
-			"https://x.com/H_OnigiriWorks",
+			"https://x.com/HappyOnigiri_W",
 			"https://github.com/HappyOnigiri",
 			"https://zenn.dev/happy_onigiri",
 			"https://note.com/happy_onigiri",

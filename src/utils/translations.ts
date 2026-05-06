@@ -2,7 +2,7 @@ import type { Resources } from "./i18n";
 
 export const translations: Resources = {
 	ja: {
-		bio: '思いつきでドリブン開発をしています。<br />ジャンルは問わず「面白そう」「あったら便利そう」と思ったものを形にしています。<br />感想・質問・雑談など <a href="https://x.com/H_OnigiriWorks" class="profile-link" target="_blank" rel="noopener noreferrer">X</a> でお気軽にどうぞ！',
+		bio: '思いつきでドリブン開発をしています。<br />ジャンルは問わず「面白そう」「あったら便利そう」と思ったものを形にしています。<br />感想・質問・雑談など <a href="https://x.com/HappyOnigiri_W" class="profile-link" target="_blank" rel="noopener noreferrer">X</a> でお気軽にどうぞ！',
 		"bio.cta": "でお気軽にどうぞ！",
 		"articles.viewAll": "すべての記事を見る →",
 		"articles.viewAllZenn": "Zenn →",
@@ -25,7 +25,7 @@ export const translations: Resources = {
 		"avatar.alt": "HappyOnigiri のアバター",
 	},
 	en: {
-		bio: 'I develop things driven by random ideas. <br />Regardless of genre, I build anything that seems "interesting" or "would be useful."<br />Feel free to reach out on <a href="https://x.com/H_OnigiriWorks" class="profile-link" target="_blank" rel="noopener noreferrer">X</a> for feedback, questions, or just a chat!',
+		bio: 'I develop things driven by random ideas. <br />Regardless of genre, I build anything that seems "interesting" or "would be useful."<br />Feel free to reach out on <a href="https://x.com/HappyOnigiri_W" class="profile-link" target="_blank" rel="noopener noreferrer">X</a> for feedback, questions, or just a chat!',
 		"bio.cta": "Feel free to reach out on",
 		"articles.viewAll": "View all articles →",
 		"articles.viewAllZenn": "Zenn →",
