@@ -31,9 +31,6 @@ pnpm-debug.log*
 # Temporary files
 tmp/
 
-# Refix
-/.refix.yaml
-
 # AI Rules
 /AGENTS.md
 /.cursor
