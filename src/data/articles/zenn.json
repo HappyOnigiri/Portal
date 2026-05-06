@@ -1,5 +1,16 @@
 [
 	{
+		"id": 561892,
+		"title": "Antigravityをアップデートしたら pnpm も gh も使えなくなった話",
+		"slug": "21adfd770e66b7",
+		"emoji": "💥",
+		"article_type": "tech",
+		"published_at": "2026-04-12T18:17:34.206+09:00",
+		"platform": "zenn",
+		"url": "https://zenn.dev/happy_onigiri/articles/21adfd770e66b7",
+		"title_en": "Issues with pnpm and gh After Updating Antigravity: Causes and Fixes"
+	},
+	{
 		"id": 552581,
 		"title": "Claude Code のステータスラインを $PS1 みたいに書けたら最高だと思ったので作ってみた",
 		"slug": "4813304a09b575",
