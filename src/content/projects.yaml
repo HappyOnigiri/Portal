@@ -54,6 +54,16 @@
   category: "TOOL"
   category_color: "cyan"
 
+- id: "wakeup-claude"
+  title: "Wakeup Claude"
+  title_en: "Wakeup Claude"
+  description: "Claude Code のサブスク枠リセット時刻を能動的にコントロールする GitHub Actions ワークフロー。任意の時刻に最小コストで API を呼び出し、5 時間枠の起点をずらせます。"
+  description_en: "A GitHub Actions workflow to actively control when your Claude Code subscription quota resets. Fire a minimal API call at your chosen time to shift the 5-hour window."
+  image: "/images/thumbnails/wakeup-claude.webp"
+  url: "https://github.com/HappyOnigiri/WakeupClaude"
+  category: "TOOL"
+  category_color: "cyan"
+
 - id: "mesugaki-pong"
   title: "メスガキポンポン"
   title_en: "MESUGAKI PONG"
