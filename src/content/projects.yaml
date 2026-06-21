@@ -32,6 +32,16 @@
   category: "PLUGIN"
   category_color: "amber"
 
+- id: "repo-tour"
+  title: "Repo Tour"
+  title_en: "Repo Tour"
+  description: "AI エージェントがコードベースを読み解き、プロダクト概要・技術スタック・設計・機能一覧をまとめた HTML レポートを生成するプラグイン。"
+  description_en: "An AI agent plugin that analyzes your codebase and generates a static HTML report covering product overview, tech stack, architecture, and features."
+  image: "/images/thumbnails/repo-tour.webp"
+  url: "https://github.com/HappyOnigiri/RepoTour"
+  category: "PLUGIN"
+  category_color: "amber"
+
 - id: "pixel-refiner"
   title: "PixelRefiner"
   title_en: "PixelRefiner"
