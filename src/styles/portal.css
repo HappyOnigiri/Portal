@@ -1,65 +1,63 @@
 :root,
 :root[data-theme="cyber"] {
-	--bg-color: #0d0e15;
-	--bg-image:
-		radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08), transparent 40%),
-		radial-gradient(circle at 90% 80%, rgba(255, 0, 60, 0.08), transparent 40%),
-		radial-gradient(
-			circle at 50% 50%,
-			rgba(181, 52, 255, 0.05),
-			transparent 60%
-		);
+	--bg-color: #0a0b10;
+	--bg-image: radial-gradient(
+		ellipse 120% 65% at 50% -12%,
+		rgba(92, 207, 230, 0.07),
+		transparent 62%
+	);
 	--bg-size: auto;
-	--panel-bg: rgba(20, 22, 35, 0.7);
-	--panel-border: rgba(45, 212, 191, 0.3);
-	--text-main: #e2e8f0;
-	--text-muted: #94a3b8;
-	--accent-main: #00f0ff;
-	--accent-sub: #ff003c;
-	--accent-purple: #b534ff;
+	--panel-bg: rgba(19, 21, 28, 0.66);
+	--panel-border: rgba(148, 163, 184, 0.14);
+	--text-main: #e4e7ee;
+	--text-muted: #98a1b3;
+	--accent-main: #5ccfe6;
+	--accent-sub: #f28779;
+	--accent-purple: #a78bfa;
 
-	--font-heading: Orbitron, sans-serif;
+	--font-heading: "Space Grotesk", Inter, sans-serif;
 	--font-body: Inter, sans-serif;
 
 	--card-border-radius: 12px;
 	--card-border: 1px solid var(--panel-border);
 	--card-shadow:
-		0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-	--card-hover-transform: translateY(-8px);
-	--card-hover-bg: rgba(30, 33, 50, 0.85);
-	--card-hover-border: var(--accent-main);
+		0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.3),
+		inset 0 1px 0 rgba(255, 255, 255, 0.04);
+	--card-hover-transform: translateY(-2px);
+	--card-hover-bg: rgba(26, 29, 38, 0.8);
+	--card-hover-border: rgba(92, 207, 230, 0.32);
 	--card-hover-shadow:
-		0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.4);
-	--card-before-display: block;
+		0 2px 4px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.45),
+		inset 0 1px 0 rgba(255, 255, 255, 0.05);
+	--card-before-display: none;
 
 	--category-border-radius: 4px;
-	--category-border: 1px solid var(--accent-main);
-	--category-font: Orbitron, sans-serif;
+	--category-border: 1px solid rgba(92, 207, 230, 0.35);
+	--category-font: "Space Grotesk", Inter, sans-serif;
 	--category-text-transform: none;
-	--category-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+	--category-shadow: none;
 	--category-text-shadow: none;
-	--category-bg: rgba(13, 14, 21, 0.85);
+	--category-bg: rgba(10, 11, 16, 0.78);
 	--category-text-color: var(--accent-main);
 
 	--title-color: var(--text-main);
-	--title-shadow:
-		0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
-	--title-letter-spacing: 6px;
+	--title-shadow: none;
+	--title-letter-spacing: 0.06em;
 
 	--card-title-color: var(--title-color);
-	--card-title-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+	--card-title-shadow: none;
 	--card-image-border-bottom: 1px solid var(--panel-border);
 
 	--btn-external-bg: var(--accent-main);
 	--btn-external-text: var(--bg-color);
-	--btn-external-shadow: 0 0 12px rgba(0, 240, 255, 0.45);
+	--btn-external-shadow: 0 4px 16px rgba(92, 207, 230, 0.25);
 	--btn-external-border: 1px solid var(--accent-main);
 
-	--profile-name-letter-spacing: 4px;
-	--page-title-letter-spacing: 4px;
+	--profile-name-letter-spacing: 0.02em;
+	--page-title-letter-spacing: 0.03em;
 
-	--guideline-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-	--social-hover-shadow: 0 0 5px var(--accent-main);
+	--guideline-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+	--social-hover-shadow: 0 0 0 transparent;
 }
 
 :root[data-theme="pop"] {
@@ -285,7 +283,7 @@ body {
 
 .card-category {
 	--category-color: var(--accent-main);
-	--category-color-rgb: 0, 240, 255;
+	--category-color-rgb: 92, 207, 230;
 	position: absolute;
 	top: 10px;
 	left: 10px;
@@ -309,7 +307,7 @@ body {
 
 .card-category[data-color="cyan"] {
 	--category-color: var(--accent-main);
-	--category-color-rgb: 0, 240, 255;
+	--category-color-rgb: 92, 207, 230;
 }
 
 .card-category[data-color="emerald"] {
@@ -338,10 +336,10 @@ body {
 }
 
 :root[data-theme="cyber"] .card-category {
-	--category-bg: rgba(13, 14, 21, 0.85);
+	--category-bg: rgba(10, 11, 16, 0.78);
 	--category-text-color: var(--category-color);
-	--category-border: 1px solid var(--category-color);
-	--category-shadow: 0 0 8px rgba(var(--category-color-rgb), 0.3);
+	--category-border: 1px solid rgba(var(--category-color-rgb), 0.4);
+	--category-shadow: none;
 	--category-text-shadow: none;
 }
 
@@ -485,7 +483,7 @@ body {
 	padding: 15px;
 	background: rgba(255, 255, 255, 0.03);
 	border-radius: 8px;
-	border-left: 4px solid var(--accent-main);
+	border: 1px solid var(--panel-border);
 }
 
 .rule-item-icon {
@@ -594,7 +592,6 @@ body {
 .portal-version:focus-visible {
 	opacity: 1;
 	color: var(--accent-main);
-	text-shadow: 0 0 8px var(--accent-main);
 }
 
 .portal-version:hover {
@@ -747,7 +744,6 @@ body {
 
 .profile-link:hover {
 	border-bottom: 1px solid var(--accent-main);
-	text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
 }
 
 .section-heading {
@@ -775,7 +771,6 @@ body {
 
 .article-row:hover .article-link {
 	color: var(--accent-main);
-	text-shadow: 0 0 5px rgba(0, 240, 255, 0.4);
 }
 
 .article-all-link {
@@ -787,7 +782,6 @@ body {
 
 .article-all-link:hover {
 	color: var(--accent-main);
-	text-shadow: 0 0 5px rgba(0, 240, 255, 0.4);
 }
 
 /* 下層ページ・プロジェクト詳細 */
@@ -985,6 +979,60 @@ body {
 	border: 3px solid #000;
 	box-shadow: 8px 8px 0 #000;
 	background: #fff;
+}
+
+/* ----------------------------------
+   Cyber Theme Refinements
+   落ち着いたダークトーンの中で、精密なボーダーと余白で品質を示す方針。
+   グローや過剰な装飾は使わない。
+----------------------------------- */
+:root[data-theme="cyber"] .portal-header {
+	padding-top: 56px;
+	margin-bottom: 56px;
+}
+
+:root[data-theme="cyber"] .portal-title {
+	font-size: clamp(2rem, 1.1rem + 4vw, 3.25rem);
+	font-weight: 700;
+}
+
+:root[data-theme="cyber"] .section-heading {
+	font-size: 0.95rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+}
+
+:root[data-theme="cyber"] .card h2 {
+	font-size: 1.2rem;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+	margin-bottom: 10px;
+}
+
+:root[data-theme="cyber"] .card p {
+	font-size: 0.95rem;
+	line-height: 1.7;
+}
+
+:root[data-theme="cyber"] .card-content {
+	padding: 20px 24px 22px;
+}
+
+:root[data-theme="cyber"] .card--link:hover .card-image img {
+	transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:root[data-theme="cyber"] .portal-header {
+		animation: cyber-header-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+}
+
+@keyframes cyber-header-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
 }
 
 /* ----------------------------------
