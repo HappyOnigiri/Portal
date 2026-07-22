@@ -1,12 +1,12 @@
 {
-	"cacheKey": "e4cae575b1d6a671a52089c4825c9e99785e6510323fd35dfedca57accceeab1",
-	"addedLines": 4423,
-	"deletedLines": 426,
-	"commits": 69,
-	"mergedPRs": 31,
-	"ciRuns": 78,
+	"cacheKey": "fa4e446b9a0fba16d942ec559931720b1d156e70ec8acf361bcca0e3cc3c71f0",
+	"addedLines": 6031,
+	"deletedLines": 852,
+	"commits": 87,
+	"mergedPRs": 39,
+	"ciRuns": 132,
 	"extLines": {
-		".swift": 4423
+		".swift": 6031
 	},
-	"collectedAt": "2026-07-04T17:02:19.188Z"
+	"collectedAt": "2026-07-22T20:19:32.282Z"
 }
