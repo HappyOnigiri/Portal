@@ -41,7 +41,8 @@
 	--category-text-color: var(--accent-main);
 
 	--title-color: var(--text-main);
-	--title-shadow: none;
+	--title-shadow:
+		3px 3px 0 rgba(92, 207, 230, 0.9), 6px 6px 0 rgba(242, 135, 121, 0.55);
 	--title-letter-spacing: 0.06em;
 
 	--card-title-color: var(--title-color);
@@ -994,24 +995,6 @@ body {
 :root[data-theme="cyber"] .portal-title {
 	font-size: clamp(2rem, 1.1rem + 4vw, 3.25rem);
 	font-weight: 700;
-	letter-spacing: 0.02em;
-}
-
-/* 二階調ワードマーク: 識別子の ONIGIRI を立て、一般語の PORTAL を沈める */
-:root[data-theme="cyber"] .portal-title .portal-title-sub {
-	font-weight: 500;
-	color: var(--text-muted);
-}
-
-/* ワードマークの終止符。テーマ内で唯一のアクセント点として置く */
-:root[data-theme="cyber"] .portal-title .portal-title-sub::after {
-	content: "";
-	display: inline-block;
-	width: 0.14em;
-	height: 0.14em;
-	margin-left: 0.16em;
-	border-radius: 1px;
-	background: var(--accent-main);
 }
 
 :root[data-theme="cyber"] .section-heading {
