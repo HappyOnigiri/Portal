@@ -1,81 +1,44 @@
 # Portal
 
-HappyOnigiri のプロフィールサイト。<br />
-開発したプロダクトを一覧表示します。<br />
-リポジトリの開発メトリクス（コミット数、PR、CI 実行回数、言語比率など）を自動集計し、ダッシュボードとして表示します。
+個人ポートフォリオ兼開発ダッシュボード。プロダクト一覧の表示に加え、複数リポジトリの開発メトリクス（コミット数・PR・CI 実行回数・言語比率など）を自動集計して可視化します。
 
-**Tech stack:** Astro 6 / React 19 / TailwindCSS 4 / TypeScript
+**Tech stack:** Astro 6 / React 19 / Tailwind CSS 4 / TypeScript 6
 
-## セットアップ
+## アーキテクチャ
 
-```bash
-# Node.js >=22.12.0
-pnpm install
-```
+### マルチテーマシステム
 
-## 開発コマンド
+5 テーマ（cyber / pop / nagomi / brutal / terminal）を、クライアント JS でのテーマ切替ではなく **テーマごとに独立した静的ルート** として実装。各テーマは `src/components/themes/<name>/` に専用の Astro コンポーネント一式（Home・ProjectCard・ArticlesWidget・AuthorStatusWidget）を持ち、配色だけでなくマークアップやレイアウト自体をテーマごとに分岐できる設計です。共有スタイル層は `src/styles/portal.css` の CSS カスタムプロパティ（50 以上）で制御し、フォントスタック（Space Grotesk / Orbitron / Noto Serif JP など）もテーマ別に切り替わります。
 
-| コマンド | 説明 |
-|---|---|
-| `pnpm run dev` | 開発サーバー起動 (`localhost:4321`) |
-| `pnpm run build` | プロダクションビルド → `dist/` |
-| `pnpm run preview` | ビルド成果物のプレビュー |
-| `pnpm run lint` | Biome による静的解析 |
-| `pnpm run check` | CI 相当の厳格チェック |
-| `pnpm run format` | Biome + Prettier によるフォーマット |
-| `pnpm run typecheck` | TypeScript 型チェック |
-| `pnpm run test` | Vitest によるテスト実行 |
-| `pnpm run test:coverage` | カバレッジ付きテスト |
-| `pnpm run collect-metrics` | GitHub メトリクス収集 |
-| `make ci` | lint + typecheck + test + build を一括実行 |
+### コンテンツパイプライン
 
-## SEO と検索向け運用
+- **プロジェクト** — YAML ベースの Content Collection。Astro の `watcher` による HMR 対応
+- **記事** — ビルド時に Zenn / note の外部 API からフェッチするカスタム Content Loader。API 障害時はローカル JSON へフォールバック。Zenn 記事の英語タイトルは `og:title` をスクレイピングして取得
 
-本番 URL は `astro.config.mjs` の `site`（`https://onigiri-portal.vercel.app`）と [src/constants/site.ts](src/constants/site.ts) の `SITE_ORIGIN` で管理しています。**ドメインを変える場合は両方を同期**してください。
+### メトリクス自動集計
 
-- **メタ・OGP（画像タグ除く）・Twitter Card・canonical** — `src/layouts/BaseLayout.astro`
-- **構造化データ（JSON-LD）** — 各ページと `src/utils/structured-data.ts`
-- **サイトマップ** — `@astrojs/sitemap` によりビルド時に `dist/sitemap-index.xml` が生成される
-- **robots.txt** — `public/robots.txt`（`Sitemap:` は本番オリジンに合わせて更新）
+`scripts/collect-metrics.ts`（約 1,100 行）で `.portal.yaml` に定義した 19 リポジトリのメトリクスを集計します。
 
-### Google Search Console（推奨）
+- コミットハッシュ + author スコープの **HMAC ベースキャッシュ** で未変更リポジトリの再集計をスキップ
+- `.gitattributes` の `linguist-generated` / `linguist-vendored` 判定を再現し、自動生成コードを除外
+- 言語比率は最大剰余法で端数調整し、合計を正確に 100% に
+- GraphQL search → REST fallback によるマージ済み PR 数の取得
+- GitHub Actions で毎日 JST 2:00 に自動実行し、差分があれば `src/data/` を自動コミット
 
-1. [Search Console](https://search.google.com/search-console) でプロパティを追加（URL プレフィックス `https://onigiri-portal.vercel.app/` またはドメイン資源）。
-2. 所有権確認（HTML ファイル / DNS / Google Analytics 等、Vercel の案内に従う）。
-3. **サイトマップ**に `https://onigiri-portal.vercel.app/sitemap-index.xml` を送信。
-4. 定期的に **ページのインデックス登録**・**検索パフォーマンス**・**体験**（コアウェブバイタル等）を確認。
+### i18n
 
-### その他の確認
+属性ベースの軽量な日英切替。`data-lang-ja` / `data-lang-en` 属性とキーベースの `data-i18n` を併用し、`navigator.language` + `localStorage` で言語を決定。翻訳リソースは Astro の `define:vars` でインライン注入します。
 
-- [Bing Webmaster Tools](https://www.bing.com/webmasters) に同様にサイトを登録し、サイトマップを送信するとよい。
-- リリース後は [リッチリザルトテスト](https://search.google.com/test/rich-results) で JSON-LD を spot check する。
-- **ゲーム等は別ドメイン**でホストしている。ポータル側の canonical は常に `onigiri-portal.vercel.app` 上の URL とし、ゲーム本体の評価は別プロパティ（別ドメイン）で見る。
+### 構造化データ
 
-### メトリクス収集
+`src/utils/structured-data.ts` で JSON-LD `@graph`（Person / WebSite / ItemList / SoftwareApplication / BreadcrumbList / CollectionPage）を生成し `<head>` に注入。
 
-`.portal.yaml` に定義されたリポジトリごとに以下を集計し、`src/data/` に JSON として保存します。
-
-- **追加・削除行数** — `git log --numstat` からソースコード拡張子のみを対象にカウント（`.gitattributes` の `linguist-generated` / `linguist-vendored` は除外）
-- **コミット数** — `git rev-list --count` で算出
-- **マージ済み PR 数 / CI 実行回数** — `gh` CLI で GitHub API から取得
-- **言語比率** — 拡張子ごとの追加行数を言語グループに集約し、上位 10 言語を百分率で算出
-- **キャッシュ** — デフォルトブランチの HEAD コミットハッシュと author 設定の HMAC をキーとし、変更がなければ再集計をスキップ
-
-GitHub Actions により毎日 JST 2:00 に自動集計され、変更があれば `src/data/author-status.json` が自動コミットされます。`workflow_dispatch` による手動実行も可能です。
-
-`--local` オプションで任意のローカルリポジトリも集計できます。`.portal.yaml` は不要で、author はCLI 引数で指定します。
+## 開発
 
 ```bash
-# 全コミット対象
-pnpm run collect-metrics -- --local /path/to/repo
-
-# author を指定して絞り込み
-pnpm run collect-metrics -- --local /path/to/repo \
-  --author-email "user@example.com" \
-  --author-email "12345+user@users.noreply.github.com" \
-  --author-name "User Name" \
-  --author-github "username" \
-  --output ./metrics.json
+pnpm install      # Node.js 24.x / pnpm 10
+pnpm run dev      # localhost:4321
+make ci           # lint + typecheck + test + build
 ```
 
 ## ライセンス
