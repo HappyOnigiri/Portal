@@ -114,7 +114,9 @@ const lastSync = statusData.lastUpdated
 				</div>
 			</div>
 		</div>
-		<div class="px-6 pt-5 pb-1 flex items-baseline justify-between">
+		<div
+			class="px-6 pt-5 pb-1 flex flex-wrap items-baseline justify-between gap-x-4"
+		>
 			<h2 class="section-heading" style="margin-bottom: 0;">
 				Development Status
 			</h2>
@@ -125,81 +127,68 @@ const lastSync = statusData.lastUpdated
 		<div class="p-6 overflow-x-auto">
 			<div class="flex flex-wrap gap-4 text-[color:var(--text-main)]">
 				<div
-					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl shadow-lg relative overflow-hidden group"
+					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl"
 				>
-					<div
-						class="absolute -right-4 -top-4 w-12 h-12 bg-[color:var(--panel-border)] rounded-full blur-xl group-hover:bg-[color:var(--accent-main)] transition-all"
-					>
-					</div>
 					<div
 						class="text-[color:var(--text-muted)] text-xs font-semibold tracking-wider mb-2"
 					>
 						Changed Lines
 					</div>
 					<div
-						class="text-2xl font-bold font-mono text-[color:var(--accent-main)]"
+						class="text-2xl font-bold font-mono text-[color:var(--text-main)]"
 					>
 						{formatNumber(statusData.addedLines + statusData.deletedLines)}
 					</div>
 				</div>
 				<div
-					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl shadow-lg relative overflow-hidden group"
+					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl"
 				>
-					<div
-						class="absolute -right-4 -top-4 w-12 h-12 bg-[color:var(--panel-border)] rounded-full blur-xl group-hover:bg-[color:var(--accent-main)] transition-all"
-					>
-					</div>
 					<div
 						class="text-[color:var(--text-muted)] text-xs font-semibold tracking-wider mb-2"
 					>
 						Commits
 					</div>
-					<div class="text-2xl font-bold font-mono text-[#ea580c]">
+					<div
+						class="text-2xl font-bold font-mono text-[color:var(--text-main)]"
+					>
 						{formatNumber(statusData.commits)}
 					</div>
 				</div>
 				<div
-					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl shadow-lg relative overflow-hidden group"
+					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl"
 				>
-					<div
-						class="absolute -right-4 -top-4 w-12 h-12 bg-[color:var(--panel-border)] rounded-full blur-xl group-hover:bg-[color:var(--accent-main)] transition-all"
-					>
-					</div>
 					<div
 						class="text-[color:var(--text-muted)] text-xs font-semibold tracking-wider mb-2"
 					>
 						Merged PRs
 					</div>
 					<div
-						class="text-2xl font-bold font-mono text-[color:var(--accent-purple)]"
+						class="text-2xl font-bold font-mono text-[color:var(--text-main)]"
 					>
 						{formatNumber(statusData.mergedPRs)}
 					</div>
 				</div>
 				<div
-					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl shadow-lg relative overflow-hidden group"
+					class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl"
 				>
-					<div
-						class="absolute -right-4 -top-4 w-12 h-12 bg-[color:var(--panel-border)] rounded-full blur-xl group-hover:bg-[color:var(--accent-main)] transition-all"
-					>
-					</div>
 					<div
 						class="text-[color:var(--text-muted)] text-xs font-semibold tracking-wider mb-2"
 					>
 						CI Runs
 					</div>
-					<div class="text-2xl font-bold font-mono text-[#10b981]">
+					<div
+						class="text-2xl font-bold font-mono text-[color:var(--text-main)]"
+					>
 						{formatNumber(statusData.ciRuns)}
 					</div>
 				</div>
 				{
 					((statusData as { ossPRs?: number }).ossPRs ?? 0) > 0 && (
-						<div class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl shadow-lg relative overflow-hidden group">
-							<div class="absolute -right-4 -top-4 w-12 h-12 bg-[color:var(--panel-border)] rounded-full blur-xl group-hover:bg-[color:var(--accent-main)] transition-all" />
+						<div class="flex-1 min-w-[140px] bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] p-4 rounded-xl">
 							<div class="text-[color:var(--text-muted)] text-xs font-semibold tracking-wider mb-2">
 								OSS PRs
 							</div>
-							<div class="text-2xl font-bold font-mono text-[#f59e0b]">
+							<div class="text-2xl font-bold font-mono text-[color:var(--text-main)]">
 								{formatNumber((statusData as { ossPRs?: number }).ossPRs!)}
 							</div>
 						</div>
