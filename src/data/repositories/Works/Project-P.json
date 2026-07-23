@@ -1,15 +1,15 @@
 {
 	"cacheKey": "",
-	"addedLines": 88019,
-	"deletedLines": 46104,
-	"commits": 2420,
-	"mergedPRs": 418,
-	"ciRuns": 475,
+	"addedLines": 137762,
+	"deletedLines": 67823,
+	"commits": 3303,
+	"mergedPRs": 569,
+	"ciRuns": 7244,
 	"extLines": {
-		".rb": 82408,
+		".rb": 132151,
 		".py": 85,
 		".sh": 76,
 		".js": 5450
 	},
-	"collectedAt": "2026-03-17T15:40:34.954Z"
+	"collectedAt": "2026-07-23T06:04:46.048415+00:00"
 }
