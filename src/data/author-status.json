@@ -1,58 +1,52 @@
 {
-	"addedLines": 744889,
-	"deletedLines": 426339,
-	"commits": 12087,
-	"mergedPRs": 1751,
-	"ciRuns": 8802,
-	"lastUpdated": "2026-07-22T20:19:36.444Z",
+	"addedLines": 992383,
+	"deletedLines": 560462,
+	"commits": 14119,
+	"mergedPRs": 2107,
+	"ciRuns": 16325,
+	"lastUpdated": "2026-07-23T08:32:25.113Z",
 	"languages": [
 		{
 			"id": "Go",
 			"label": "Go",
-			"value": 32,
+			"value": 35,
 			"color": "#e06952"
-		},
-		{
-			"id": "TypeScript",
-			"label": "TypeScript",
-			"value": 20,
-			"color": "#e0d552"
 		},
 		{
 			"id": "Dart",
 			"label": "Dart",
-			"value": 19,
-			"color": "#81e052"
+			"value": 17,
+			"color": "#dde052"
+		},
+		{
+			"id": "TypeScript",
+			"label": "TypeScript",
+			"value": 15,
+			"color": "#63e052"
 		},
 		{
 			"id": "Ruby",
 			"label": "Ruby",
-			"value": 13,
-			"color": "#52e08d"
+			"value": 15,
+			"color": "#52e0bb"
 		},
 		{
 			"id": "Python",
 			"label": "Python",
-			"value": 12,
-			"color": "#52c9e0"
+			"value": 9,
+			"color": "#528be0"
 		},
 		{
 			"id": "JavaScript",
 			"label": "JavaScript",
-			"value": 2,
-			"color": "#525ee0"
+			"value": 8,
+			"color": "#9252e0"
 		},
 		{
 			"id": "Astro",
 			"label": "Astro",
 			"value": 1,
-			"color": "#b152e0"
-		},
-		{
-			"id": "Swift",
-			"label": "Swift",
-			"value": 1,
-			"color": "#e052a5"
+			"color": "#e052b4"
 		}
 	],
 	"aiUsage": [],

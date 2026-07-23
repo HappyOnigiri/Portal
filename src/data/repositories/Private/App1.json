@@ -1,10 +1,10 @@
 {
-	"cacheKey": "1d8e48c675be1e7d8fdd18935c2c617c62c254ecb2a03bea1a710a72662dd806",
+	"cacheKey": "ad62a06d226e0864a8f42f4dd2f7535138dba25f868b8315dcce9bd32ebcfbf2",
 	"addedLines": 21606,
 	"deletedLines": 9366,
-	"commits": 667,
-	"mergedPRs": 122,
-	"ciRuns": 932,
+	"commits": 669,
+	"mergedPRs": 123,
+	"ciRuns": 945,
 	"extLines": {
 		".mjs": 497,
 		".tsx": 10922,
@@ -13,5 +13,5 @@
 		".js": 50,
 		".sh": 25
 	},
-	"collectedAt": "2026-07-16T17:02:32.948Z"
+	"collectedAt": "2026-07-23T08:32:19.117Z"
 }
