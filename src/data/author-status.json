@@ -1,15 +1,15 @@
 {
-	"addedLines": 992672,
-	"deletedLines": 560490,
-	"commits": 14126,
-	"mergedPRs": 2114,
-	"ciRuns": 16338,
-	"lastUpdated": "2026-07-31T17:01:53.858Z",
+	"addedLines": 998801,
+	"deletedLines": 561656,
+	"commits": 14187,
+	"mergedPRs": 2130,
+	"ciRuns": 16397,
+	"lastUpdated": "2026-08-01T17:02:07.888Z",
 	"languages": [
 		{
 			"id": "Go",
 			"label": "Go",
-			"value": 35,
+			"value": 34,
 			"color": "#e06952"
 		},
 		{
@@ -39,18 +39,18 @@
 		{
 			"id": "JavaScript",
 			"label": "JavaScript",
-			"value": 7,
+			"value": 8,
 			"color": "#525ee0"
-		},
-		{
-			"id": "Astro",
-			"label": "Astro",
-			"value": 1,
-			"color": "#b152e0"
 		},
 		{
 			"id": "Swift",
 			"label": "Swift",
+			"value": 1,
+			"color": "#b152e0"
+		},
+		{
+			"id": "Astro",
+			"label": "Astro",
 			"value": 1,
 			"color": "#e052a5"
 		}
