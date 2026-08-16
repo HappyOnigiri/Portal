@@ -34,6 +34,16 @@
   category: "PLUGIN"
   category_color: "amber"
 
+- id: "time-tracker"
+  title: "TimeTracker"
+  title_en: "TimeTracker"
+  description: "macOS のメニューバーから、プロジェクトごとの作業時間を記録するタイムトラッカーです。"
+  description_en: "A macOS menu bar app for tracking time by project."
+  image: "/images/thumbnails/time-tracker.png"
+  url: "https://github.com/HappyOnigiri/TimeTracker"
+  category: "APP"
+  category_color: "emerald"
+
 - id: "ai-chan"
   title: "AIちゃん"
   title_en: "AI-chan"
