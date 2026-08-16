@@ -31,11 +31,6 @@ pnpm-debug.log*
 # Temporary files
 tmp/
 
-# AI Rules
-/AGENTS.md
 /.cursor
 /.agent
 /.claude
-
-# AI Rules
-/CLAUDE.md
