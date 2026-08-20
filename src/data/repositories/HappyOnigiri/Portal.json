@@ -1,10 +1,10 @@
 {
-	"cacheKey": "1dbae9e6dc7d2cefd80749723066c5b0f96ecd8be09f42388606ef5d3f1954ff",
+	"cacheKey": "724bdaa05a9b2059861d06dc2501cc70fe03968b759795eef6e466a62e63b999",
 	"addedLines": 10696,
 	"deletedLines": 4260,
 	"commits": 565,
 	"mergedPRs": 130,
-	"ciRuns": 919,
+	"ciRuns": 907,
 	"extLines": {
 		".py": 380,
 		".astro": 7010,
@@ -12,5 +12,5 @@
 		".mjs": 18,
 		".sh": 43
 	},
-	"collectedAt": "2026-08-19T17:01:28.203Z"
+	"collectedAt": "2026-08-20T17:01:18.666Z"
 }
