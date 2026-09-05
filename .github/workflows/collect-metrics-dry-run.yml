@@ -47,7 +47,7 @@ jobs:
       - name: Collect metrics (dry run)
         id: collect
         run: |
-          RESULT=$(pnpm run collect-metrics -- --dry-run)
+          RESULT=$(pnpm run collect-metrics --dry-run)
           echo "result<<EOF" >> "$GITHUB_OUTPUT"
           echo "$RESULT" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
