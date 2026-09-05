@@ -86,6 +86,8 @@ interface SingleRepoMetrics {
 	commits: number;
 	mergedPRs: number;
 	ciRuns: number;
+	/** ciRuns の取得に失敗したか。true のとき ciRuns の 0 は「実際に 0 件」を意味しない */
+	ciRunsFailed: boolean;
 	extLines: Map<string, number>;
 }
 
@@ -373,6 +375,20 @@ function hmacHash(value: string, salt: string): string {
 	return createHmac("sha256", salt).update(value).digest("hex");
 }
 
+/** 既存の per-repo ファイルから ciRuns を読む。ファイルが無い・壊れている場合は null */
+function readExistingCiRuns(filePath: string): number | null {
+	if (!existsSync(filePath)) return null;
+	try {
+		const raw = JSON.parse(readFileSync(filePath, "utf-8")) as Record<
+			string,
+			unknown
+		>;
+		return typeof raw.ciRuns === "number" ? raw.ciRuns : null;
+	} catch {
+		return null;
+	}
+}
+
 function readAllPerRepoFiles(): SingleRepoMetrics[] {
 	if (!existsSync(REPO_DATA_DIR)) return [];
 
@@ -416,6 +432,7 @@ function readAllPerRepoFiles(): SingleRepoMetrics[] {
 						commits: raw.commits,
 						mergedPRs: raw.mergedPRs,
 						ciRuns: raw.ciRuns,
+						ciRunsFailed: false,
 						extLines,
 					});
 				} catch {
@@ -785,20 +802,16 @@ async function collectSingleRepo(
 		console.error(`[${displayName}] カレントディレクトリを使用`);
 	}
 
-	let repoFlags: string[];
 	let shouldQueryGitHub: boolean;
 	let githubRepoId: string | null;
 	if (overrideDir !== undefined) {
 		githubRepoId = detectGitHubRepoId(repoDir);
-		repoFlags = githubRepoId ? ["-R", githubRepoId] : [];
 		shouldQueryGitHub = githubRepoId !== null;
 	} else if (isSelf) {
 		githubRepoId = detectGitHubRepoId(repoDir);
-		repoFlags = githubRepoId ? ["-R", githubRepoId] : [];
 		shouldQueryGitHub = githubRepoId !== null;
 	} else {
 		githubRepoId = config.repo;
-		repoFlags = ["-R", config.repo];
 		shouldQueryGitHub = true;
 	}
 
@@ -837,35 +850,39 @@ async function collectSingleRepo(
 			}
 		}
 
-		const runAuthors = author?.github ?? [];
+		const runAuthors = [...new Set(author?.github ?? [])];
 		let ciRuns = 0;
-		if (shouldQueryGitHub) {
+		let ciRunsFailed = false;
+		if (shouldQueryGitHub && githubRepoId) {
+			// [Intended] `gh run list` は actor でフィルタするとページングが 1000 件で打ち切られ、
+			// 1000 件以上あるリポジトリで件数が頭打ちになる。件数は runs API の total_count から取得する。
+			// 1 つの run の actor は 1 人なので、actor ごとの total_count は単純合算でよい（重複しない）
+			const actors: Array<string | null> =
+				runAuthors.length > 0 ? runAuthors : [null];
 			try {
-				const seenIds = new Set<number>();
-				const userArgSets =
-					runAuthors.length > 0 ? runAuthors.map((g) => ["--user", g]) : [[]];
-				for (const userArgs of userArgSets) {
-					const runOutput = execFileSync(
+				let total = 0;
+				for (const actor of actors) {
+					const query =
+						actor === null
+							? "?per_page=1"
+							: `?per_page=1&actor=${encodeURIComponent(actor)}`;
+					const output = execFileSync(
 						"gh",
 						[
-							"run",
-							"list",
-							...repoFlags,
-							...userArgs,
-							"--json",
-							"databaseId",
-							"--limit",
-							"9999",
+							"api",
+							`repos/${githubRepoId}/actions/runs${query}`,
+							"--jq",
+							".total_count",
 						],
 						{ encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-					);
-					for (const r of JSON.parse(runOutput) as Array<{
-						databaseId: number;
-					}>) {
-						seenIds.add(r.databaseId);
+					).trim();
+					const parsed = Number.parseInt(output, 10);
+					if (!Number.isFinite(parsed)) {
+						throw new Error(`Unexpected total_count output: ${output}`);
 					}
+					total += parsed;
 				}
-				ciRuns = seenIds.size;
+				ciRuns = total;
 			} catch (err) {
 				const stderr =
 					err instanceof Error && "stderr" in err
@@ -873,19 +890,36 @@ async function collectSingleRepo(
 								(err as NodeJS.ErrnoException & { stderr: unknown }).stderr,
 							)
 						: "";
-				if (!stderr.includes("HTTP 403")) {
+				if (stderr.includes("HTTP 403") || stderr.includes("HTTP 404")) {
+					// [Policy] Actions が無効・権限なしのリポジトリは恒久的に取得できないため 0 件として扱う
 					console.error(
-						`[${displayName}] Warning: Failed to get CI runs count`,
+						`[${displayName}] Actions の実行数を取得できません（権限なし/Actions 無効）。0 として扱います`,
+					);
+				} else {
+					// [Intended] 一過性の失敗を 0 件として永続化しないよう、呼び出し元に失敗を伝える
+					ciRunsFailed = true;
+					const detail =
+						stderr.trim() || (err instanceof Error ? err.message : String(err));
+					console.error(
+						`[${displayName}] Warning: Failed to get CI runs count: ${detail}`,
 					);
 				}
 			}
 		}
 
 		console.error(
-			`[${displayName}] added=${addedLines}, deleted=${deletedLines}, commits=${commits}, PRs=${mergedPRs}, CI=${ciRuns}`,
+			`[${displayName}] added=${addedLines}, deleted=${deletedLines}, commits=${commits}, PRs=${mergedPRs}, CI=${ciRunsFailed ? "取得失敗" : ciRuns}`,
 		);
 
-		return { addedLines, deletedLines, commits, mergedPRs, ciRuns, extLines };
+		return {
+			addedLines,
+			deletedLines,
+			commits,
+			mergedPRs,
+			ciRuns,
+			ciRunsFailed,
+			extLines,
+		};
 	} finally {
 		if (tmpDir) {
 			rmSync(tmpDir, { recursive: true, force: true });
@@ -975,7 +1009,19 @@ async function main(): Promise<void> {
 		}
 
 		const metrics = await collectSingleRepo(repoConfig, config.author);
-		collectedInThisRun.push(metrics);
+
+		// [Intended] ciRuns の取得に失敗したときは 0 を書かず既存値を維持し、
+		// cacheKey も更新しない（更新すると次回以降キャッシュヒットで再取得されず誤値が固定化する）
+		let ciRuns = metrics.ciRuns;
+		let cacheKey = hmac;
+		if (metrics.ciRunsFailed) {
+			ciRuns = readExistingCiRuns(filePath) ?? 0;
+			cacheKey = "";
+			console.error(
+				`[${displayName}] ciRuns は取得失敗のため既存値 ${ciRuns} を維持し、キャッシュを無効化します`,
+			);
+		}
+		collectedInThisRun.push({ ...metrics, ciRuns });
 
 		const extLinesRecord: Record<string, number> = {};
 		for (const [k, v] of metrics.extLines) {
@@ -983,12 +1029,12 @@ async function main(): Promise<void> {
 		}
 
 		const perRepoData: PerRepoFileData = {
-			cacheKey: hmac,
+			cacheKey,
 			addedLines: metrics.addedLines,
 			deletedLines: metrics.deletedLines,
 			commits: metrics.commits,
 			mergedPRs: metrics.mergedPRs,
-			ciRuns: metrics.ciRuns,
+			ciRuns,
 			extLines: extLinesRecord,
 			collectedAt: new Date().toISOString(),
 		};
