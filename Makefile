@@ -35,10 +35,10 @@ collect:
 	pnpm run format
 
 collect-dry-run:
-	pnpm run collect-metrics -- --dry-run
+	pnpm run collect-metrics --dry-run
 
 collect-no-cache:
-	pnpm run collect-metrics -- --no-cache
+	pnpm run collect-metrics --no-cache
 	pnpm run format
 
 setup:

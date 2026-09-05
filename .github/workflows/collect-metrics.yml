@@ -52,7 +52,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Collect metrics
-        run: pnpm run collect-metrics${{ inputs.no-cache == true && ' -- --no-cache' || '' }}
+        run: pnpm run collect-metrics${{ inputs.no-cache == true && ' --no-cache' || '' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}

@@ -24,7 +24,10 @@ const execFileAsync = promisify(execFile);
 
 import { parse as parseYaml } from "yaml";
 
+// [Workaround] pnpm は `pnpm run <script> -- --flag` の `--` を除去せずそのまま渡すため、
+// parseArgs が `--` 以降をすべて positional と解釈してしまう。呼び出し側の書式に依存しないよう除去する
 const { values: args } = parseArgs({
+	args: process.argv.slice(2).filter((arg) => arg !== "--"),
 	options: {
 		"dry-run": { type: "boolean", default: false },
 		local: { type: "string" },
