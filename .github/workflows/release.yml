@@ -20,7 +20,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: HappyOnigiri/ShareSettings/actions/prepare-release@main
+      - uses: HappyOnigiri/ReleaseActions/actions/prepare-release@main
         with:
           version: ${{ inputs.version }}
           version-bump-type: npm
