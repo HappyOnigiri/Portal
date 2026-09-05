@@ -45,4 +45,4 @@ AI エージェントがこのリポジトリで作業する際の非自明な�
 ## コミット・コメント規約
 
 - コメント、テスト記述、コミットメッセージは**日本語**
-- **Conventional Commits** に従うこと（Release Please が使用している）
+- **Conventional Commits** に従うこと。PR タイトルの prefix はリリース時の changelog 分類とバージョンの自動判定に使われる
