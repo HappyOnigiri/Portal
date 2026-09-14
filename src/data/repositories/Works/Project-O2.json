@@ -1,12 +1,12 @@
 {
 	"cacheKey": "",
-	"addedLines": 169432,
-	"deletedLines": 105258,
-	"commits": 1995,
-	"mergedPRs": 124,
-	"ciRuns": 724,
+	"addedLines": 169563,
+	"deletedLines": 105274,
+	"commits": 2014,
+	"mergedPRs": 132,
+	"ciRuns": 749,
 	"extLines": {
-		".dart": 166881,
+		".dart": 167012,
 		".sh": 1019,
 		".swift": 432,
 		".py": 212,
@@ -15,5 +15,5 @@
 		".h": 219,
 		".cpp": 467
 	},
-	"collectedAt": "2026-07-23T05:54:15.219158+00:00"
+	"collectedAt": "2026-09-14T19:35:45.097537+00:00"
 }
