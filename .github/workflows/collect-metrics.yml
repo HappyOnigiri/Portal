@@ -61,16 +61,49 @@ jobs:
         run: FETCH_ARTICLES=true pnpm exec astro sync
 
       - name: Format
-        run: pnpm exec biome format --write .
+        run: |
+          pnpm exec biome format --write .
+          pnpm run format:astro
 
-      - name: Commit and push if changed
+      - name: Commit repository metrics if changed
+        id: metrics_commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data/author-status.json src/data/articles/zenn.json src/data/articles/note.json src/data/repositories/
           if ! git diff --cached --quiet; then
             git commit -m "chore: update repository metrics [skip ci]"
-            git push origin main
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No changes to commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate activity data
+        run: pnpm run generate-activity
+
+      - name: Amend activity data and push
+        id: activity_commit
+        env:
+          METRICS_COMMITTED: ${{ steps.metrics_commit.outputs.committed }}
+        run: |
+          activity_committed=false
+          git add src/data/activity.json
+          if git diff --cached --quiet; then
+            echo "No activity changes to commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$METRICS_COMMITTED" = "true" ]; then
+            commit_date=$(git show -s --format=%cI HEAD)
+            GIT_COMMITTER_DATE="$commit_date" git commit --amend --no-edit
+            activity_committed=true
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore: update activity data [skip ci]"
+            activity_committed=true
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$METRICS_COMMITTED" = "true" ] || [ "$activity_committed" = "true" ]; then
+            git push origin main
+          else
+            echo "No changes to push"
           fi

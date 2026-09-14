@@ -1,7 +1,16 @@
 ---
 import { Image } from "astro:assets";
 import avatarImage from "../../../assets/images/avatar.jpg";
+import activityData from "../../../data/activity.json";
 import statusData from "../../../data/author-status.json";
+import {
+	ACTIVITY_METRICS,
+	type ActivityChartPoint,
+	type ActivityData,
+	type ActivityMetric,
+	type ActivityPeriod,
+	selectActivityRange,
+} from "../../../utils/activity";
 import { translations } from "../../../utils/translations";
 
 // 数値のフォーマット
@@ -19,6 +28,50 @@ const lastSync = statusData.lastUpdated
 			timeZoneName: "short",
 		})
 	: "---";
+
+const activity = activityData as ActivityData;
+const initialMetric: ActivityMetric = "mergedPRs";
+const initialPeriod: ActivityPeriod = "30d";
+const metricLabels: Record<ActivityMetric, string> = {
+	changedLines: "Changed Lines",
+	commits: "Commits",
+	mergedPRs: "Merged PRs",
+	ciRuns: "CI Runs",
+};
+const periodLabels: Record<ActivityPeriod, string> = {
+	"30d": "Last 30 days",
+	"12m": "Last 12 months",
+	all: "All time",
+};
+
+const formatActivityNumber = (num: number) =>
+	new Intl.NumberFormat("ja-JP").format(num);
+
+const initialActivityPoints = selectActivityRange(activity, initialPeriod);
+const initialMaxValue = Math.max(
+	1,
+	...initialActivityPoints.map((point) => point[initialMetric]),
+);
+const initialHasActivity = initialActivityPoints.some(
+	(point) => point[initialMetric] > 0,
+);
+
+function activityPointLabel(
+	point: ActivityChartPoint,
+	metric: ActivityMetric,
+): string {
+	return `${point.key} · ${metricLabels[metric]} · ${formatActivityNumber(point[metric])}`;
+}
+
+function activityLabelIsVisible(
+	point: ActivityChartPoint,
+	index: number,
+	length: number,
+): boolean {
+	return (
+		point.granularity === "month" || index % 5 === 0 || index === length - 1
+	);
+}
 ---
 
 <div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base">
@@ -195,6 +248,138 @@ const lastSync = statusData.lastUpdated
 					)
 				}
 			</div>
+			<section
+				class="cyber-activity"
+				data-activity-root
+				aria-labelledby="cyber-activity-heading"
+			>
+				<div class="cyber-activity-header">
+					<div>
+						<p class="cyber-activity-eyebrow">Activity</p>
+						<h3 id="cyber-activity-heading" class="cyber-activity-title">
+							Development activity
+						</h3>
+					</div>
+					<div class="cyber-activity-controls">
+						<div
+							class="cyber-activity-control-group"
+							role="group"
+							aria-label="Activity metric"
+							data-activity-metric-group
+						>
+							{
+								ACTIVITY_METRICS.map((metric) => (
+									<button
+										type="button"
+										class="cyber-activity-control"
+										data-activity-metric={metric}
+										aria-pressed={metric === initialMetric}
+									>
+										{metricLabels[metric]}
+									</button>
+								))
+							}
+						</div>
+						<div
+							class="cyber-activity-control-group"
+							role="group"
+							aria-label="Activity period"
+							data-activity-period-group
+						>
+							{
+								(["30d", "12m", "all"] as ActivityPeriod[]).map((period) => (
+									<button
+										type="button"
+										class="cyber-activity-control"
+										data-activity-period={period}
+										aria-pressed={period === initialPeriod}
+									>
+										{periodLabels[period]}
+									</button>
+								))
+							}
+						</div>
+					</div>
+				</div>
+				<div class="cyber-activity-chart-shell">
+					<div class="cyber-activity-axis" aria-hidden="true">
+						<span data-activity-axis-max
+							>{formatActivityNumber(initialMaxValue)}</span
+						>
+						<span data-activity-axis-mid
+							>{formatActivityNumber(Math.ceil(initialMaxValue / 2))}</span
+						>
+						<span>0</span>
+					</div>
+					<div class="cyber-activity-scroll">
+						<div
+							class="cyber-activity-chart"
+							data-activity-chart
+							role="group"
+							aria-label={`${metricLabels[initialMetric]}, ${periodLabels[initialPeriod]}`}
+						>
+							<div class="cyber-activity-grid" aria-hidden="true">
+								<span></span><span></span><span></span>
+							</div>
+							<div class="cyber-activity-bars" data-activity-bars>
+								{
+									initialActivityPoints.map((point, index) => {
+										const value = point[initialMetric];
+										const label = activityPointLabel(point, initialMetric);
+										const labelText =
+											point.granularity === "day"
+												? point.key.slice(5).replace("-", "/")
+												: point.key.replace("-", "/");
+										return (
+											<button
+												type="button"
+												class="cyber-activity-bar"
+												data-activity-bar
+												data-activity-value={value}
+												data-tooltip={label}
+												aria-label={label}
+												style={`--activity-height: ${(value / initialMaxValue) * 100}%;`}
+											>
+												<span
+													class="cyber-activity-bar-fill"
+													aria-hidden="true"
+												/>
+												<time
+													class="cyber-activity-bar-label"
+													dateTime={point.key}
+													data-label-visible={
+														activityLabelIsVisible(
+															point,
+															index,
+															initialActivityPoints.length,
+														)
+															? "true"
+															: undefined
+													}
+												>
+													{labelText}
+												</time>
+											</button>
+										);
+									})
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+				<p
+					class="cyber-activity-empty"
+					data-activity-empty
+					hidden={initialHasActivity}
+				>
+					No activity recorded for this period.
+				</p>
+				<script
+					type="application/json"
+					data-activity-data
+					set:html={JSON.stringify(activity)}
+				/>
+			</section>
 			<div
 				class="mt-4 bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] rounded-xl p-4"
 			>
@@ -240,3 +425,179 @@ const lastSync = statusData.lastUpdated
 		</div>
 	</div>
 </div>
+
+<script>
+	import {
+		ACTIVITY_METRICS,
+		selectActivityRange,
+		type ActivityData,
+		type ActivityMetric,
+		type ActivityPeriod,
+	} from "../../../utils/activity";
+
+	const clientMetricLabels: Record<ActivityMetric, string> = {
+		changedLines: "Changed Lines",
+		commits: "Commits",
+		mergedPRs: "Merged PRs",
+		ciRuns: "CI Runs",
+	};
+	const clientPeriodLabels: Record<ActivityPeriod, string> = {
+		"30d": "Last 30 days",
+		"12m": "Last 12 months",
+		all: "All time",
+	};
+	const clientNumber = new Intl.NumberFormat("ja-JP");
+
+	function isRecord(value: unknown): value is Record<string, unknown> {
+		return typeof value === "object" && value !== null;
+	}
+
+	function isActivityData(value: unknown): value is ActivityData {
+		if (!isRecord(value) || typeof value.rangeEnd !== "string") return false;
+		return Array.isArray(value.daily) && Array.isArray(value.monthly);
+	}
+
+	function isMetric(value: string | undefined): value is ActivityMetric {
+		return (
+			value !== undefined && ACTIVITY_METRICS.includes(value as ActivityMetric)
+		);
+	}
+
+	function isPeriod(value: string | undefined): value is ActivityPeriod {
+		return value === "30d" || value === "12m" || value === "all";
+	}
+
+	function pointDateLabel(key: string, isDay: boolean): string {
+		return isDay
+			? key.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$2/$3")
+			: key.replace(/^(\d{4})-(\d{2})$/, "$1/$2");
+	}
+
+	function renderActivity(
+		root: HTMLElement,
+		data: ActivityData,
+		metric: ActivityMetric,
+		period: ActivityPeriod,
+	): void {
+		const bars = root.querySelector<HTMLElement>("[data-activity-bars]");
+		const chart = root.querySelector<HTMLElement>("[data-activity-chart]");
+		const empty = root.querySelector<HTMLElement>("[data-activity-empty]");
+		const axisMax = root.querySelector<HTMLElement>("[data-activity-axis-max]");
+		const axisMid = root.querySelector<HTMLElement>("[data-activity-axis-mid]");
+		if (!bars || !chart || !empty || !axisMax || !axisMid) return;
+
+		const points = selectActivityRange(data, period);
+		const maxValue = Math.max(0, ...points.map((point) => point[metric]));
+		const scaleMax = Math.max(1, maxValue);
+		axisMax.textContent = clientNumber.format(scaleMax);
+		axisMid.textContent = clientNumber.format(Math.ceil(scaleMax / 2));
+		chart.setAttribute(
+			"aria-label",
+			`${clientMetricLabels[metric]}, ${clientPeriodLabels[period]}`,
+		);
+		bars.replaceChildren();
+
+		for (const [index, point] of points.entries()) {
+			const value = point[metric];
+			const isDay = point.granularity === "day";
+			const dateLabel = pointDateLabel(point.key, isDay);
+			const tooltip = `${point.key} · ${clientMetricLabels[metric]} · ${clientNumber.format(value)}`;
+			const bar = document.createElement("button");
+			bar.type = "button";
+			bar.className = "cyber-activity-bar";
+			bar.dataset.activityBar = "true";
+			bar.dataset.activityValue = String(value);
+			bar.dataset.tooltip = tooltip;
+			bar.setAttribute("aria-label", tooltip);
+			bar.style.setProperty(
+				"--activity-height",
+				`${(value / scaleMax) * 100}%`,
+			);
+
+			const fill = document.createElement("span");
+			fill.className = "cyber-activity-bar-fill";
+			fill.setAttribute("aria-hidden", "true");
+			bar.append(fill);
+
+			const label = document.createElement("time");
+			label.className = "cyber-activity-bar-label";
+			label.dateTime = point.key;
+			if (
+				point.granularity === "month" ||
+				index % 5 === 0 ||
+				index === points.length - 1
+			) {
+				label.dataset.labelVisible = "true";
+			}
+			label.textContent = dateLabel;
+			bar.append(label);
+			bars.append(bar);
+		}
+
+		empty.hidden = maxValue > 0;
+	}
+
+	for (const root of document.querySelectorAll<HTMLElement>(
+		"[data-activity-root]",
+	)) {
+		const dataElement = root.querySelector<HTMLScriptElement>(
+			"[data-activity-data]",
+		);
+		if (!dataElement) continue;
+		let data: ActivityData;
+		try {
+			const parsed: unknown = JSON.parse(dataElement.textContent ?? "");
+			if (!isActivityData(parsed)) throw new Error("Invalid activity data");
+			data = parsed;
+		} catch {
+			const empty = root.querySelector<HTMLElement>("[data-activity-empty]");
+			if (empty) empty.hidden = false;
+			continue;
+		}
+
+		let metric: ActivityMetric = "mergedPRs";
+		let period: ActivityPeriod = "30d";
+		const updateMetricButtons = () => {
+			for (const button of root.querySelectorAll<HTMLButtonElement>(
+				"[data-activity-metric]",
+			)) {
+				button.setAttribute(
+					"aria-pressed",
+					String(button.dataset.activityMetric === metric),
+				);
+			}
+		};
+		const updatePeriodButtons = () => {
+			for (const button of root.querySelectorAll<HTMLButtonElement>(
+				"[data-activity-period]",
+			)) {
+				button.setAttribute(
+					"aria-pressed",
+					String(button.dataset.activityPeriod === period),
+				);
+			}
+		};
+
+		for (const button of root.querySelectorAll<HTMLButtonElement>(
+			"[data-activity-metric]",
+		)) {
+			button.addEventListener("click", () => {
+				if (!isMetric(button.dataset.activityMetric)) return;
+				metric = button.dataset.activityMetric;
+				updateMetricButtons();
+				renderActivity(root, data, metric, period);
+			});
+		}
+		for (const button of root.querySelectorAll<HTMLButtonElement>(
+			"[data-activity-period]",
+		)) {
+			button.addEventListener("click", () => {
+				if (!isPeriod(button.dataset.activityPeriod)) return;
+				period = button.dataset.activityPeriod;
+				updatePeriodButtons();
+				renderActivity(root, data, metric, period);
+			});
+		}
+		renderActivity(root, data, metric, period);
+	}
+</script>

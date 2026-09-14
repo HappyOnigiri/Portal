@@ -1,0 +1,1337 @@
+{
+	"rangeEnd": "2026-09-14",
+	"daily": [
+		{
+			"date": "2026-03-16",
+			"changedLines": 0,
+			"commits": 0,
+			"mergedPRs": 0,
+			"ciRuns": 0
+		},
+		{
+			"date": "2026-03-17",
+			"changedLines": 1386,
+			"commits": 108,
+			"mergedPRs": 49,
+			"ciRuns": 779
+		},
+		{
+			"date": "2026-03-18",
+			"changedLines": 6312,
+			"commits": 135,
+			"mergedPRs": 35,
+			"ciRuns": 562
+		},
+		{
+			"date": "2026-03-19",
+			"changedLines": 6315,
+			"commits": 138,
+			"mergedPRs": 38,
+			"ciRuns": 566
+		},
+		{
+			"date": "2026-03-20",
+			"changedLines": 6316,
+			"commits": 142,
+			"mergedPRs": 41,
+			"ciRuns": 567
+		},
+		{
+			"date": "2026-03-21",
+			"changedLines": 4812,
+			"commits": 44,
+			"mergedPRs": 3,
+			"ciRuns": 204
+		},
+		{
+			"date": "2026-03-22",
+			"changedLines": 4993,
+			"commits": 58,
+			"mergedPRs": 10,
+			"ciRuns": 207
+		},
+		{
+			"date": "2026-03-23",
+			"changedLines": 4363,
+			"commits": 44,
+			"mergedPRs": 5,
+			"ciRuns": 253
+		},
+		{
+			"date": "2026-03-24",
+			"changedLines": 12812,
+			"commits": 119,
+			"mergedPRs": 18,
+			"ciRuns": 222
+		},
+		{
+			"date": "2026-03-25",
+			"changedLines": 4347,
+			"commits": 38,
+			"mergedPRs": 4,
+			"ciRuns": 206
+		},
+		{
+			"date": "2026-03-26",
+			"changedLines": 5684,
+			"commits": 67,
+			"mergedPRs": 10,
+			"ciRuns": 250
+		},
+		{
+			"date": "2026-03-27",
+			"changedLines": 9235,
+			"commits": 118,
+			"mergedPRs": 19,
+			"ciRuns": 316
+		},
+		{
+			"date": "2026-03-28",
+			"changedLines": 4181,
+			"commits": 74,
+			"mergedPRs": 17,
+			"ciRuns": 217
+		},
+		{
+			"date": "2026-03-29",
+			"changedLines": 5339,
+			"commits": 93,
+			"mergedPRs": 24,
+			"ciRuns": 281
+		},
+		{
+			"date": "2026-03-30",
+			"changedLines": 28790,
+			"commits": 87,
+			"mergedPRs": 18,
+			"ciRuns": 175
+		},
+		{
+			"date": "2026-03-31",
+			"changedLines": 13655,
+			"commits": 105,
+			"mergedPRs": 16,
+			"ciRuns": 151
+		},
+		{
+			"date": "2026-04-01",
+			"changedLines": 6070,
+			"commits": 42,
+			"mergedPRs": 5,
+			"ciRuns": 118
+		},
+		{
+			"date": "2026-04-02",
+			"changedLines": 5859,
+			"commits": 78,
+			"mergedPRs": 11,
+			"ciRuns": 189
+		},
+		{
+			"date": "2026-04-03",
+			"changedLines": 5224,
+			"commits": 65,
+			"mergedPRs": 13,
+			"ciRuns": 145
+		},
+		{
+			"date": "2026-04-04",
+			"changedLines": 5137,
+			"commits": 72,
+			"mergedPRs": 13,
+			"ciRuns": 185
+		},
+		{
+			"date": "2026-04-05",
+			"changedLines": 5651,
+			"commits": 72,
+			"mergedPRs": 15,
+			"ciRuns": 186
+		},
+		{
+			"date": "2026-04-06",
+			"changedLines": 4264,
+			"commits": 25,
+			"mergedPRs": 6,
+			"ciRuns": 852
+		},
+		{
+			"date": "2026-04-07",
+			"changedLines": 4103,
+			"commits": 38,
+			"mergedPRs": 7,
+			"ciRuns": 184
+		},
+		{
+			"date": "2026-04-08",
+			"changedLines": 4039,
+			"commits": 33,
+			"mergedPRs": 8,
+			"ciRuns": 186
+		},
+		{
+			"date": "2026-04-09",
+			"changedLines": 3793,
+			"commits": 55,
+			"mergedPRs": 14,
+			"ciRuns": 139
+		},
+		{
+			"date": "2026-04-10",
+			"changedLines": 3569,
+			"commits": 16,
+			"mergedPRs": 1,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-11",
+			"changedLines": 3570,
+			"commits": 15,
+			"mergedPRs": 1,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-12",
+			"changedLines": 3570,
+			"commits": 15,
+			"mergedPRs": 1,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-13",
+			"changedLines": 3570,
+			"commits": 15,
+			"mergedPRs": 1,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-14",
+			"changedLines": 3570,
+			"commits": 15,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-15",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-16",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-17",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-18",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-19",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-20",
+			"changedLines": 3570,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-21",
+			"changedLines": 3571,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-04-22",
+			"changedLines": 3571,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-04-23",
+			"changedLines": 3571,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-04-24",
+			"changedLines": 3571,
+			"commits": 16,
+			"mergedPRs": 2,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-25",
+			"changedLines": 3571,
+			"commits": 17,
+			"mergedPRs": 2,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-26",
+			"changedLines": 3572,
+			"commits": 18,
+			"mergedPRs": 2,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-27",
+			"changedLines": 3572,
+			"commits": 18,
+			"mergedPRs": 2,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-28",
+			"changedLines": 3572,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-29",
+			"changedLines": 3572,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-04-30",
+			"changedLines": 3572,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-05-01",
+			"changedLines": 3572,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-05-02",
+			"changedLines": 3572,
+			"commits": 21,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-05-03",
+			"changedLines": 3572,
+			"commits": 23,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-05-04",
+			"changedLines": 3572,
+			"commits": 23,
+			"mergedPRs": 3,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-05-05",
+			"changedLines": 3572,
+			"commits": 23,
+			"mergedPRs": 7,
+			"ciRuns": 70
+		},
+		{
+			"date": "2026-05-06",
+			"changedLines": 3572,
+			"commits": 23,
+			"mergedPRs": 8,
+			"ciRuns": 70
+		},
+		{
+			"date": "2026-05-07",
+			"changedLines": 3445,
+			"commits": 17,
+			"mergedPRs": 2,
+			"ciRuns": 60
+		},
+		{
+			"date": "2026-05-08",
+			"changedLines": 3445,
+			"commits": 18,
+			"mergedPRs": 2,
+			"ciRuns": 60
+		},
+		{
+			"date": "2026-05-09",
+			"changedLines": 3447,
+			"commits": 23,
+			"mergedPRs": 3,
+			"ciRuns": 61
+		},
+		{
+			"date": "2026-05-10",
+			"changedLines": 3445,
+			"commits": 21,
+			"mergedPRs": 3,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-05-11",
+			"changedLines": 3451,
+			"commits": 20,
+			"mergedPRs": 4,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-05-12",
+			"changedLines": 3452,
+			"commits": 21,
+			"mergedPRs": 5,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-05-13",
+			"changedLines": 3447,
+			"commits": 20,
+			"mergedPRs": 4,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-14",
+			"changedLines": 3645,
+			"commits": 26,
+			"mergedPRs": 9,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-15",
+			"changedLines": 3018,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-16",
+			"changedLines": 3018,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-17",
+			"changedLines": 3019,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-18",
+			"changedLines": 3019,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-19",
+			"changedLines": 3019,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-20",
+			"changedLines": 3019,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-05-21",
+			"changedLines": 3019,
+			"commits": 19,
+			"mergedPRs": 4,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-05-22",
+			"changedLines": 3019,
+			"commits": 20,
+			"mergedPRs": 4,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-05-23",
+			"changedLines": 3166,
+			"commits": 25,
+			"mergedPRs": 7,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-05-24",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-05-25",
+			"changedLines": 2975,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-05-26",
+			"changedLines": 2976,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-27",
+			"changedLines": 2976,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-28",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-29",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-05-30",
+			"changedLines": 2977,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-05-31",
+			"changedLines": 2977,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-01",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-02",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-03",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-04",
+			"changedLines": 2977,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-05",
+			"changedLines": 3019,
+			"commits": 22,
+			"mergedPRs": 5,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-06",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-07",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-08",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 62
+		},
+		{
+			"date": "2026-06-09",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-10",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-11",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-12",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-13",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-14",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 63
+		},
+		{
+			"date": "2026-06-15",
+			"changedLines": 2975,
+			"commits": 17,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-16",
+			"changedLines": 2975,
+			"commits": 18,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-17",
+			"changedLines": 2975,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-18",
+			"changedLines": 2976,
+			"commits": 20,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-19",
+			"changedLines": 2976,
+			"commits": 20,
+			"mergedPRs": 3,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-20",
+			"changedLines": 2976,
+			"commits": 21,
+			"mergedPRs": 4,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-06-21",
+			"changedLines": 3138,
+			"commits": 33,
+			"mergedPRs": 10,
+			"ciRuns": 72
+		},
+		{
+			"date": "2026-06-22",
+			"changedLines": 3159,
+			"commits": 25,
+			"mergedPRs": 6,
+			"ciRuns": 77
+		},
+		{
+			"date": "2026-06-23",
+			"changedLines": 3161,
+			"commits": 25,
+			"mergedPRs": 8,
+			"ciRuns": 77
+		},
+		{
+			"date": "2026-06-24",
+			"changedLines": 3158,
+			"commits": 24,
+			"mergedPRs": 7,
+			"ciRuns": 77
+		},
+		{
+			"date": "2026-06-25",
+			"changedLines": 3066,
+			"commits": 20,
+			"mergedPRs": 5,
+			"ciRuns": 75
+		},
+		{
+			"date": "2026-06-26",
+			"changedLines": 3182,
+			"commits": 20,
+			"mergedPRs": 4,
+			"ciRuns": 72
+		},
+		{
+			"date": "2026-06-27",
+			"changedLines": 2995,
+			"commits": 19,
+			"mergedPRs": 4,
+			"ciRuns": 73
+		},
+		{
+			"date": "2026-06-28",
+			"changedLines": 3099,
+			"commits": 19,
+			"mergedPRs": 3,
+			"ciRuns": 71
+		},
+		{
+			"date": "2026-06-29",
+			"changedLines": 3100,
+			"commits": 20,
+			"mergedPRs": 4,
+			"ciRuns": 71
+		},
+		{
+			"date": "2026-06-30",
+			"changedLines": 3100,
+			"commits": 21,
+			"mergedPRs": 4,
+			"ciRuns": 71
+		},
+		{
+			"date": "2026-07-01",
+			"changedLines": 3100,
+			"commits": 21,
+			"mergedPRs": 4,
+			"ciRuns": 72
+		},
+		{
+			"date": "2026-07-02",
+			"changedLines": 3100,
+			"commits": 21,
+			"mergedPRs": 5,
+			"ciRuns": 72
+		},
+		{
+			"date": "2026-07-03",
+			"changedLines": 3100,
+			"commits": 22,
+			"mergedPRs": 6,
+			"ciRuns": 72
+		},
+		{
+			"date": "2026-07-04",
+			"changedLines": 3266,
+			"commits": 25,
+			"mergedPRs": 11,
+			"ciRuns": 76
+		},
+		{
+			"date": "2026-07-05",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-07-06",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 5,
+			"ciRuns": 64
+		},
+		{
+			"date": "2026-07-07",
+			"changedLines": 2991,
+			"commits": 19,
+			"mergedPRs": 5,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-07-08",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-07-09",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-07-10",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-07-11",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 5,
+			"ciRuns": 66
+		},
+		{
+			"date": "2026-07-12",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 65
+		},
+		{
+			"date": "2026-07-13",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-14",
+			"changedLines": 2991,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-15",
+			"changedLines": 2991,
+			"commits": 19,
+			"mergedPRs": 4,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-16",
+			"changedLines": 2992,
+			"commits": 19,
+			"mergedPRs": 5,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-17",
+			"changedLines": 2992,
+			"commits": 19,
+			"mergedPRs": 5,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-18",
+			"changedLines": 3226,
+			"commits": 18,
+			"mergedPRs": 4,
+			"ciRuns": 67
+		},
+		{
+			"date": "2026-07-19",
+			"changedLines": 3226,
+			"commits": 19,
+			"mergedPRs": 5,
+			"ciRuns": 69
+		},
+		{
+			"date": "2026-07-20",
+			"changedLines": 3349,
+			"commits": 21,
+			"mergedPRs": 5,
+			"ciRuns": 80
+		},
+		{
+			"date": "2026-07-21",
+			"changedLines": 3350,
+			"commits": 23,
+			"mergedPRs": 6,
+			"ciRuns": 80
+		},
+		{
+			"date": "2026-07-22",
+			"changedLines": 3716,
+			"commits": 37,
+			"mergedPRs": 14,
+			"ciRuns": 82
+		},
+		{
+			"date": "2026-07-23",
+			"changedLines": 624,
+			"commits": 4,
+			"mergedPRs": 1,
+			"ciRuns": 8
+		},
+		{
+			"date": "2026-07-24",
+			"changedLines": 625,
+			"commits": 5,
+			"mergedPRs": 1,
+			"ciRuns": 8
+		},
+		{
+			"date": "2026-07-25",
+			"changedLines": 625,
+			"commits": 5,
+			"mergedPRs": 3,
+			"ciRuns": 9
+		},
+		{
+			"date": "2026-07-26",
+			"changedLines": 825,
+			"commits": 9,
+			"mergedPRs": 3,
+			"ciRuns": 12
+		},
+		{
+			"date": "2026-07-27",
+			"changedLines": 825,
+			"commits": 7,
+			"mergedPRs": 1,
+			"ciRuns": 12
+		},
+		{
+			"date": "2026-07-28",
+			"changedLines": 825,
+			"commits": 7,
+			"mergedPRs": 2,
+			"ciRuns": 12
+		},
+		{
+			"date": "2026-07-29",
+			"changedLines": 825,
+			"commits": 7,
+			"mergedPRs": 3,
+			"ciRuns": 12
+		},
+		{
+			"date": "2026-07-30",
+			"changedLines": 826,
+			"commits": 7,
+			"mergedPRs": 3,
+			"ciRuns": 13
+		},
+		{
+			"date": "2026-07-31",
+			"changedLines": 826,
+			"commits": 8,
+			"mergedPRs": 3,
+			"ciRuns": 13
+		},
+		{
+			"date": "2026-08-01",
+			"changedLines": 826,
+			"commits": 9,
+			"mergedPRs": 3,
+			"ciRuns": 13
+		},
+		{
+			"date": "2026-08-02",
+			"changedLines": 5183,
+			"commits": 34,
+			"mergedPRs": 8,
+			"ciRuns": 14
+		},
+		{
+			"date": "2026-08-03",
+			"changedLines": 5349,
+			"commits": 34,
+			"mergedPRs": 7,
+			"ciRuns": 5
+		},
+		{
+			"date": "2026-08-04",
+			"changedLines": 5349,
+			"commits": 34,
+			"mergedPRs": 7,
+			"ciRuns": 5
+		},
+		{
+			"date": "2026-08-05",
+			"changedLines": 5349,
+			"commits": 34,
+			"mergedPRs": 7,
+			"ciRuns": 5
+		},
+		{
+			"date": "2026-08-06",
+			"changedLines": 5350,
+			"commits": 35,
+			"mergedPRs": 7,
+			"ciRuns": 5
+		},
+		{
+			"date": "2026-08-07",
+			"changedLines": 5351,
+			"commits": 35,
+			"mergedPRs": 7,
+			"ciRuns": 5
+		},
+		{
+			"date": "2026-08-08",
+			"changedLines": 5351,
+			"commits": 35,
+			"mergedPRs": 7,
+			"ciRuns": 7
+		},
+		{
+			"date": "2026-08-09",
+			"changedLines": 5352,
+			"commits": 35,
+			"mergedPRs": 7,
+			"ciRuns": 7
+		},
+		{
+			"date": "2026-08-10",
+			"changedLines": 5352,
+			"commits": 35,
+			"mergedPRs": 8,
+			"ciRuns": 7
+		},
+		{
+			"date": "2026-08-11",
+			"changedLines": 5352,
+			"commits": 35,
+			"mergedPRs": 8,
+			"ciRuns": 23
+		},
+		{
+			"date": "2026-08-12",
+			"changedLines": 5194,
+			"commits": 34,
+			"mergedPRs": 8,
+			"ciRuns": 10
+		},
+		{
+			"date": "2026-08-13",
+			"changedLines": 5195,
+			"commits": 35,
+			"mergedPRs": 8,
+			"ciRuns": 11
+		},
+		{
+			"date": "2026-08-14",
+			"changedLines": 5181,
+			"commits": 34,
+			"mergedPRs": 7,
+			"ciRuns": 7
+		},
+		{
+			"date": "2026-08-15",
+			"changedLines": 5181,
+			"commits": 34,
+			"mergedPRs": 8,
+			"ciRuns": 8
+		},
+		{
+			"date": "2026-08-16",
+			"changedLines": 5182,
+			"commits": 37,
+			"mergedPRs": 11,
+			"ciRuns": 8
+		},
+		{
+			"date": "2026-08-17",
+			"changedLines": 83,
+			"commits": 10,
+			"mergedPRs": 10,
+			"ciRuns": 8
+		},
+		{
+			"date": "2026-08-18",
+			"changedLines": 2403,
+			"commits": 10,
+			"mergedPRs": 4,
+			"ciRuns": 419
+		},
+		{
+			"date": "2026-08-19",
+			"changedLines": 10,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 420
+		},
+		{
+			"date": "2026-08-20",
+			"changedLines": 10,
+			"commits": 0,
+			"mergedPRs": 0,
+			"ciRuns": 526
+		},
+		{
+			"date": "2026-08-21",
+			"changedLines": 10,
+			"commits": 1,
+			"mergedPRs": 0,
+			"ciRuns": 620
+		},
+		{
+			"date": "2026-08-22",
+			"changedLines": 10,
+			"commits": 1,
+			"mergedPRs": 2,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-08-23",
+			"changedLines": 11,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-08-24",
+			"changedLines": 43,
+			"commits": 1,
+			"mergedPRs": 1,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-08-25",
+			"changedLines": 38,
+			"commits": 0,
+			"mergedPRs": 0,
+			"ciRuns": 526
+		},
+		{
+			"date": "2026-08-26",
+			"changedLines": 38,
+			"commits": 0,
+			"mergedPRs": 0,
+			"ciRuns": 526
+		},
+		{
+			"date": "2026-08-27",
+			"changedLines": 38,
+			"commits": 2,
+			"mergedPRs": 0,
+			"ciRuns": 526
+		},
+		{
+			"date": "2026-08-28",
+			"changedLines": 38,
+			"commits": 2,
+			"mergedPRs": 0,
+			"ciRuns": 526
+		},
+		{
+			"date": "2026-08-29",
+			"changedLines": 38,
+			"commits": 2,
+			"mergedPRs": 0,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-08-30",
+			"changedLines": 38,
+			"commits": 2,
+			"mergedPRs": 0,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-08-31",
+			"changedLines": 38,
+			"commits": 2,
+			"mergedPRs": 0,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-09-01",
+			"changedLines": 39,
+			"commits": 3,
+			"mergedPRs": 0,
+			"ciRuns": 527
+		},
+		{
+			"date": "2026-09-02",
+			"changedLines": 39,
+			"commits": 3,
+			"mergedPRs": 0,
+			"ciRuns": 528
+		},
+		{
+			"date": "2026-09-03",
+			"changedLines": 39,
+			"commits": 3,
+			"mergedPRs": 1,
+			"ciRuns": 528
+		},
+		{
+			"date": "2026-09-04",
+			"changedLines": 152,
+			"commits": 6,
+			"mergedPRs": 4,
+			"ciRuns": 4546
+		},
+		{
+			"date": "2026-09-05",
+			"changedLines": 14,
+			"commits": 5,
+			"mergedPRs": 4,
+			"ciRuns": 32
+		},
+		{
+			"date": "2026-09-06",
+			"changedLines": 14,
+			"commits": 13,
+			"mergedPRs": 11,
+			"ciRuns": 44
+		},
+		{
+			"date": "2026-09-07",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 1,
+			"ciRuns": 2
+		},
+		{
+			"date": "2026-09-08",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 1,
+			"ciRuns": 2
+		},
+		{
+			"date": "2026-09-09",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 1,
+			"ciRuns": 3
+		},
+		{
+			"date": "2026-09-10",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 3
+		},
+		{
+			"date": "2026-09-11",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 3
+		},
+		{
+			"date": "2026-09-12",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 3
+		},
+		{
+			"date": "2026-09-13",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 2,
+			"ciRuns": 3
+		},
+		{
+			"date": "2026-09-14",
+			"changedLines": 6,
+			"commits": 2,
+			"mergedPRs": 3,
+			"ciRuns": 7
+		}
+	],
+	"monthly": [
+		{
+			"month": "2026-03",
+			"changedLines": 118540,
+			"commits": 1370,
+			"mergedPRs": 307,
+			"ciRuns": 4956
+		},
+		{
+			"month": "2026-04",
+			"changedLines": 119124,
+			"commits": 824,
+			"mergedPRs": 133,
+			"ciRuns": 3593
+		},
+		{
+			"month": "2026-05",
+			"changedLines": 100335,
+			"commits": 611,
+			"mergedPRs": 116,
+			"ciRuns": 2003
+		},
+		{
+			"month": "2026-06",
+			"changedLines": 90713,
+			"commits": 588,
+			"mergedPRs": 119,
+			"ciRuns": 1994
+		},
+		{
+			"month": "2026-07",
+			"changedLines": 75144,
+			"commits": 504,
+			"mergedPRs": 137,
+			"ciRuns": 1625
+		},
+		{
+			"month": "2026-08",
+			"changedLines": 82943,
+			"commits": 566,
+			"mergedPRs": 139,
+			"ciRuns": 7399
+		},
+		{
+			"month": "2026-09",
+			"changedLines": 345,
+			"commits": 49,
+			"mergedPRs": 34,
+			"ciRuns": 6231
+		}
+	]
+}

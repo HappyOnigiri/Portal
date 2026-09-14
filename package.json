@@ -28,7 +28,8 @@
 		"check:ts-rules": "python3 scripts/check_ts_rules.py",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"collect-metrics": "node --experimental-strip-types scripts/collect-metrics.ts"
+		"collect-metrics": "node --experimental-strip-types scripts/collect-metrics.ts",
+		"generate-activity": "node --experimental-strip-types scripts/generate-activity.ts"
 	},
 	"dependencies": {
 		"@astrojs/react": "^5.0.3",
