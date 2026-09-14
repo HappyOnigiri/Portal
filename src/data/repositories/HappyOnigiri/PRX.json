@@ -1,0 +1,17 @@
+{
+	"cacheKey": "ccb126cf60e84e6ac461a38254fe72ae2a8ee96463212068a54e66dfbfa89d2d",
+	"addedLines": 94844,
+	"deletedLines": 24997,
+	"commits": 492,
+	"mergedPRs": 170,
+	"ciRuns": 925,
+	"extLines": {
+		".go": 47866,
+		".tsx": 32402,
+		".ts": 12636,
+		".sh": 958,
+		".js": 904,
+		".py": 78
+	},
+	"collectedAt": "2026-09-14T19:43:46.953Z"
+}
