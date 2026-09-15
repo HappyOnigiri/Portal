@@ -22,6 +22,7 @@ import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from pathlib import Path, PurePosixPath
 
 SOURCE_EXTS: set[str] = {
@@ -88,9 +89,44 @@ def parse_gitattributes(repo: Path) -> list[str]:
     return patterns
 
 
+@lru_cache(maxsize=None)
+def compile_gitattributes_pattern(pattern: str) -> re.Pattern[str]:
+    """.gitattributes のパターンを git と同じ意味の正規表現へ変換する。
+
+    [Workaround] PurePath.match は Python 3.12 以前で `**` を 1 階層の `*` として
+    扱うため、`grpc/**/*.pb.go` が grpc/studio/src/foo.pb.go に一致しない。
+    """
+    pat = pattern.rstrip("/")
+    # スラッシュを含まないパターンは任意の階層のファイル名に一致する
+    if "/" not in pat:
+        pat = f"**/{pat}"
+    pat = pat.lstrip("/")
+
+    out: list[str] = []
+    index = 0
+    while index < len(pat):
+        if pat.startswith("**/", index):
+            out.append("(?:[^/]+/)*")
+            index += 3
+        elif pat.startswith("**", index):
+            out.append(".*")
+            index += 2
+        elif pat[index] == "*":
+            out.append("[^/]*")
+            index += 1
+        elif pat[index] == "?":
+            out.append("[^/]")
+            index += 1
+        else:
+            out.append(re.escape(pat[index]))
+            index += 1
+
+    # ディレクトリを指すパターンは配下のすべてに一致する
+    return re.compile("^" + "".join(out) + "(?:/.*)?$")
+
+
 def is_excluded(filepath: str, patterns: list[str]) -> bool:
-    p = PurePosixPath(filepath)
-    return any(p.match(pat) for pat in patterns)
+    return any(compile_gitattributes_pattern(pat).match(filepath) for pat in patterns)
 
 
 # --- git log --numstat ---
