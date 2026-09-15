@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -324,72 +323,55 @@ describe("生成済み activity.json", () => {
 });
 
 describe("collectActivitySnapshots", () => {
-	it("現行 JSON だけを対象にし、削除済みファイルの履歴を除外する", () => {
+	it("現行 JSON だけを列挙し、注入した Git runner で履歴を解析する", () => {
 		const repository = mkdtempSync(join(tmpdir(), "activity-history-"));
 		const dataDirectory = join(repository, "src/data/repositories");
 		mkdirSync(dataDirectory, { recursive: true });
 
 		const currentPath = join(dataDirectory, "current.json");
-		const deletedPath = join(dataDirectory, "deleted.json");
-		const writeSnapshot = (path: string, commits: number) => {
-			writeFileSync(
-				path,
-				JSON.stringify({
-					addedLines: commits,
+		writeFileSync(currentPath, "{}");
+		const calls: Array<{ args: string[]; cwd: string }> = [];
+		const gitRunner = (args: string[], cwd: string): string => {
+			calls.push({ args, cwd });
+			if (args[0] === "log") {
+				return [
+					"hash-new\t2026-01-03T00:00:00Z",
+					"hash-old\t2026-01-01T00:00:00Z",
+				].join("\n");
+			}
+			if (args[0] === "show" && args[1]?.startsWith("hash-new:")) {
+				return JSON.stringify({
+					addedLines: 3,
 					deletedLines: 1,
-					commits,
+					commits: 3,
 					mergedPRs: 0,
 					ciRuns: 0,
-				}),
-			);
-		};
-		const runGit = (args: string[], date: string) => {
-			const environment: NodeJS.ProcessEnv = {
-				...process.env,
-				GIT_AUTHOR_DATE: date,
-				GIT_COMMITTER_DATE: date,
-			};
-			for (const variable of [
-				"GIT_DIR",
-				"GIT_WORK_TREE",
-				"GIT_INDEX_FILE",
-				"GIT_COMMON_DIR",
-				"GIT_PREFIX",
-			]) {
-				delete environment[variable];
+				});
 			}
-			execFileSync("git", args, {
-				cwd: repository,
-				stdio: "ignore",
-				env: environment,
+			return JSON.stringify({
+				addedLines: 1,
+				deletedLines: 1,
+				commits: 1,
+				mergedPRs: 0,
+				ciRuns: 0,
 			});
 		};
 
 		try {
-			runGit(["init", "-q"], "2026-01-01T00:00:00Z");
-			runGit(["config", "core.hooksPath", "/dev/null"], "2026-01-01T00:00:00Z");
-			runGit(["config", "user.name", "Activity Test"], "2026-01-01T00:00:00Z");
-			runGit(
-				["config", "user.email", "activity-test@example.com"],
-				"2026-01-01T00:00:00Z",
+			const snapshots = collectActivitySnapshots(
+				dataDirectory,
+				repository,
+				gitRunner,
 			);
-			writeSnapshot(currentPath, 1);
-			writeSnapshot(deletedPath, 1);
-			runGit(["add", "."], "2026-01-01T00:00:00Z");
-			runGit(["commit", "-qm", "初回スナップショット"], "2026-01-01T00:00:00Z");
-
-			writeSnapshot(currentPath, 3);
-			runGit(["add", "."], "2026-01-03T00:00:00Z");
-			runGit(["commit", "-qm", "現行ファイルを更新"], "2026-01-03T00:00:00Z");
-
-			rmSync(deletedPath);
-			runGit(["add", "-u"], "2026-01-04T00:00:00Z");
-			runGit(["commit", "-qm", "ファイルを削除"], "2026-01-04T00:00:00Z");
-
-			const snapshots = collectActivitySnapshots(dataDirectory, repository);
 			expect(snapshots).toHaveLength(1);
 			expect(snapshots[0]).toHaveLength(2);
 			expect(snapshots[0]?.map((item) => item.commits)).toEqual([1, 3]);
+			expect(calls.every((call) => call.cwd === repository)).toBe(true);
+			expect(
+				calls.every((call) =>
+					call.args.every((argument) => !argument.includes("deleted.json")),
+				),
+			).toBe(true);
 		} finally {
 			rmSync(repository, { recursive: true, force: true });
 		}

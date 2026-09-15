@@ -14,6 +14,7 @@ const DEFAULT_REPOSITORY_DATA_DIR = resolve(
 );
 const DEFAULT_OUTPUT_PATH = resolve(process.cwd(), "src/data/activity.json");
 const GIT_OUTPUT_MAX_BUFFER = 64 * 1024 * 1024;
+type GitRunner = (args: string[], cwd: string) => string;
 
 function listJsonFiles(root: string): string[] {
 	if (!existsSync(root)) return [];
@@ -96,12 +97,13 @@ function readSnapshot(
 export function collectActivitySnapshots(
 	repositoryDataDir = DEFAULT_REPOSITORY_DATA_DIR,
 	gitCwd = process.cwd(),
+	gitRunner: GitRunner = runGit,
 ): ActivitySnapshot[][] {
 	return listJsonFiles(repositoryDataDir).map((filePath) => {
 		const relativePath = relative(gitCwd, filePath).split(sep).join("/");
 		let log = "";
 		try {
-			log = runGit(
+			log = gitRunner(
 				[
 					"log",
 					"--follow",
@@ -123,7 +125,7 @@ export function collectActivitySnapshots(
 			if (!hash || !committedAt || seenCommits.has(hash)) continue;
 			seenCommits.add(hash);
 			try {
-				const content = runGit(["show", `${hash}:${relativePath}`], gitCwd);
+				const content = gitRunner(["show", `${hash}:${relativePath}`], gitCwd);
 				const snapshot = readSnapshot(content, committedAt);
 				if (snapshot) snapshots.push(snapshot);
 			} catch {
