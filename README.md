@@ -66,6 +66,7 @@ python3 scripts/count-loc.py /path/to/repository \
 - `work1-daily.json` は `src/data/activity-imports/work1.json` へ置き、`pnpm run generate-activity --aggregate-only` で表示用データを再生成します。
 - 次回は同じファイルを置き換えます。コピー前の古いJSONを別名で残すと重複集計になるため、1リポジトリにつき1ファイルにしてください。オンライン収集対象と同じリポジトリは取り込まないでください。
 - 初期投入を除外する場合は `--exclude-commit <40文字のSHA>` を追加します。
+- shallow cloneは既定で拒否します。`--allow-shallow` を付けると、本人の最初のコミットが切り詰めの境界より後にある場合だけ集計します。境界以前に本人の活動があるときはエラーにします。
 - ローカル日次ファイルにパス・リポジトリ名・著者情報・コミットSHAは含みません。PR・CIの日次情報は取得しないため、未取得として合算します。
 - ローカルファイルの集計日以降は未取得扱いです。累積値から日次を推測して補いません。
 

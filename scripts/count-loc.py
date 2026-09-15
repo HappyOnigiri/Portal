@@ -266,6 +266,24 @@ def count_ci_runs(repo_id: str, author_githubs: list[str]) -> int:
 
 # --- 日次活動（Gitのみ、ネットワーク不要） ---
 
+def shallow_boundary_date(repo: Path) -> str | None:
+    """shallow 境界コミットのうち最も新しい作成日（JST）を返す。境界が無ければ None。"""
+    path = Path(git(repo, "rev-parse", "--git-path", "shallow").strip())
+    if not path.is_absolute():
+        path = repo / path
+    if not path.exists():
+        return None
+    jst = timezone(timedelta(hours=9))
+    dates: list[str] = []
+    for sha in path.read_text().split():
+        timestamp = git(repo, "log", "-1", "--format=%aI", sha, check=False).strip()
+        if timestamp:
+            dates.append(
+                datetime.fromisoformat(timestamp).astimezone(jst).date().isoformat()
+            )
+    return max(dates) if dates else None
+
+
 def collect_daily_activity(
     repo: Path,
     ga_patterns: list[str],
@@ -273,10 +291,15 @@ def collect_daily_activity(
     author_names: list[str],
     ref: str = "HEAD",
     excluded_commits: list[str] | None = None,
+    allow_shallow: bool = False,
 ) -> dict:
     # [Intended] shallow cloneでは過去の活動を0と誤認するため、完全な履歴を要求する。
+    # --allow-shallow 指定時のみ、著者の活動が境界より後に始まることを確認して集計する。
+    boundary: str | None = None
     if git(repo, "rev-parse", "--is-shallow-repository").strip() == "true":
-        raise RuntimeError("日次集計には完全なGit履歴が必要です。git fetch --unshallow を実行してください")
+        if not allow_shallow:
+            raise RuntimeError("日次集計には完全なGit履歴が必要です。git fetch --unshallow を実行してください")
+        boundary = shallow_boundary_date(repo)
     revision = git(repo, "rev-parse", "--verify", ref + "^{commit}").strip()
     author_flags: list[str] = []
     for value in author_emails + author_names:
@@ -316,6 +339,13 @@ def collect_daily_activity(
                 if added != "-" and deleted != "-" and PurePosixPath(path).suffix.lower() in SOURCE_EXTS and not is_excluded(path, ga_patterns):
                     days["changedLines"][date] += int(added) + int(deleted)
             index += 1
+    if boundary is not None:
+        if start <= boundary:
+            raise RuntimeError(
+                f"shallow 境界（{boundary}）以前に著者の活動があるため日次集計できません。"
+                "git fetch --unshallow を実行してください"
+            )
+        err(f"  shallow 境界 {boundary} より後の活動のみのため、切り詰められた履歴でも集計します")
     return {
         "version": 2,
         "collectedAt": collected.isoformat(),
@@ -353,6 +383,8 @@ def main() -> None:
                         help="日次集計するブランチまたはコミット（デフォルト: HEAD）")
     parser.add_argument("--exclude-commit", action="append", default=[],
                         help="日次集計から除外する初期投入などの完全なコミットSHA（複数可）")
+    parser.add_argument("--allow-shallow", action="store_true",
+                        help="shallow clone でも、著者の活動が境界より後に始まる場合は日次集計する")
     parser.add_argument("--offline", action="store_true",
                         help="GitHubにアクセスせずGitだけを集計する")
     args = parser.parse_args()
@@ -407,7 +439,7 @@ def main() -> None:
     if args.activity_output:
         activity = collect_daily_activity(
             repo, ga_patterns, args.author_email, args.author_name,
-            args.ref, args.exclude_commit,
+            args.ref, args.exclude_commit, args.allow_shallow,
         )
         activity_path = Path(args.activity_output).resolve()
         activity_path.parent.mkdir(parents=True, exist_ok=True)
