@@ -522,8 +522,9 @@ export async function generateActivity(
 		}
 		records.push(record);
 	}
-	const imports = resolve("src/data/activity-imports");
-	if (existsSync(imports)) {
+	// [Intended] 1リポジトリはオンライン収集かローカル集計のどちらか一方だけで扱う。
+	// 設定に無いファイルはローカル集計の成果物とみなし、そのまま合算する。
+	if (existsSync(outputDir)) {
 		const walk = (directory: string): void => {
 			for (const entry of readdirSync(directory, { withFileTypes: true })) {
 				const path = join(directory, entry.name);
@@ -532,20 +533,17 @@ export async function generateActivity(
 					continue;
 				}
 				if (!entry.name.endsWith(".json")) continue;
-				const identity = relative(imports, path);
-				if (used.has(identity))
-					throw new Error(
-						"オンライン収集とローカル取り込みの保存名が重複しています",
-					);
+				const identity = relative(outputDir, path);
+				if (used.has(identity)) continue;
 				const record = readRepositoryActivity(path);
 				if (!record) throw new Error("ローカル日次データの形式が不正です");
 				used.add(identity);
 				records.push(record);
 			}
 		};
-		walk(imports);
+		walk(outputDir);
 	}
-	// 設定に含まれるリポジトリと明示的に取り込んだローカル日次データを合算する。
+	// オンライン収集分とローカル集計分を合算する。
 	// [Intended] 合算だけでは観測日を進めず、実際に収集した日次データの日時を使う。
 	const latestCollection = records.reduce<string | null>(
 		(latest, record) =>

@@ -112,7 +112,7 @@ describe("集計元のGit履歴", () => {
 			expect(local.metrics.mergedPRs.completeThrough).toBeNull();
 			expect(local.gitCacheKey).toBe("");
 			expect(readRepositoryActivity(dailyPath)?.version).toBe(2);
-			const imported = join(directory, "src/data/activity-imports");
+			const imported = join(directory, "src/data/activity-repositories/Works");
 			const online = join(directory, "src/data/activity-repositories/owner");
 			mkdirSync(imported, { recursive: true });
 			mkdirSync(online, { recursive: true });

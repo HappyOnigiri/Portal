@@ -378,7 +378,7 @@ def main() -> None:
     parser.add_argument("--output", "-o",
                         help="出力先ファイルパス（省略時は stdout）")
     parser.add_argument("--activity-output",
-                        help="日次活動JSONの出力先（Portalのsrc/data/activity-imports/へコピー）")
+                        help="日次活動JSONの出力先（Portalのsrc/data/activity-repositories/へコピー）")
     parser.add_argument("--ref", default="HEAD",
                         help="日次集計するブランチまたはコミット（デフォルト: HEAD）")
     parser.add_argument("--exclude-commit", action="append", default=[],

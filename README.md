@@ -45,7 +45,7 @@ CIは削除済みのrunを復元できません。初回取得より前は取得
 
 ```bash
 pnpm run generate-activity                  # 元リポジトリから取得して合算
-pnpm run generate-activity --aggregate-only # 保存済みデータとローカル取り込みだけを合算
+pnpm run generate-activity --aggregate-only # 保存済みデータとローカル集計分だけを合算
 ```
 
 `--aggregate-only` は日次ファイルを合算するだけで、取得日時や表示の終端日を進めません。最新の実収集日時を基準にします。
@@ -63,8 +63,8 @@ python3 scripts/count-loc.py /path/to/repository \
 ```
 
 - `work1-totals.json` は従来どおり `src/data/repositories/work1.json` へ置きます。
-- `work1-daily.json` は `src/data/activity-imports/work1.json` へ置き、`pnpm run generate-activity --aggregate-only` で表示用データを再生成します。
-- 次回は同じファイルを置き換えます。コピー前の古いJSONを別名で残すと重複集計になるため、1リポジトリにつき1ファイルにしてください。オンライン収集対象と同じリポジトリは取り込まないでください。
+- `work1-daily.json` は `src/data/activity-repositories/work1.json` へ置き、`pnpm run generate-activity --aggregate-only` で表示用データを再生成します。オンライン収集分と同じツリーに置き、設定に無いファイルはローカル集計の成果物として合算します。
+- 次回は同じファイルを置き換えます。コピー前の古いJSONを別名で残すと重複集計になるため、1リポジトリにつき1ファイルにしてください。1リポジトリはオンライン収集かローカル集計のどちらか一方だけで扱い、設定に載せたリポジトリのファイルは通常の収集で上書きされます。
 - 初期投入を除外する場合は `--exclude-commit <40文字のSHA>` を追加します。
 - shallow cloneは既定で拒否します。`--allow-shallow` を付けると、本人の最初のコミットが切り詰めの境界より後にある場合だけ集計します。境界以前に本人の活動があるときはエラーにします。
 - ローカル日次ファイルにパス・リポジトリ名・著者情報・コミットSHAは含みません。PR・CIの日次情報は取得しないため、未取得として合算します。
