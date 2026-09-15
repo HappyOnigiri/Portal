@@ -2,23 +2,26 @@
 """ローカル git リポジトリのメトリクスを collect-metrics.ts 互換形式で集計する。
 
 依存: Python 3.8+, git, gh（GitHub CLI）
-出力: PerRepoFileData 形式の JSON（src/data/repositories/*.json と同一スキーマ）
+出力: 累積メトリクスJSON。--activity-output でGitの日次活動JSONも出力可能。
 
 使い方:
   python3 count-loc.py /path/to/repo
   python3 count-loc.py /path/to/repo --author-email user@example.com
   python3 count-loc.py /path/to/repo --author-name "Taro" --author-github "taro"
   python3 count-loc.py /path/to/repo --output result.json
+  python3 count-loc.py /path/to/repo --offline --activity-output activity.json
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 
 SOURCE_EXTS: set[str] = {
@@ -44,9 +47,12 @@ def err(msg: str) -> None:
 
 
 def git(repo: Path, *args: str, check: bool = True) -> str:
+    environment = dict(os.environ)
+    for key in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_PREFIX"):
+        environment.pop(key, None)
     result = subprocess.run(
         ["git", "-C", str(repo), *args],
-        capture_output=True, text=True, timeout=300,
+        capture_output=True, text=True, timeout=300, env=environment,
     )
     if check and result.returncode != 0:
         raise RuntimeError(f"git {' '.join(args)}: {result.stderr.strip()}")
@@ -222,6 +228,73 @@ def count_ci_runs(repo_id: str, author_githubs: list[str]) -> int:
     return seen_total
 
 
+# --- 日次活動（Gitのみ、ネットワーク不要） ---
+
+def collect_daily_activity(
+    repo: Path,
+    ga_patterns: list[str],
+    author_emails: list[str],
+    author_names: list[str],
+    ref: str = "HEAD",
+    excluded_commits: list[str] | None = None,
+) -> dict:
+    # [Intended] shallow cloneでは過去の活動を0と誤認するため、完全な履歴を要求する。
+    if git(repo, "rev-parse", "--is-shallow-repository").strip() == "true":
+        raise RuntimeError("日次集計には完全なGit履歴が必要です。git fetch --unshallow を実行してください")
+    revision = git(repo, "rev-parse", "--verify", ref + "^{commit}").strip()
+    author_flags: list[str] = []
+    for value in author_emails + author_names:
+        author_flags += ["--author", value]
+    log = git(repo, "log", revision, "--no-merges", "--find-renames",
+              "--numstat", "-z", "--format=%x1e%H%x09%aI",
+              "--fixed-strings", *author_flags)
+    days: dict[str, dict[str, int]] = {
+        "changedLines": defaultdict(int), "commits": defaultdict(int),
+    }
+    jst = timezone(timedelta(hours=9))
+    collected = datetime.now(timezone.utc)
+    through = (collected.astimezone(jst).date() - timedelta(days=1)).isoformat()
+    start = through
+    seen: set[str] = set()
+    excluded = set(excluded_commits or [])
+    for entry in log.split("\x1e")[1:]:
+        header, *records = entry.split("\0")
+        sha, timestamp = header.strip().split("\t")
+        if sha in seen:
+            continue
+        seen.add(sha)
+        date = datetime.fromisoformat(timestamp.replace("Z", "+00:00")).astimezone(jst).date().isoformat()
+        start = min(start, date)
+        if sha in excluded:
+            continue
+        days["commits"][date] += 1
+        index = 0
+        while index < len(records):
+            row = records[index].lstrip("\n")
+            match = re.match(r"^(\d+|-)\t(\d+|-)\t(.*)$", row, re.S)
+            if match:
+                added, deleted, path = match.groups()
+                if not path:
+                    index += 2
+                    path = records[index]
+                if added != "-" and deleted != "-" and PurePosixPath(path).suffix.lower() in SOURCE_EXTS and not is_excluded(path, ga_patterns):
+                    days["changedLines"][date] += int(added) + int(deleted)
+            index += 1
+    return {
+        "version": 2,
+        "collectedAt": collected.isoformat(),
+        "startDate": start,
+        "gitCacheKey": "",
+        "metrics": {
+            **{metric: {"days": dict(values), "completeFrom": start, "completeThrough": through}
+               for metric, values in days.items()},
+            # 累積PR・CI数から日次実績は復元できないため、未取得として明示する。
+            "mergedPRs": {"days": {}, "completeFrom": None, "completeThrough": None},
+            "ciRuns": {"days": {}, "completeFrom": None, "completeThrough": None},
+        },
+    }
+
+
 # --- main ---
 
 def main() -> None:
@@ -238,7 +311,17 @@ def main() -> None:
                         help="GitHub ユーザー名（PR・CI カウント用、複数指定可）")
     parser.add_argument("--output", "-o",
                         help="出力先ファイルパス（省略時は stdout）")
+    parser.add_argument("--activity-output",
+                        help="日次活動JSONの出力先（Portalのsrc/data/activity-imports/へコピー）")
+    parser.add_argument("--ref", default="HEAD",
+                        help="日次集計するブランチまたはコミット（デフォルト: HEAD）")
+    parser.add_argument("--exclude-commit", action="append", default=[],
+                        help="日次集計から除外する初期投入などの完全なコミットSHA（複数可）")
+    parser.add_argument("--offline", action="store_true",
+                        help="GitHubにアクセスせずGitだけを集計する")
     args = parser.parse_args()
+    if any(not re.fullmatch(r"[0-9a-f]{40}", sha) for sha in args.exclude_commit):
+        parser.error("--exclude-commit には40文字のコミットSHAを指定してください")
 
     repo = Path(args.target).resolve()
     if not repo.is_dir():
@@ -266,7 +349,7 @@ def main() -> None:
     merged_prs = 0
     ci_runs = 0
     repo_id = detect_github_repo_id(repo)
-    if repo_id:
+    if repo_id and not args.offline:
         err(f"GitHub リポジトリを検出: {repo_id}")
 
         err("マージ済み PR 数を集計中...")
@@ -283,7 +366,17 @@ def main() -> None:
         except Exception as e:
             err(f"  Warning: CI 実行数の取得に失敗しました: {e}")
     else:
-        err("GitHub リモートが見つかりません。PR・CI の集計をスキップします")
+        err("GitHub 集計をスキップします（日次データのPR・CIは未取得）")
+
+    if args.activity_output:
+        activity = collect_daily_activity(
+            repo, ga_patterns, args.author_email, args.author_name,
+            args.ref, args.exclude_commit,
+        )
+        activity_path = Path(args.activity_output).resolve()
+        activity_path.parent.mkdir(parents=True, exist_ok=True)
+        activity_path.write_text(json.dumps(activity, indent=2, ensure_ascii=False) + "\n")
+        err(f"日次活動を書き出しました: {activity_path}")
 
     result = {
         "cacheKey": "",

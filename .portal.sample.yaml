@@ -17,6 +17,9 @@
 repositories:
   # 自リポジトリ
   - repo: self
+    # 日次活動から除外する初期投入などのコミット（任意、完全なSHA）
+    # activityExcludeCommits:
+    #   - "0123456789abcdef0123456789abcdef01234567"
 
   # 外部リポジトリ（alias でログ表示名を指定可能）
   # - repo: owner/private-repo

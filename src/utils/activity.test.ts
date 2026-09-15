@@ -1,379 +1,178 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { collectActivitySnapshots } from "../../scripts/generate-activity";
-import generatedActivity from "../data/activity.json";
 import {
-	type ActivityData,
-	type ActivitySnapshot,
+	ACTIVITY_METRICS,
+	type ActivityPoint,
+	activityBlockCount,
+	activityScaleMax,
+	activitySummary,
+	addDays,
 	buildActivityData,
-	distributeActivityDelta,
+	isCalendarDate,
+	type RepositoryActivity,
 	selectActivityRange,
-	toResultDate,
+	toActivityDate,
+	zeroActivity,
 } from "./activity";
 
-function snapshot(
-	committedAt: string,
-	values: Partial<Omit<ActivitySnapshot, "committedAt" | "changedLines">> & {
-		addedLines?: number;
-		deletedLines?: number;
-		changedLines?: number;
-	},
-): ActivitySnapshot {
+function repository(): RepositoryActivity {
 	return {
-		committedAt,
-		changedLines:
-			values.changedLines ??
-			(values.addedLines ?? 0) + (values.deletedLines ?? 0),
-		commits: values.commits ?? 0,
-		mergedPRs: values.mergedPRs ?? 0,
-		ciRuns: values.ciRuns ?? 0,
+		version: 2,
+		collectedAt: "2026-05-16T00:00:00Z",
+		startDate: "2026-05-13",
+		gitCacheKey: "",
+		metrics: {
+			changedLines: {
+				days: { "2026-05-13": 100, "2026-05-15": 900, "2026-05-16": 9999 },
+				completeFrom: "2026-05-13",
+				completeThrough: "2026-05-15",
+			},
+			commits: {
+				days: { "2026-05-13": 1, "2026-05-15": 3 },
+				completeFrom: "2026-05-13",
+				completeThrough: "2026-05-15",
+			},
+			mergedPRs: {
+				days: {},
+				completeFrom: "2026-05-13",
+				completeThrough: "2026-05-15",
+			},
+			ciRuns: {
+				days: { "2026-05-13": 5 },
+				completeFrom: "2026-05-15",
+				completeThrough: "2026-05-15",
+			},
+		},
 	};
 }
-
-function valuesAt(data: ActivityData, date: string) {
-	return data.daily.find((point) => point.date === date);
-}
-
-describe("toResultDate", () => {
-	it("コミッター日時を JST に変換して前日を返す", () => {
-		expect(toResultDate("2026-09-14T19:43:59Z")).toBe("2026-09-14");
-		expect(toResultDate("2026-01-01T14:59:59Z")).toBe("2025-12-31");
-		expect(toResultDate("2026-01-01T15:00:00Z")).toBe("2026-01-01");
+describe("実日時の日次集計", () => {
+	it("JSTの午前0時を境に分類し、前日へ付け替えない", () => {
+		expect(toActivityDate("2026-01-01T14:59:59Z")).toBe("2026-01-01");
+		expect(toActivityDate("2026-01-01T15:00:00Z")).toBe("2026-01-02");
+		expect(() => toActivityDate("invalid")).toThrow();
 	});
-});
-
-describe("distributeActivityDelta", () => {
-	it("割り切れる差分を各日に配分する", () => {
-		const result = distributeActivityDelta("2026-01-01", "2026-01-03", {
-			changedLines: 6,
-			commits: 3,
-			mergedPRs: 0,
-			ciRuns: 9,
-		});
-		expect([...result.values()].map((value) => value.changedLines)).toEqual([
-			2, 2, 2,
-		]);
-		expect([...result.values()].map((value) => value.commits)).toEqual([
-			1, 1, 1,
-		]);
+	it("実在する日付だけを受け付ける", () => {
+		expect(isCalendarDate("2024-02-29")).toBe(true);
+		expect(isCalendarDate("2025-02-29")).toBe(false);
+		expect(isCalendarDate("2026-13-01")).toBe(false);
+		expect(isCalendarDate("invalid")).toBe(false);
+		expect(addDays("2024-02-28", 1)).toBe("2024-02-29");
+		expect(() => addDays("invalid", 1)).toThrow();
 	});
-
-	it("余りを新しい日付側へ配分し、日数未満の差分も失わない", () => {
-		const result = distributeActivityDelta("2026-01-01", "2026-01-03", {
-			changedLines: 5,
-			commits: 1,
-			mergedPRs: 2,
-			ciRuns: 0,
-		});
-		expect([...result.values()].map((value) => value.changedLines)).toEqual([
-			1, 2, 2,
+	it("初回の活動を元の日付に含め、活動のない日を均等配分で埋めない", () => {
+		const result = buildActivityData([repository()], "2026-05-16T00:00:00Z");
+		expect(result.rangeStart).toBe("2026-05-13");
+		expect(result.rangeEnd).toBe("2026-05-15");
+		expect(result.daily.map((point) => point.changedLines)).toEqual([
+			100, 0, 900,
 		]);
-		expect([...result.values()].map((value) => value.commits)).toEqual([
-			0, 0, 1,
-		]);
-		expect([...result.values()].map((value) => value.mergedPRs)).toEqual([
-			0, 1, 1,
-		]);
+		expect(result.daily[0].incomplete).toEqual(["ciRuns"]);
+		expect(result.daily[1].ciRuns).toBe(0);
+		expect(result.daily[1].incomplete).toContain("ciRuns");
+		expect(result.daily[2].incomplete).toBeUndefined();
 	});
-
-	it("逆順の日付では終端日にまとめる", () => {
-		const result = distributeActivityDelta("2026-01-03", "2026-01-01", {
-			changedLines: 2,
-			commits: 0,
-			mergedPRs: 0,
-			ciRuns: 0,
-		});
-		expect(result.get("2026-01-01")?.changedLines).toBe(2);
-	});
-});
-
-describe("buildActivityData", () => {
-	it("基準スナップショットを除外し、欠測区間を均等配分する", () => {
-		const data = buildActivityData([
-			[
-				snapshot("2026-01-01T00:00:00Z", {
-					changedLines: 100,
-					commits: 10,
-					mergedPRs: 4,
-					ciRuns: 20,
-				}),
-				snapshot("2026-01-04T00:00:00Z", {
-					changedLines: 105,
-					commits: 12,
-					mergedPRs: 5,
-					ciRuns: 20,
-				}),
-			],
-		]);
-
-		expect(data.rangeEnd).toBe("2026-01-03");
-		expect(data.daily[0]?.date).toBe("2025-12-31");
-		expect(data.daily.slice(-3).map((point) => point.changedLines)).toEqual([
-			1, 2, 2,
-		]);
-		expect(data.daily.slice(-3).map((point) => point.commits)).toEqual([
-			0, 1, 1,
-		]);
-		expect(data.daily.reduce((sum, point) => sum + point.changedLines, 0)).toBe(
-			5,
+	it("複数リポジトリを合算し、作成前の期間は未取得としない", () => {
+		const later = repository();
+		later.startDate = "2026-05-15";
+		for (const metric of ACTIVITY_METRICS)
+			later.metrics[metric] = {
+				days: {},
+				completeFrom: null,
+				completeThrough: null,
+			};
+		later.metrics.commits.days["2026-05-15"] = 2;
+		const result = buildActivityData(
+			[repository(), later],
+			"2026-05-16T00:00:00Z",
 		);
-		expect(data.monthly).toEqual([
-			{
-				month: "2025-12",
-				changedLines: 0,
-				commits: 0,
-				mergedPRs: 0,
-				ciRuns: 0,
-			},
-			{
-				month: "2026-01",
-				changedLines: 5,
-				commits: 2,
-				mergedPRs: 1,
-				ciRuns: 0,
-			},
-		]);
+		expect(result.daily[0].incomplete).toEqual(["ciRuns"]);
+		expect(result.daily[2].incomplete).toEqual([...ACTIVITY_METRICS]);
+		expect(result.daily[2].commits).toBe(5);
 	});
-
-	it("負の差分を 0 にし、同日更新はその日に合算する", () => {
-		const data = buildActivityData([
-			[
-				snapshot("2026-02-01T00:00:00Z", {
-					changedLines: 10,
-					commits: 3,
-					mergedPRs: 1,
-					ciRuns: 4,
-				}),
-				snapshot("2026-02-02T00:00:00Z", {
-					changedLines: 5,
-					commits: 2,
-					mergedPRs: 3,
-					ciRuns: 5,
-				}),
-				snapshot("2026-02-02T12:00:00Z", {
-					changedLines: 8,
-					commits: 4,
-					mergedPRs: 4,
-					ciRuns: 7,
-				}),
-			],
-		]);
-		const point = valuesAt(data, "2026-02-01");
-		expect(point).toMatchObject({
-			changedLines: 3,
-			commits: 2,
-			mergedPRs: 3,
-			ciRuns: 3,
-		});
+	it("更新が途切れたリポジトリの未取得日を完全な0として扱わない", () => {
+		const result = buildActivityData([repository()], "2026-05-18T00:00:00Z");
+		expect(result.daily.at(-1)?.incomplete).toEqual([...ACTIVITY_METRICS]);
 	});
-
-	it("複数リポジトリを合算し、活動のない日と月を 0 で補完する", () => {
-		const data = buildActivityData([
-			[
-				snapshot("2026-03-01T00:00:00Z", { changedLines: 0 }),
-				snapshot("2026-03-03T00:00:00Z", { changedLines: 4 }),
-			],
-			[
-				snapshot("2026-02-01T00:00:00Z", { commits: 1 }),
-				snapshot("2026-02-02T00:00:00Z", { commits: 3 }),
-			],
-		]);
-		expect(data.rangeEnd).toBe("2026-03-02");
-		expect(valuesAt(data, "2026-03-01")).toMatchObject({ changedLines: 2 });
-		expect(valuesAt(data, "2026-03-02")).toMatchObject({ changedLines: 2 });
-		expect(data.monthly.map((point) => point.month)).toEqual([
-			"2026-01",
-			"2026-02",
-			"2026-03",
-		]);
-		expect(
-			data.monthly.find((point) => point.month === "2026-02")?.commits,
-		).toBe(2);
-	});
-
-	it("空の入力では空の系列を返す", () => {
-		expect(buildActivityData([])).toEqual({
-			rangeEnd: "1970-01-01",
-			daily: [],
-			monthly: [],
-		});
+	it("対象が空でも当日を含めない", () => {
+		const result = buildActivityData([], "2026-01-01T15:00:00Z");
+		expect(result.rangeEnd).toBe("2026-01-01");
+		expect(result.repositoryCount).toBe(0);
+		expect(result.scaleMax.changedLines).toBe(10);
 	});
 });
 
-describe("selectActivityRange", () => {
-	const data: ActivityData = {
-		rangeEnd: "2026-05-15",
-		daily: [
-			{
-				date: "2026-05-15",
-				changedLines: 10,
-				commits: 2,
-				mergedPRs: 1,
-				ciRuns: 3,
-			},
-		],
-		monthly: [
-			{
-				month: "2026-04",
-				changedLines: 4,
-				commits: 1,
-				mergedPRs: 2,
-				ciRuns: 3,
-			},
-			{
-				month: "2026-05",
-				changedLines: 6,
-				commits: 2,
-				mergedPRs: 3,
-				ciRuns: 4,
-			},
-		],
-	};
-
-	it("直近30日を終端日込みで 0 補完する", () => {
-		const range = selectActivityRange(data, "30d");
-		expect(range).toHaveLength(30);
-		expect(range[0]).toMatchObject({ key: "2026-04-16", changedLines: 0 });
-		expect(range.at(-1)).toMatchObject({ key: "2026-05-15", changedLines: 10 });
-	});
-
-	it("直近12ヶ月を終端月込みで 0 補完する", () => {
-		const range = selectActivityRange(data, "12m");
-		expect(range).toHaveLength(12);
-		expect(range[0]).toMatchObject({ key: "2025-06", commits: 0 });
-		expect(range.at(-2)).toMatchObject({ key: "2026-04", commits: 1 });
-		expect(range.at(-1)).toMatchObject({ key: "2026-05", commits: 2 });
-	});
-
-	it("全期間は最古月から終端月まで 0 補完する", () => {
-		const range = selectActivityRange(
-			{
-				...data,
-				rangeEnd: "2026-06-15",
-				monthly: [data.monthly[0], { ...data.monthly[1], month: "2026-06" }],
-			},
-			"all",
-		);
-		expect(range.map((point) => point.key)).toEqual([
-			"2026-04",
-			"2026-05",
-			"2026-06",
-		]);
-		expect(range[1]).toMatchObject({
-			changedLines: 0,
-			commits: 0,
-			mergedPRs: 0,
-			ciRuns: 0,
-		});
-		expect(range.every((point) => point.granularity === "month")).toBe(true);
-	});
-
-	it("不正な終端日は空系列にする", () => {
+describe("活動量のスケール", () => {
+	it("小さな活動と大きな活動を平方根で区別し、0を持ち上げない", () => {
 		expect(
-			selectActivityRange({ ...data, rangeEnd: "unknown" }, "30d"),
+			[0, 100, 1000, 3000, 5000, 10000, 20000].map((value) =>
+				activityBlockCount(value, 10000),
+			),
+		).toEqual([0, 1, 4, 6, 8, 10, 10]);
+		expect(activityBlockCount(-1, 100)).toBe(0);
+		expect(activityBlockCount(Number.NaN, 100)).toBe(0);
+		expect(activityBlockCount(1, 0)).toBe(0);
+	});
+	it("極端な1日の最大値で全体を押しつぶさない", () => {
+		const points: ActivityPoint[] = Array.from({ length: 20 }, (_, i) => ({
+			date: "2026-01-01",
+			...zeroActivity(),
+			changedLines: i === 19 ? 1000000 : 1200,
+		}));
+		expect(activityScaleMax(points, "changedLines")).toBe(2000);
+		expect(activityScaleMax(points, "commits")).toBe(10);
+		expect(
+			activityScaleMax([{ ...points[0], changedLines: 6000 }], "changedLines"),
+		).toBe(10000);
+	});
+});
+
+describe("期間の選択", () => {
+	const data = buildActivityData([repository()], "2026-05-16T00:00:00Z");
+	it("直近90日を終端日込みで返す", () => {
+		const points = selectActivityRange(data, "90d");
+		expect(points).toHaveLength(90);
+		expect(points[0].key).toBe("2026-02-15");
+		expect(points.at(-1)?.changedLines).toBe(900);
+		expect(points.every((point) => point.granularity === "day")).toBe(true);
+	});
+	it("12ヶ月を日次で返し、うるう日も含める", () => {
+		expect(selectActivityRange(data, "12m")).toHaveLength(349);
+		const leap = selectActivityRange(
+			{ ...data, rangeEnd: "2024-02-29" },
+			"12m",
+		);
+		expect(leap).toHaveLength(366);
+		expect(leap[0].key).toBe("2023-03-01");
+	});
+	it("全期間を最古日から返し、不完全な取得情報を保持する", () => {
+		const points = selectActivityRange(data, "all");
+		expect(points).toHaveLength(3);
+		expect(points[0].incomplete).toEqual(["ciRuns"]);
+		expect(points.at(-1)?.incomplete).toBeUndefined();
+	});
+	it("不正な範囲を空にする", () => {
+		expect(
+			selectActivityRange({ ...data, rangeEnd: "invalid" }, "90d"),
+		).toEqual([]);
+		expect(
+			selectActivityRange({ ...data, rangeStart: "invalid" }, "all"),
+		).toEqual([]);
+		expect(
+			selectActivityRange({ ...data, rangeStart: "2030-01-01" }, "all"),
 		).toEqual([]);
 	});
 });
 
-describe("生成済み activity.json", () => {
-	it("日次・月次のスキーマと合計が一致する", () => {
-		expect(generatedActivity.rangeEnd).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-		expect(generatedActivity.daily.at(-1)?.date).toBe(
-			generatedActivity.rangeEnd,
+describe("期間内の実績表示", () => {
+	it("活動日数と総数を実測値から算出する", () => {
+		const points = selectActivityRange(
+			buildActivityData([repository()], "2026-05-16T00:00:00Z"),
+			"all",
 		);
-		expect(
-			generatedActivity.daily.every(
-				(point) =>
-					/^\d{4}-\d{2}-\d{2}$/.test(point.date) &&
-					Object.values(point).every((value) =>
-						typeof value === "number"
-							? Number.isInteger(value) && value >= 0
-							: true,
-					),
-			),
-		).toBe(true);
-		expect(
-			generatedActivity.monthly.every((point) =>
-				/^\d{4}-\d{2}$/.test(point.month),
-			),
-		).toBe(true);
-
-		for (const month of generatedActivity.monthly) {
-			const dailyTotal = generatedActivity.daily
-				.filter((point) => point.date.startsWith(month.month))
-				.reduce(
-					(total, point) => ({
-						changedLines: total.changedLines + point.changedLines,
-						commits: total.commits + point.commits,
-						mergedPRs: total.mergedPRs + point.mergedPRs,
-						ciRuns: total.ciRuns + point.ciRuns,
-					}),
-					{
-						changedLines: 0,
-						commits: 0,
-						mergedPRs: 0,
-						ciRuns: 0,
-					},
-				);
-			expect(month).toMatchObject(dailyTotal);
-		}
-	});
-});
-
-describe("collectActivitySnapshots", () => {
-	it("現行 JSON だけを列挙し、注入した Git runner で履歴を解析する", () => {
-		const repository = mkdtempSync(join(tmpdir(), "activity-history-"));
-		const dataDirectory = join(repository, "src/data/repositories");
-		mkdirSync(dataDirectory, { recursive: true });
-
-		const currentPath = join(dataDirectory, "current.json");
-		writeFileSync(currentPath, "{}");
-		const calls: Array<{ args: string[]; cwd: string }> = [];
-		const gitRunner = (args: string[], cwd: string): string => {
-			calls.push({ args, cwd });
-			if (args[0] === "log") {
-				return [
-					"hash-new\t2026-01-03T00:00:00Z",
-					"hash-old\t2026-01-01T00:00:00Z",
-				].join("\n");
-			}
-			if (args[0] === "show" && args[1]?.startsWith("hash-new:")) {
-				return JSON.stringify({
-					addedLines: 3,
-					deletedLines: 1,
-					commits: 3,
-					mergedPRs: 0,
-					ciRuns: 0,
-				});
-			}
-			return JSON.stringify({
-				addedLines: 1,
-				deletedLines: 1,
-				commits: 1,
-				mergedPRs: 0,
-				ciRuns: 0,
-			});
-		};
-
-		try {
-			const snapshots = collectActivitySnapshots(
-				dataDirectory,
-				repository,
-				gitRunner,
-			);
-			expect(snapshots).toHaveLength(1);
-			expect(snapshots[0]).toHaveLength(2);
-			expect(snapshots[0]?.map((item) => item.commits)).toEqual([1, 3]);
-			expect(calls.every((call) => call.cwd === repository)).toBe(true);
-			expect(
-				calls.every((call) =>
-					call.args.every((argument) => !argument.includes("deleted.json")),
-				),
-			).toBe(true);
-		} finally {
-			rmSync(repository, { recursive: true, force: true });
-		}
+		expect(activitySummary(points, "commits")).toBe(
+			"4 commits · 2 active days / 3 days",
+		);
+		expect(activitySummary(points, "ciRuns")).toBe(
+			"≥ 5 CI runs · ≥ 1 active days / 3 days",
+		);
 	});
 });
