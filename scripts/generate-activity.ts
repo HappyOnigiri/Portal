@@ -83,6 +83,7 @@ export function parseGitActivity(
 	log: string,
 	excludedPatterns: string[],
 	excludedCommits: string[] = [],
+	excludedSubjects: RegExp[] = [],
 ): {
 	changedLines: Record<string, number>;
 	commits: Record<string, number>;
@@ -94,12 +95,15 @@ export function parseGitActivity(
 	const seen = new Set<string>();
 	for (const entry of log.split("\x1e").slice(1)) {
 		const [header, ...records] = entry.split("\0");
-		const [hash, timestamp] = header.trim().split("\t");
+		// 件名は末尾に置くため、タブを含む場合も残りを結合して復元する。
+		const [hash, timestamp, ...subject] = header.trim().split("\t");
 		if (!hash || !timestamp || seen.has(hash)) continue;
 		seen.add(hash);
 		const date = toActivityDate(timestamp);
 		if (!startDate || date < startDate) startDate = date;
 		if (excludedCommits.includes(hash)) continue;
+		if (excludedSubjects.some((pattern) => pattern.test(subject.join("\t"))))
+			continue;
 		increment(commits, date, 1);
 		for (let index = 0; index < records.length; index++) {
 			const row = records[index].replace(/^\n/, "");
@@ -351,9 +355,14 @@ async function collectRepository(
 		author,
 		excluded: config.activityExcludeCommits ?? [],
 	});
+	// [Intended] 件名による除外はGit由来の指標だけに影響するため、PR・CIのアーカイブを
+	// 無効化する scope には含めず、Git履歴の再計算判定にだけ使う。未設定なら既存キーを変えない。
+	const gitScope = config.activityExcludeSubjects?.length
+		? JSON.stringify(config.activityExcludeSubjects)
+		: "";
 	const scopeKey = createHmac("sha256", salt).update(scope).digest("hex");
 	const gitCacheKey = createHmac("sha256", salt)
-		.update(scope + head.sha)
+		.update(scope + gitScope + head.sha)
 		.digest("hex");
 	// 集計範囲が変わった場合はPR・CIのアーカイブも再計算する。
 	const compatible = previous?.gitCacheKey.startsWith(scopeKey + ":")
@@ -403,7 +412,7 @@ async function collectRepository(
 					"--find-renames",
 					"--numstat",
 					"-z",
-					"--format=%x1e%H%x09%aI",
+					"--format=%x1e%H%x09%aI%x09%s",
 					"--fixed-strings",
 					...(author?.emails ?? []).flatMap((value) => ["--author", value]),
 					...(author?.names ?? []).flatMap((value) => ["--author", value]),
@@ -414,6 +423,9 @@ async function collectRepository(
 				stdout,
 				getExcludedPatterns(directory),
 				config.activityExcludeCommits,
+				(config.activityExcludeSubjects ?? []).map(
+					(pattern) => new RegExp(pattern),
+				),
 			);
 			if (git.startDate && git.startDate < record.startDate)
 				record.startDate = git.startDate;
@@ -431,7 +443,7 @@ async function collectRepository(
 				scopeKey +
 				":" +
 				createHmac("sha256", salt)
-					.update(scope + actualHead.trim())
+					.update(scope + gitScope + actualHead.trim())
 					.digest("hex");
 		} finally {
 			rmSync(directory, { recursive: true, force: true });

@@ -20,6 +20,9 @@ repositories:
     # 日次活動から除外する初期投入などのコミット（任意、完全なSHA）
     # activityExcludeCommits:
     #   - "0123456789abcdef0123456789abcdef01234567"
+    # 件名が一致するコミットを日次活動から除外（任意、正規表現）。bot の定期コミットなどに使う
+    # activityExcludeSubjects:
+    #   - '\[skip ci\]$'
 
   # 外部リポジトリ（alias でログ表示名を指定可能）
   # - repo: owner/private-repo

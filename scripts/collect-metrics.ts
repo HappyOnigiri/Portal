@@ -50,6 +50,8 @@ export interface RepoConfig {
 	repo: string; // "owner/name" or "self"
 	alias?: string;
 	activityExcludeCommits?: string[];
+	/** 件名がいずれかの正規表現に一致するコミットを日次活動から除外する（bot の定期コミットなど） */
+	activityExcludeSubjects?: string[];
 }
 export interface AuthorConfig {
 	emails?: string[];
@@ -267,6 +269,23 @@ export function loadConfig(): PortalConfig {
 		) {
 			throw new Error(
 				"activityExcludeCommits には完全なコミットSHAの配列が必要です",
+			);
+		}
+		if (
+			"activityExcludeSubjects" in item &&
+			(!Array.isArray(item.activityExcludeSubjects) ||
+				item.activityExcludeSubjects.some((pattern: unknown) => {
+					if (typeof pattern !== "string" || pattern === "") return true;
+					try {
+						new RegExp(pattern);
+						return false;
+					} catch {
+						return true;
+					}
+				}))
+		) {
+			throw new Error(
+				"activityExcludeSubjects には正規表現文字列の配列が必要です",
 			);
 		}
 		if ("alias" in item) {

@@ -178,6 +178,19 @@ describe("集計元のGit履歴", () => {
 			"2026-01-01": 3,
 		});
 	});
+	it("件名がパターンに一致するコミットを日次から除外し、開始日には残す", () => {
+		const bot =
+			"\x1eaaa\t2026-01-01T00:00:00Z\tchore: update repository metrics [skip ci]\0\n5\t2\tfile.ts\0";
+		const human =
+			"\x1ebbb\t2026-01-02T00:00:00Z\tfeat: 集計\tタブ付き\0\n1\t1\tfile.ts\0";
+		const result = parseGitActivity(bot + human, [], [], [/\[skip ci\]$/]);
+		expect(result.commits).toEqual({ "2026-01-02": 1 });
+		expect(result.changedLines).toEqual({ "2026-01-02": 2 });
+		expect(result.startDate).toBe("2026-01-01");
+		expect(
+			parseGitActivity(bot + human, [], [], [/タブ付き$/]).commits,
+		).toEqual({ "2026-01-01": 1 });
+	});
 });
 
 describe("PRの日次履歴", () => {
