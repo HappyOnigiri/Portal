@@ -1125,8 +1125,8 @@ body {
 
 :root[data-theme="cyber"] .cyber-activity-chart-shell {
 	display: block;
-	/* [Intended] 注記削除後もヘッダーとグラフの間隔を保つ */
-	margin-top: 1.5rem;
+	/* [Intended] 注記削除後もヘッダーとグラフの間隔を保ちつつ、グラフ上部に出すツールチップの領域も確保する */
+	margin-top: 2.5rem;
 }
 
 :root[data-theme="cyber"] .cyber-activity-scroll {
@@ -1209,7 +1209,8 @@ body {
 
 :root[data-theme="cyber"] .cyber-activity-bar::after {
 	position: absolute;
-	bottom: calc(var(--activity-block-count) * 18px + 0.5rem);
+	/* [Intended] バーの高さに関係なくツールチップの Y 座標を固定し、グラフ領域の外（上）に出す */
+	bottom: calc(100% + 0.35rem);
 	left: clamp(
 		0px,
 		calc((var(--activity-index) + 0.5) * 100% / var(--activity-count) - 9rem),
