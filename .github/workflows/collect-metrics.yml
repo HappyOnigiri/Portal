@@ -11,7 +11,7 @@ on:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 60
 
     permissions:
       contents: write
@@ -57,20 +57,28 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
 
+      - name: Collect daily activity
+        run: pnpm run generate-activity
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          PORTAL_CONFIG: ${{ secrets.PORTAL_CONFIG }}
+
       - name: Collect articles
         run: FETCH_ARTICLES=true pnpm exec astro sync
 
       - name: Format
-        run: pnpm exec biome format --write .
+        run: |
+          pnpm exec biome format --write .
+          pnpm run format:astro
 
-      - name: Commit and push if changed
+      - name: Commit metrics and activity
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/author-status.json src/data/articles/zenn.json src/data/articles/note.json src/data/repositories/
+          git add src/data/author-status.json src/data/articles/zenn.json src/data/articles/note.json src/data/repositories/ src/data/activity.json src/data/activity-repositories/
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update repository metrics [skip ci]"
+            git commit -m "chore: メトリクスと日次活動を更新 [skip ci]"
             git push origin main
           else
-            echo "No changes to commit"
+            echo "No changes to push"
           fi

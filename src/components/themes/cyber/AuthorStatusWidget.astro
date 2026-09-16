@@ -1,7 +1,17 @@
 ---
 import { Image } from "astro:assets";
 import avatarImage from "../../../assets/images/avatar.jpg";
+import activityData from "../../../data/activity.json";
 import statusData from "../../../data/author-status.json";
+import {
+	ACTIVITY_BLOCK_COLORS,
+	type ActivityData,
+	type ActivityPeriod,
+	activityBlockCount,
+	activityPointLabel,
+	isActivityPartial,
+	selectActivityRange,
+} from "../../../utils/activity";
 import { translations } from "../../../utils/translations";
 
 // 数値のフォーマット
@@ -19,6 +29,23 @@ const lastSync = statusData.lastUpdated
 			timeZoneName: "short",
 		})
 	: "---";
+
+const activity = activityData as ActivityData;
+const initialPeriod: ActivityPeriod = "90d";
+const periodLabels: Record<ActivityPeriod, string> = {
+	"90d": "Last 90 days",
+	"12m": "Last 12 months",
+	all: "All time",
+};
+
+const initialActivityPoints = selectActivityRange(activity, initialPeriod);
+const initialHasActivity = initialActivityPoints.some(
+	(point) => activityBlockCount(point) > 0,
+);
+
+function activityLabelIsVisible(index: number, length: number): boolean {
+	return index % Math.ceil(length / 4) === 0 || index === length - 1;
+}
 ---
 
 <div class="w-full max-w-[1160px] mx-auto text-sm sm:text-base">
@@ -195,6 +222,117 @@ const lastSync = statusData.lastUpdated
 					)
 				}
 			</div>
+			<section
+				class="cyber-activity"
+				data-activity-root
+				aria-labelledby="cyber-activity-heading"
+			>
+				<div class="cyber-activity-header">
+					<div>
+						<p class="cyber-activity-eyebrow">Activity</p>
+						<h3 id="cyber-activity-heading" class="cyber-activity-title">
+							Development activity
+						</h3>
+					</div>
+					<div class="cyber-activity-controls">
+						<div
+							class="cyber-activity-control-group"
+							role="group"
+							aria-label="Activity period"
+							data-activity-period-group
+						>
+							{
+								(["90d", "12m", "all"] as ActivityPeriod[]).map((period) => (
+									<button
+										type="button"
+										class="cyber-activity-control"
+										data-activity-period={period}
+										aria-pressed={period === initialPeriod}
+									>
+										{periodLabels[period]}
+									</button>
+								))
+							}
+						</div>
+					</div>
+				</div>
+				<div
+					class="cyber-activity-chart-shell"
+					style={`--activity-count: ${initialActivityPoints.length};`}
+				>
+					<div class="cyber-activity-scroll">
+						<div
+							class="cyber-activity-chart"
+							data-activity-chart
+							role="group"
+							aria-label={`Development activity, ${periodLabels[initialPeriod]}`}
+						>
+							<div class="cyber-activity-grid" aria-hidden="true">
+								<span></span><span></span><span></span>
+							</div>
+							<div class="cyber-activity-bars" data-activity-bars>
+								{
+									initialActivityPoints.map((point, index) => {
+										const blocks = activityBlockCount(point);
+										const label = activityPointLabel(point);
+										const labelText = point.key.slice(5).replace("-", "/");
+										return (
+											<button
+												type="button"
+												class="cyber-activity-bar"
+												data-activity-bar
+												data-activity-blocks={blocks}
+												data-incomplete={
+													isActivityPartial(point) ? "true" : undefined
+												}
+												data-tooltip={label}
+												aria-label={label}
+												style={`--activity-index: ${index}; --activity-block-count: ${blocks};`}
+											>
+												<span class="cyber-activity-stack" aria-hidden="true">
+													{ACTIVITY_BLOCK_COLORS.map((color, level) => (
+														<span
+															class="cyber-activity-block"
+															data-active={level < blocks}
+															style={`--block-color: ${color};`}
+														/>
+													))}
+												</span>
+												<time
+													class="cyber-activity-bar-label"
+													dateTime={point.key}
+													data-label-visible={
+														activityLabelIsVisible(
+															index,
+															initialActivityPoints.length,
+														)
+															? "true"
+															: undefined
+													}
+												>
+													{labelText}
+												</time>
+											</button>
+										);
+									})
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+				<p
+					class="cyber-activity-empty"
+					data-activity-empty
+					hidden={initialHasActivity}
+				>
+					No activity recorded for this period.
+				</p>
+				<script
+					type="application/json"
+					data-activity-data
+					set:html={JSON.stringify(activity)}
+				/>
+			</section>
 			<div
 				class="mt-4 bg-[color:var(--bg-color)] border border-[color:var(--panel-border)] rounded-xl p-4"
 			>
@@ -240,3 +378,150 @@ const lastSync = statusData.lastUpdated
 		</div>
 	</div>
 </div>
+
+<script>
+	import {
+		ACTIVITY_BLOCK_COLORS,
+		type ActivityData,
+		type ActivityPeriod,
+		activityBlockCount,
+		activityPointLabel,
+		isActivityPartial,
+		selectActivityRange,
+	} from "../../../utils/activity";
+
+	const clientPeriodLabels: Record<ActivityPeriod, string> = {
+		"90d": "Last 90 days",
+		"12m": "Last 12 months",
+		all: "All time",
+	};
+
+	function isRecord(value: unknown): value is Record<string, unknown> {
+		return typeof value === "object" && value !== null;
+	}
+
+	function isActivityData(value: unknown): value is ActivityData {
+		if (!isRecord(value) || typeof value.rangeEnd !== "string") return false;
+		return value.version === 2 && Array.isArray(value.daily);
+	}
+
+	function isPeriod(value: string | undefined): value is ActivityPeriod {
+		return value === "90d" || value === "12m" || value === "all";
+	}
+
+	function pointDateLabel(key: string, period: ActivityPeriod): string {
+		return period === "90d"
+			? key.slice(5).replace("-", "/")
+			: key.replaceAll("-", "/");
+	}
+
+	function renderActivity(
+		root: HTMLElement,
+		data: ActivityData,
+		period: ActivityPeriod,
+	): void {
+		const bars = root.querySelector<HTMLElement>("[data-activity-bars]");
+		const chart = root.querySelector<HTMLElement>("[data-activity-chart]");
+		const empty = root.querySelector<HTMLElement>("[data-activity-empty]");
+		if (!bars || !chart || !empty) return;
+
+		const points = selectActivityRange(data, period);
+		root
+			.querySelector<HTMLElement>(".cyber-activity-chart-shell")
+			?.style.setProperty("--activity-count", String(points.length));
+		chart.setAttribute(
+			"aria-label",
+			`Development activity, ${clientPeriodLabels[period]}`,
+		);
+		bars.replaceChildren();
+
+		let active = 0;
+		for (const [index, point] of points.entries()) {
+			const blocks = activityBlockCount(point);
+			if (blocks > 0) active++;
+			const tooltip = activityPointLabel(point);
+			const bar = document.createElement("button");
+			bar.type = "button";
+			bar.className = "cyber-activity-bar";
+			bar.dataset.activityBar = "true";
+			bar.dataset.activityBlocks = String(blocks);
+			if (isActivityPartial(point)) bar.dataset.incomplete = "true";
+			bar.dataset.tooltip = tooltip;
+			bar.setAttribute("aria-label", tooltip);
+			bar.style.setProperty("--activity-index", String(index));
+			bar.style.setProperty("--activity-block-count", String(blocks));
+			const stack = document.createElement("span");
+			stack.className = "cyber-activity-stack";
+			stack.setAttribute("aria-hidden", "true");
+			for (const [level, color] of ACTIVITY_BLOCK_COLORS.entries()) {
+				const block = document.createElement("span");
+				block.className = "cyber-activity-block";
+				block.dataset.active = String(level < blocks);
+				block.style.setProperty("--block-color", color);
+				stack.append(block);
+			}
+			bar.append(stack);
+
+			const label = document.createElement("time");
+			label.className = "cyber-activity-bar-label";
+			label.dateTime = point.key;
+			if (
+				index % Math.ceil(points.length / 4) === 0 ||
+				index === points.length - 1
+			) {
+				label.dataset.labelVisible = "true";
+			}
+			label.textContent = pointDateLabel(point.key, period);
+			bar.append(label);
+			bars.append(bar);
+		}
+
+		empty.hidden = active > 0;
+		empty.textContent = partial
+			? "Activity data is unavailable for part of this period."
+			: "No activity recorded for this period.";
+	}
+
+	for (const root of document.querySelectorAll<HTMLElement>(
+		"[data-activity-root]",
+	)) {
+		const dataElement = root.querySelector<HTMLScriptElement>(
+			"[data-activity-data]",
+		);
+		if (!dataElement) continue;
+		let data: ActivityData;
+		try {
+			const parsed: unknown = JSON.parse(dataElement.textContent ?? "");
+			if (!isActivityData(parsed)) throw new Error("Invalid activity data");
+			data = parsed;
+		} catch {
+			const empty = root.querySelector<HTMLElement>("[data-activity-empty]");
+			if (empty) empty.hidden = false;
+			continue;
+		}
+
+		let period: ActivityPeriod = "90d";
+		const updatePeriodButtons = () => {
+			for (const button of root.querySelectorAll<HTMLButtonElement>(
+				"[data-activity-period]",
+			)) {
+				button.setAttribute(
+					"aria-pressed",
+					String(button.dataset.activityPeriod === period),
+				);
+			}
+		};
+
+		for (const button of root.querySelectorAll<HTMLButtonElement>(
+			"[data-activity-period]",
+		)) {
+			button.addEventListener("click", () => {
+				if (!isPeriod(button.dataset.activityPeriod)) return;
+				period = button.dataset.activityPeriod;
+				updatePeriodButtons();
+				renderActivity(root, data, period);
+			});
+		}
+		renderActivity(root, data, period);
+	}
+</script>
