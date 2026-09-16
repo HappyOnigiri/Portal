@@ -2,7 +2,7 @@
 	"version": 2,
 	"rangeStart": "2018-04-30",
 	"rangeEnd": "2026-09-15",
-	"collectedAt": "2026-09-15T23:52:44.729457+00:00",
+	"collectedAt": "2026-09-16T00:17:18.976Z",
 	"repositoryCount": 25,
 	"daily": [
 		{
@@ -23016,7 +23016,7 @@
 		{
 			"date": "2026-03-15",
 			"changedLines": 9790,
-			"commits": 127,
+			"commits": 122,
 			"mergedPRs": 32,
 			"ciRuns": 302,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23040,7 +23040,7 @@
 		{
 			"date": "2026-03-18",
 			"changedLines": 3311,
-			"commits": 126,
+			"commits": 125,
 			"mergedPRs": 37,
 			"ciRuns": 513,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23048,7 +23048,7 @@
 		{
 			"date": "2026-03-19",
 			"changedLines": 3813,
-			"commits": 144,
+			"commits": 143,
 			"mergedPRs": 41,
 			"ciRuns": 710,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23056,7 +23056,7 @@
 		{
 			"date": "2026-03-20",
 			"changedLines": 1852,
-			"commits": 68,
+			"commits": 66,
 			"mergedPRs": 27,
 			"ciRuns": 649,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23064,7 +23064,7 @@
 		{
 			"date": "2026-03-21",
 			"changedLines": 3082,
-			"commits": 104,
+			"commits": 100,
 			"mergedPRs": 32,
 			"ciRuns": 743,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23072,7 +23072,7 @@
 		{
 			"date": "2026-03-22",
 			"changedLines": 1320,
-			"commits": 22,
+			"commits": 21,
 			"mergedPRs": 9,
 			"ciRuns": 471,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23080,7 +23080,7 @@
 		{
 			"date": "2026-03-23",
 			"changedLines": 6046,
-			"commits": 41,
+			"commits": 40,
 			"mergedPRs": 3,
 			"ciRuns": 416,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23088,7 +23088,7 @@
 		{
 			"date": "2026-03-24",
 			"changedLines": 2108,
-			"commits": 35,
+			"commits": 34,
 			"mergedPRs": 16,
 			"ciRuns": 569,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23096,7 +23096,7 @@
 		{
 			"date": "2026-03-25",
 			"changedLines": 4425,
-			"commits": 78,
+			"commits": 77,
 			"mergedPRs": 5,
 			"ciRuns": 401,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23104,7 +23104,7 @@
 		{
 			"date": "2026-03-26",
 			"changedLines": 2345,
-			"commits": 39,
+			"commits": 38,
 			"mergedPRs": 7,
 			"ciRuns": 396,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23112,7 +23112,7 @@
 		{
 			"date": "2026-03-27",
 			"changedLines": 6245,
-			"commits": 63,
+			"commits": 62,
 			"mergedPRs": 15,
 			"ciRuns": 459,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23120,7 +23120,7 @@
 		{
 			"date": "2026-03-28",
 			"changedLines": 732,
-			"commits": 32,
+			"commits": 31,
 			"mergedPRs": 19,
 			"ciRuns": 576,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23128,7 +23128,7 @@
 		{
 			"date": "2026-03-29",
 			"changedLines": 4187,
-			"commits": 65,
+			"commits": 64,
 			"mergedPRs": 21,
 			"ciRuns": 463,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23136,7 +23136,7 @@
 		{
 			"date": "2026-03-30",
 			"changedLines": 13693,
-			"commits": 55,
+			"commits": 54,
 			"mergedPRs": 19,
 			"ciRuns": 493,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23144,7 +23144,7 @@
 		{
 			"date": "2026-03-31",
 			"changedLines": 4162,
-			"commits": 54,
+			"commits": 53,
 			"mergedPRs": 15,
 			"ciRuns": 505,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23152,7 +23152,7 @@
 		{
 			"date": "2026-04-01",
 			"changedLines": 3038,
-			"commits": 27,
+			"commits": 26,
 			"mergedPRs": 4,
 			"ciRuns": 458,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23160,7 +23160,7 @@
 		{
 			"date": "2026-04-02",
 			"changedLines": 3011,
-			"commits": 45,
+			"commits": 44,
 			"mergedPRs": 11,
 			"ciRuns": 529,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23168,7 +23168,7 @@
 		{
 			"date": "2026-04-03",
 			"changedLines": 10188,
-			"commits": 40,
+			"commits": 39,
 			"mergedPRs": 16,
 			"ciRuns": 664,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23176,7 +23176,7 @@
 		{
 			"date": "2026-04-04",
 			"changedLines": 8,
-			"commits": 25,
+			"commits": 24,
 			"mergedPRs": 3,
 			"ciRuns": 623,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23184,7 +23184,7 @@
 		{
 			"date": "2026-04-05",
 			"changedLines": 1804,
-			"commits": 53,
+			"commits": 52,
 			"mergedPRs": 23,
 			"ciRuns": 652,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23192,7 +23192,7 @@
 		{
 			"date": "2026-04-06",
 			"changedLines": 1426,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 5,
 			"ciRuns": 550,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23200,7 +23200,7 @@
 		{
 			"date": "2026-04-07",
 			"changedLines": 83,
-			"commits": 4,
+			"commits": 3,
 			"mergedPRs": 4,
 			"ciRuns": 563,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23208,7 +23208,7 @@
 		{
 			"date": "2026-04-08",
 			"changedLines": 939,
-			"commits": 27,
+			"commits": 26,
 			"mergedPRs": 9,
 			"ciRuns": 594,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23216,7 +23216,7 @@
 		{
 			"date": "2026-04-09",
 			"changedLines": 92,
-			"commits": 12,
+			"commits": 11,
 			"mergedPRs": 9,
 			"ciRuns": 580,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23224,7 +23224,7 @@
 		{
 			"date": "2026-04-10",
 			"changedLines": 860,
-			"commits": 30,
+			"commits": 29,
 			"mergedPRs": 4,
 			"ciRuns": 545,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23232,7 +23232,7 @@
 		{
 			"date": "2026-04-11",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 119,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23440,7 +23440,7 @@
 		{
 			"date": "2026-05-07",
 			"changedLines": 1488,
-			"commits": 40,
+			"commits": 39,
 			"mergedPRs": 0,
 			"ciRuns": 11,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23448,7 +23448,7 @@
 		{
 			"date": "2026-05-08",
 			"changedLines": 14,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23456,7 +23456,7 @@
 		{
 			"date": "2026-05-09",
 			"changedLines": 874,
-			"commits": 7,
+			"commits": 6,
 			"mergedPRs": 1,
 			"ciRuns": 8,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23464,7 +23464,7 @@
 		{
 			"date": "2026-05-10",
 			"changedLines": 13,
-			"commits": 6,
+			"commits": 4,
 			"mergedPRs": 1,
 			"ciRuns": 18,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23472,7 +23472,7 @@
 		{
 			"date": "2026-05-11",
 			"changedLines": 15,
-			"commits": 3,
+			"commits": 2,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23480,7 +23480,7 @@
 		{
 			"date": "2026-05-12",
 			"changedLines": 18219,
-			"commits": 12,
+			"commits": 11,
 			"mergedPRs": 2,
 			"ciRuns": 27,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23488,7 +23488,7 @@
 		{
 			"date": "2026-05-13",
 			"changedLines": 1792,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 2,
 			"ciRuns": 48,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23496,7 +23496,7 @@
 		{
 			"date": "2026-05-14",
 			"changedLines": 2993,
-			"commits": 19,
+			"commits": 18,
 			"mergedPRs": 6,
 			"ciRuns": 36,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23504,7 +23504,7 @@
 		{
 			"date": "2026-05-15",
 			"changedLines": 1704,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23512,7 +23512,7 @@
 		{
 			"date": "2026-05-16",
 			"changedLines": 2261,
-			"commits": 29,
+			"commits": 28,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23520,7 +23520,7 @@
 		{
 			"date": "2026-05-17",
 			"changedLines": 18,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23528,7 +23528,7 @@
 		{
 			"date": "2026-05-18",
 			"changedLines": 419,
-			"commits": 62,
+			"commits": 61,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23536,7 +23536,7 @@
 		{
 			"date": "2026-05-19",
 			"changedLines": 974,
-			"commits": 20,
+			"commits": 19,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23544,7 +23544,7 @@
 		{
 			"date": "2026-05-20",
 			"changedLines": 302,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23552,7 +23552,7 @@
 		{
 			"date": "2026-05-21",
 			"changedLines": 14607,
-			"commits": 25,
+			"commits": 24,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23560,7 +23560,7 @@
 		{
 			"date": "2026-05-22",
 			"changedLines": 2490,
-			"commits": 47,
+			"commits": 46,
 			"mergedPRs": 2,
 			"ciRuns": 24,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23568,7 +23568,7 @@
 		{
 			"date": "2026-05-23",
 			"changedLines": 225,
-			"commits": 9,
+			"commits": 8,
 			"mergedPRs": 4,
 			"ciRuns": 42,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23576,7 +23576,7 @@
 		{
 			"date": "2026-05-24",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23584,7 +23584,7 @@
 		{
 			"date": "2026-05-25",
 			"changedLines": 468,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23592,7 +23592,7 @@
 		{
 			"date": "2026-05-26",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23600,7 +23600,7 @@
 		{
 			"date": "2026-05-27",
 			"changedLines": 621,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23608,7 +23608,7 @@
 		{
 			"date": "2026-05-28",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23616,7 +23616,7 @@
 		{
 			"date": "2026-05-29",
 			"changedLines": 1216,
-			"commits": 21,
+			"commits": 20,
 			"mergedPRs": 0,
 			"ciRuns": 12,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23624,7 +23624,7 @@
 		{
 			"date": "2026-05-30",
 			"changedLines": 1235,
-			"commits": 12,
+			"commits": 11,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23632,7 +23632,7 @@
 		{
 			"date": "2026-05-31",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23640,7 +23640,7 @@
 		{
 			"date": "2026-06-01",
 			"changedLines": 41,
-			"commits": 3,
+			"commits": 2,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23648,7 +23648,7 @@
 		{
 			"date": "2026-06-02",
 			"changedLines": 565,
-			"commits": 7,
+			"commits": 6,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23656,7 +23656,7 @@
 		{
 			"date": "2026-06-03",
 			"changedLines": 200,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23664,7 +23664,7 @@
 		{
 			"date": "2026-06-04",
 			"changedLines": 524,
-			"commits": 17,
+			"commits": 16,
 			"mergedPRs": 1,
 			"ciRuns": 11,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23672,7 +23672,7 @@
 		{
 			"date": "2026-06-05",
 			"changedLines": 746,
-			"commits": 14,
+			"commits": 13,
 			"mergedPRs": 2,
 			"ciRuns": 17,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23680,7 +23680,7 @@
 		{
 			"date": "2026-06-06",
 			"changedLines": 366,
-			"commits": 7,
+			"commits": 6,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23688,7 +23688,7 @@
 		{
 			"date": "2026-06-07",
 			"changedLines": 593,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23696,7 +23696,7 @@
 		{
 			"date": "2026-06-08",
 			"changedLines": 1675,
-			"commits": 9,
+			"commits": 8,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23704,7 +23704,7 @@
 		{
 			"date": "2026-06-09",
 			"changedLines": 2090,
-			"commits": 19,
+			"commits": 18,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23712,7 +23712,7 @@
 		{
 			"date": "2026-06-10",
 			"changedLines": 721,
-			"commits": 15,
+			"commits": 14,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23720,7 +23720,7 @@
 		{
 			"date": "2026-06-11",
 			"changedLines": 1698,
-			"commits": 5,
+			"commits": 4,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23728,7 +23728,7 @@
 		{
 			"date": "2026-06-12",
 			"changedLines": 1684,
-			"commits": 11,
+			"commits": 10,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23736,7 +23736,7 @@
 		{
 			"date": "2026-06-13",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23744,7 +23744,7 @@
 		{
 			"date": "2026-06-14",
 			"changedLines": 1781,
-			"commits": 19,
+			"commits": 18,
 			"mergedPRs": 3,
 			"ciRuns": 8,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23752,7 +23752,7 @@
 		{
 			"date": "2026-06-15",
 			"changedLines": 1319,
-			"commits": 14,
+			"commits": 13,
 			"mergedPRs": 6,
 			"ciRuns": 11,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23760,7 +23760,7 @@
 		{
 			"date": "2026-06-16",
 			"changedLines": 328,
-			"commits": 6,
+			"commits": 5,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23768,7 +23768,7 @@
 		{
 			"date": "2026-06-17",
 			"changedLines": 58,
-			"commits": 3,
+			"commits": 2,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23776,7 +23776,7 @@
 		{
 			"date": "2026-06-18",
 			"changedLines": 60,
-			"commits": 7,
+			"commits": 6,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23784,7 +23784,7 @@
 		{
 			"date": "2026-06-19",
 			"changedLines": 182,
-			"commits": 7,
+			"commits": 6,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23792,7 +23792,7 @@
 		{
 			"date": "2026-06-20",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23800,7 +23800,7 @@
 		{
 			"date": "2026-06-21",
 			"changedLines": 1168,
-			"commits": 18,
+			"commits": 16,
 			"mergedPRs": 7,
 			"ciRuns": 48,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23808,7 +23808,7 @@
 		{
 			"date": "2026-06-22",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23816,7 +23816,7 @@
 		{
 			"date": "2026-06-23",
 			"changedLines": 705,
-			"commits": 11,
+			"commits": 10,
 			"mergedPRs": 1,
 			"ciRuns": 11,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23824,7 +23824,7 @@
 		{
 			"date": "2026-06-24",
 			"changedLines": 720,
-			"commits": 17,
+			"commits": 16,
 			"mergedPRs": 14,
 			"ciRuns": 40,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23832,7 +23832,7 @@
 		{
 			"date": "2026-06-25",
 			"changedLines": 1471,
-			"commits": 18,
+			"commits": 17,
 			"mergedPRs": 2,
 			"ciRuns": 11,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23840,7 +23840,7 @@
 		{
 			"date": "2026-06-26",
 			"changedLines": 5,
-			"commits": 4,
+			"commits": 3,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23848,7 +23848,7 @@
 		{
 			"date": "2026-06-27",
 			"changedLines": 187,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 2,
 			"ciRuns": 12,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23856,7 +23856,7 @@
 		{
 			"date": "2026-06-28",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23864,7 +23864,7 @@
 		{
 			"date": "2026-06-29",
 			"changedLines": 3148,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23872,7 +23872,7 @@
 		{
 			"date": "2026-06-30",
 			"changedLines": 20,
-			"commits": 3,
+			"commits": 2,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23880,7 +23880,7 @@
 		{
 			"date": "2026-07-01",
 			"changedLines": 1116,
-			"commits": 5,
+			"commits": 4,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23888,7 +23888,7 @@
 		{
 			"date": "2026-07-02",
 			"changedLines": 2176,
-			"commits": 15,
+			"commits": 14,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23896,7 +23896,7 @@
 		{
 			"date": "2026-07-03",
 			"changedLines": 992,
-			"commits": 10,
+			"commits": 9,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23904,7 +23904,7 @@
 		{
 			"date": "2026-07-04",
 			"changedLines": 1060,
-			"commits": 14,
+			"commits": 13,
 			"mergedPRs": 8,
 			"ciRuns": 119,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23912,7 +23912,7 @@
 		{
 			"date": "2026-07-05",
 			"changedLines": 271,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 2,
 			"ciRuns": 12,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23920,7 +23920,7 @@
 		{
 			"date": "2026-07-06",
 			"changedLines": 163,
-			"commits": 11,
+			"commits": 10,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23928,7 +23928,7 @@
 		{
 			"date": "2026-07-07",
 			"changedLines": 298,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 2,
 			"ciRuns": 18,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23936,7 +23936,7 @@
 		{
 			"date": "2026-07-08",
 			"changedLines": 66,
-			"commits": 4,
+			"commits": 3,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23944,7 +23944,7 @@
 		{
 			"date": "2026-07-09",
 			"changedLines": 51,
-			"commits": 4,
+			"commits": 3,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23952,7 +23952,7 @@
 		{
 			"date": "2026-07-10",
 			"changedLines": 291,
-			"commits": 5,
+			"commits": 4,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23960,7 +23960,7 @@
 		{
 			"date": "2026-07-11",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 1,
 			"ciRuns": 21,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23968,7 +23968,7 @@
 		{
 			"date": "2026-07-12",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23976,7 +23976,7 @@
 		{
 			"date": "2026-07-13",
 			"changedLines": 16,
-			"commits": 6,
+			"commits": 5,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23984,7 +23984,7 @@
 		{
 			"date": "2026-07-14",
 			"changedLines": 1,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -23992,7 +23992,7 @@
 		{
 			"date": "2026-07-15",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24000,7 +24000,7 @@
 		{
 			"date": "2026-07-16",
 			"changedLines": 334,
-			"commits": 5,
+			"commits": 4,
 			"mergedPRs": 0,
 			"ciRuns": 19,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24008,7 +24008,7 @@
 		{
 			"date": "2026-07-17",
 			"changedLines": 819,
-			"commits": 8,
+			"commits": 7,
 			"mergedPRs": 2,
 			"ciRuns": 16,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24016,7 +24016,7 @@
 		{
 			"date": "2026-07-18",
 			"changedLines": 0,
-			"commits": 1,
+			"commits": 0,
 			"mergedPRs": 0,
 			"ciRuns": 5,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24024,7 +24024,7 @@
 		{
 			"date": "2026-07-19",
 			"changedLines": 524,
-			"commits": 2,
+			"commits": 1,
 			"mergedPRs": 1,
 			"ciRuns": 9,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24032,7 +24032,7 @@
 		{
 			"date": "2026-07-20",
 			"changedLines": 1157,
-			"commits": 13,
+			"commits": 12,
 			"mergedPRs": 4,
 			"ciRuns": 40,
 			"incomplete": ["ciRuns", "mergedPRs"]
@@ -24378,7 +24378,7 @@
 			"changedLines": 6643,
 			"commits": 11,
 			"mergedPRs": 3,
-			"ciRuns": 17,
+			"ciRuns": 25,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24386,7 +24386,7 @@
 			"changedLines": 25639,
 			"commits": 63,
 			"mergedPRs": 0,
-			"ciRuns": 5,
+			"ciRuns": 25,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24402,7 +24402,7 @@
 			"changedLines": 25703,
 			"commits": 119,
 			"mergedPRs": 17,
-			"ciRuns": 32,
+			"ciRuns": 71,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24410,7 +24410,7 @@
 			"changedLines": 12687,
 			"commits": 44,
 			"mergedPRs": 26,
-			"ciRuns": 18,
+			"ciRuns": 87,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24418,7 +24418,7 @@
 			"changedLines": 63075,
 			"commits": 133,
 			"mergedPRs": 70,
-			"ciRuns": 123,
+			"ciRuns": 281,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24426,7 +24426,7 @@
 			"changedLines": 9710,
 			"commits": 41,
 			"mergedPRs": 23,
-			"ciRuns": 110,
+			"ciRuns": 138,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24434,7 +24434,7 @@
 			"changedLines": 35826,
 			"commits": 108,
 			"mergedPRs": 45,
-			"ciRuns": 88,
+			"ciRuns": 221,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24442,7 +24442,7 @@
 			"changedLines": 14001,
 			"commits": 64,
 			"mergedPRs": 28,
-			"ciRuns": 74,
+			"ciRuns": 187,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24450,7 +24450,7 @@
 			"changedLines": 5781,
 			"commits": 21,
 			"mergedPRs": 22,
-			"ciRuns": 23,
+			"ciRuns": 161,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24458,7 +24458,7 @@
 			"changedLines": 3836,
 			"commits": 21,
 			"mergedPRs": 24,
-			"ciRuns": 9,
+			"ciRuns": 254,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24466,7 +24466,7 @@
 			"changedLines": 10369,
 			"commits": 36,
 			"mergedPRs": 15,
-			"ciRuns": 7,
+			"ciRuns": 171,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24474,7 +24474,7 @@
 			"changedLines": 39149,
 			"commits": 88,
 			"mergedPRs": 45,
-			"ciRuns": 77,
+			"ciRuns": 414,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
@@ -24482,22 +24482,16 @@
 			"changedLines": 17656,
 			"commits": 64,
 			"mergedPRs": 22,
-			"ciRuns": 49,
+			"ciRuns": 234,
 			"incomplete": ["ciRuns", "mergedPRs"]
 		},
 		{
 			"date": "2026-09-15",
 			"changedLines": 5785,
 			"commits": 15,
-			"mergedPRs": 0,
-			"ciRuns": 0,
-			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
+			"mergedPRs": 17,
+			"ciRuns": 193,
+			"incomplete": ["ciRuns", "mergedPRs"]
 		}
-	],
-	"scaleMax": {
-		"changedLines": 10000,
-		"commits": 100,
-		"mergedPRs": 50,
-		"ciRuns": 1000
-	}
+	]
 }
