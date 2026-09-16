@@ -5,13 +5,10 @@ import activityData from "../../../data/activity.json";
 import statusData from "../../../data/author-status.json";
 import {
 	ACTIVITY_BLOCK_COLORS,
-	ACTIVITY_SCALE_REFERENCE,
 	type ActivityData,
 	type ActivityPeriod,
 	activityBlockCount,
 	activityPointLabel,
-	activitySummary,
-	formatActivityNumber,
 	isActivityPartial,
 	selectActivityRange,
 } from "../../../utils/activity";
@@ -45,8 +42,6 @@ const initialActivityPoints = selectActivityRange(activity, initialPeriod);
 const initialHasActivity = initialActivityPoints.some(
 	(point) => activityBlockCount(point) > 0,
 );
-const initialPartial = initialActivityPoints.some(isActivityPartial);
-const scaleNote = `Daily activity (JST) · Square-root scale · 10 blocks = ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.commits)} commits, ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.mergedPRs)} merged PRs and ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.changedLines)} changed lines in a day`;
 
 function activityLabelIsVisible(index: number, length: number): boolean {
 	return index % Math.ceil(length / 4) === 0 || index === length - 1;
@@ -261,12 +256,6 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 						</div>
 					</div>
 				</div>
-				<p class="cyber-activity-summary" data-activity-summary>
-					{activitySummary(initialActivityPoints)}
-				</p>
-				<p class="cyber-activity-scale" data-activity-scale>
-					{scaleNote}
-				</p>
 				<div
 					class="cyber-activity-chart-shell"
 					style={`--activity-count: ${initialActivityPoints.length};`}
@@ -331,14 +320,6 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 						</div>
 					</div>
 				</div>
-				<p
-					class="cyber-activity-history-note"
-					data-activity-history-note
-					hidden={!initialPartial}
-				>
-					Partial history: values marked ≥ are minimums from the repositories
-					that report them. Dashed days may have unrecorded activity.
-				</p>
 				<p
 					class="cyber-activity-empty"
 					data-activity-empty
@@ -405,7 +386,6 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 		type ActivityPeriod,
 		activityBlockCount,
 		activityPointLabel,
-		activitySummary,
 		isActivityPartial,
 		selectActivityRange,
 	} from "../../../utils/activity";
@@ -446,16 +426,9 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 		if (!bars || !chart || !empty) return;
 
 		const points = selectActivityRange(data, period);
-		const partial = points.some(isActivityPartial);
-		const summary = root.querySelector<HTMLElement>("[data-activity-summary]");
-		if (summary) summary.textContent = activitySummary(points);
 		root
 			.querySelector<HTMLElement>(".cyber-activity-chart-shell")
 			?.style.setProperty("--activity-count", String(points.length));
-		const historyNote = root.querySelector<HTMLElement>(
-			"[data-activity-history-note]",
-		);
-		if (historyNote) historyNote.hidden = !partial;
 		chart.setAttribute(
 			"aria-label",
 			`Development activity, ${clientPeriodLabels[period]}`,

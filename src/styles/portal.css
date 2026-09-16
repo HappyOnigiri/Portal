@@ -1123,20 +1123,10 @@ body {
 	outline-offset: 2px;
 }
 
-:root[data-theme="cyber"] .cyber-activity-summary {
-	margin: 0 0 0.35rem;
-	color: var(--text-main);
-	font-size: 0.75rem;
-}
-
-:root[data-theme="cyber"] .cyber-activity-scale {
-	margin: 0 0 2.5rem;
-	color: var(--text-muted);
-	font-size: 0.65rem;
-}
-
 :root[data-theme="cyber"] .cyber-activity-chart-shell {
 	display: block;
+	/* [Intended] 注記削除後もヘッダーとグラフの間隔を保つ */
+	margin-top: 1.5rem;
 }
 
 :root[data-theme="cyber"] .cyber-activity-scroll {
@@ -1283,12 +1273,6 @@ body {
 :root[data-theme="cyber"] .cyber-activity-bar-label[data-label-visible="true"] {
 	display: block;
 	opacity: 1;
-}
-
-:root[data-theme="cyber"] .cyber-activity-history-note {
-	margin: 0.5rem 0 0;
-	color: var(--text-muted);
-	font-size: 0.65rem;
 }
 
 :root[data-theme="cyber"]
