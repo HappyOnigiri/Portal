@@ -1136,22 +1136,7 @@ body {
 }
 
 :root[data-theme="cyber"] .cyber-activity-chart-shell {
-	display: grid;
-	grid-template-columns: 3.25rem minmax(0, 1fr);
-	gap: 0.75rem;
-	align-items: stretch;
-}
-
-:root[data-theme="cyber"] .cyber-activity-axis {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding-bottom: 2.25rem;
-	color: var(--text-muted);
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-	font-size: 0.65rem;
-	line-height: 1;
-	text-align: right;
+	display: block;
 }
 
 :root[data-theme="cyber"] .cyber-activity-scroll {
@@ -1219,10 +1204,10 @@ body {
 }
 
 :root[data-theme="cyber"]
-	.cyber-activity-bar:not([data-activity-value="0"]):hover
+	.cyber-activity-bar:not([data-activity-blocks="0"]):hover
 	.cyber-activity-stack::before,
 :root[data-theme="cyber"]
-	.cyber-activity-bar:not([data-activity-value="0"]):focus-visible
+	.cyber-activity-bar:not([data-activity-blocks="0"]):focus-visible
 	.cyber-activity-stack::before {
 	position: absolute;
 	inset: auto 0 0;
@@ -1237,12 +1222,12 @@ body {
 	bottom: calc(var(--activity-block-count) * 18px + 0.5rem);
 	left: clamp(
 		0px,
-		calc((var(--activity-index) + 0.5) * 100% / var(--activity-count) - 8rem),
-		max(0px, calc(100% - 16rem))
+		calc((var(--activity-index) + 0.5) * 100% / var(--activity-count) - 9rem),
+		max(0px, calc(100% - 18rem))
 	);
 	z-index: 5;
 	width: max-content;
-	max-width: min(16rem, 100%);
+	max-width: min(18rem, 100%);
 	padding: 0.35rem 0.5rem;
 	border: 1px solid var(--panel-border);
 	border-radius: 4px;
@@ -1307,7 +1292,7 @@ body {
 }
 
 :root[data-theme="cyber"]
-	.cyber-activity-bar[data-incomplete="true"][data-activity-value="0"]
+	.cyber-activity-bar[data-incomplete="true"][data-activity-blocks="0"]
 	.cyber-activity-stack {
 	border-bottom: 1px dashed var(--text-muted);
 }
@@ -1331,11 +1316,6 @@ body {
 @media (max-width: 560px) {
 	:root[data-theme="cyber"] .cyber-activity {
 		padding: 0.5rem;
-	}
-
-	:root[data-theme="cyber"] .cyber-activity-chart-shell {
-		grid-template-columns: 2.5rem minmax(0, 1fr);
-		gap: 0.5rem;
 	}
 
 	:root[data-theme="cyber"]

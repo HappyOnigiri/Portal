@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
 	ACTIVITY_METRICS,
-	type ActivityPoint,
 	activityBlockCount,
-	activityScaleMax,
+	activityPointLabel,
+	activityScore,
 	activitySummary,
 	addDays,
 	buildActivityData,
@@ -96,32 +96,52 @@ describe("実日時の日次集計", () => {
 		const result = buildActivityData([], "2026-01-01T15:00:00Z");
 		expect(result.rangeEnd).toBe("2026-01-01");
 		expect(result.repositoryCount).toBe(0);
-		expect(result.scaleMax.changedLines).toBe(10);
+		expect(result.daily).toHaveLength(1);
 	});
 });
 
 describe("活動量のスケール", () => {
-	it("小さな活動と大きな活動を平方根で区別し、0を持ち上げない", () => {
-		expect(
-			[0, 100, 1000, 3000, 5000, 10000, 20000].map((value) =>
-				activityBlockCount(value, 10000),
-			),
-		).toEqual([0, 1, 4, 6, 8, 10, 10]);
-		expect(activityBlockCount(-1, 100)).toBe(0);
-		expect(activityBlockCount(Number.NaN, 100)).toBe(0);
-		expect(activityBlockCount(1, 0)).toBe(0);
+	const day = (commits: number, mergedPRs: number, changedLines: number) => ({
+		...zeroActivity(),
+		commits,
+		mergedPRs,
+		changedLines,
 	});
-	it("極端な1日の最大値で全体を押しつぶさない", () => {
-		const points: ActivityPoint[] = Array.from({ length: 20 }, (_, i) => ({
-			date: "2026-01-01",
+	it("3指標を固定基準で正規化して平均し、0を持ち上げない", () => {
+		expect(activityBlockCount(day(0, 0, 0))).toBe(0);
+		expect(activityBlockCount(day(1, 0, 0))).toBe(1);
+		expect(activityBlockCount(day(25, 0, 0))).toBe(2);
+		expect(activityBlockCount(day(100, 0, 0))).toBe(4);
+		expect(activityBlockCount(day(10, 2, 1000))).toBe(3);
+		expect(activityBlockCount(day(100, 50, 10000))).toBe(10);
+		expect(activityScore(day(100, 50, 10000))).toBe(1);
+	});
+	it("基準を超えた日は10段で頭打ちにし、不正な値は0として扱う", () => {
+		expect(activityBlockCount(day(1000, 500, 100000))).toBe(10);
+		expect(activityScore(day(1000, 500, 100000))).toBe(1);
+		expect(activityBlockCount(day(-1, Number.NaN, 0))).toBe(0);
+	});
+	it("CI Runs はスコアに含めず、ツールチップにだけ実値を出す", () => {
+		const point = {
+			key: "2026-01-01",
+			granularity: "day" as const,
 			...zeroActivity(),
-			changedLines: i === 19 ? 1000000 : 1200,
-		}));
-		expect(activityScaleMax(points, "changedLines")).toBe(2000);
-		expect(activityScaleMax(points, "commits")).toBe(10);
+			ciRuns: 30,
+		};
+		expect(activityBlockCount(point)).toBe(0);
+		expect(activityPointLabel(point)).toBe(
+			"2026-01-01 · 0 commits · 0 merged PRs · 0 changed lines · 30 CI runs",
+		);
 		expect(
-			activityScaleMax([{ ...points[0], changedLines: 6000 }], "changedLines"),
-		).toBe(10000);
+			activityPointLabel({ ...point, ciRuns: 0, incomplete: ["ciRuns"] }),
+		).toBe(
+			"2026-01-01 · 0 commits · 0 merged PRs · 0 changed lines · ≥ 0 CI runs",
+		);
+		expect(
+			activityPointLabel({ ...point, commits: 3, incomplete: ["commits"] }),
+		).toBe(
+			"2026-01-01 · ≥ 3 commits · 0 merged PRs · 0 changed lines · 30 CI runs",
+		);
 	});
 });
 
@@ -168,11 +188,17 @@ describe("期間内の実績表示", () => {
 			buildActivityData([repository()], "2026-05-16T00:00:00Z"),
 			"all",
 		);
-		expect(activitySummary(points, "commits")).toBe(
-			"4 commits · 2 active days / 3 days",
+		expect(activitySummary(points)).toBe(
+			"4 commits · 0 merged PRs · 1,000 changed lines · 2 active days / 3 days",
 		);
-		expect(activitySummary(points, "ciRuns")).toBe(
-			"≥ 5 CI runs · ≥ 1 active days / 3 days",
+	});
+	it("未取得の期間を含む合計は下限値として示す", () => {
+		const points = selectActivityRange(
+			buildActivityData([repository()], "2026-05-18T00:00:00Z"),
+			"all",
+		);
+		expect(activitySummary(points)).toBe(
+			"≥ 4 commits · ≥ 0 merged PRs · ≥ 10,999 changed lines · ≥ 3 active days / 5 days",
 		);
 	});
 });

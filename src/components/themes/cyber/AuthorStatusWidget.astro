@@ -5,13 +5,14 @@ import activityData from "../../../data/activity.json";
 import statusData from "../../../data/author-status.json";
 import {
 	ACTIVITY_BLOCK_COLORS,
-	ACTIVITY_METRICS,
-	type ActivityChartPoint,
+	ACTIVITY_SCALE_REFERENCE,
 	type ActivityData,
-	type ActivityMetric,
 	type ActivityPeriod,
 	activityBlockCount,
+	activityPointLabel,
 	activitySummary,
+	formatActivityNumber,
+	isActivityPartial,
 	selectActivityRange,
 } from "../../../utils/activity";
 import { translations } from "../../../utils/translations";
@@ -33,41 +34,19 @@ const lastSync = statusData.lastUpdated
 	: "---";
 
 const activity = activityData as ActivityData;
-const initialMetric: ActivityMetric = "commits";
 const initialPeriod: ActivityPeriod = "90d";
-const metricLabels: Record<ActivityMetric, string> = {
-	changedLines: "Changed Lines",
-	commits: "Commits",
-	mergedPRs: "Merged PRs",
-	ciRuns: "CI Runs",
-};
 const periodLabels: Record<ActivityPeriod, string> = {
 	"90d": "Last 90 days",
 	"12m": "Last 12 months",
 	all: "All time",
 };
 
-const formatActivityNumber = (num: number) =>
-	new Intl.NumberFormat("ja-JP").format(num);
-
 const initialActivityPoints = selectActivityRange(activity, initialPeriod);
-const initialMaxValue = activity.scaleMax[initialMetric];
 const initialHasActivity = initialActivityPoints.some(
-	(point) => point[initialMetric] > 0,
+	(point) => activityBlockCount(point) > 0,
 );
-
-function activityPointLabel(
-	point: ActivityChartPoint,
-	metric: ActivityMetric,
-): string {
-	const incomplete = point.incomplete?.includes(metric);
-	const value = incomplete
-		? point[metric] > 0
-			? `≥ ${formatActivityNumber(point[metric])} (partial history)`
-			: "Unavailable"
-		: formatActivityNumber(point[metric]);
-	return `${point.key} · ${metricLabels[metric]} · ${value}`;
-}
+const initialPartial = initialActivityPoints.some(isActivityPartial);
+const scaleNote = `Daily activity (JST) · Square-root scale · 10 blocks = ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.commits)} commits, ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.mergedPRs)} merged PRs and ${formatActivityNumber(ACTIVITY_SCALE_REFERENCE.changedLines)} changed lines in a day`;
 
 function activityLabelIsVisible(index: number, length: number): boolean {
 	return index % Math.ceil(length / 4) === 0 || index === length - 1;
@@ -264,25 +243,6 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 						<div
 							class="cyber-activity-control-group"
 							role="group"
-							aria-label="Activity metric"
-							data-activity-metric-group
-						>
-							{
-								ACTIVITY_METRICS.map((metric) => (
-									<button
-										type="button"
-										class="cyber-activity-control"
-										data-activity-metric={metric}
-										aria-pressed={metric === initialMetric}
-									>
-										{metricLabels[metric]}
-									</button>
-								))
-							}
-						</div>
-						<div
-							class="cyber-activity-control-group"
-							role="group"
 							aria-label="Activity period"
 							data-activity-period-group
 						>
@@ -302,30 +262,21 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 					</div>
 				</div>
 				<p class="cyber-activity-summary" data-activity-summary>
-					{activitySummary(initialActivityPoints, initialMetric)}
+					{activitySummary(initialActivityPoints)}
 				</p>
 				<p class="cyber-activity-scale" data-activity-scale>
-					Daily activity (JST) · Square-root scale
+					{scaleNote}
 				</p>
 				<div
 					class="cyber-activity-chart-shell"
 					style={`--activity-count: ${initialActivityPoints.length};`}
 				>
-					<div class="cyber-activity-axis" aria-hidden="true">
-						<span data-activity-axis-max
-							>{formatActivityNumber(initialMaxValue)}+</span
-						>
-						<span data-activity-axis-mid
-							>{formatActivityNumber(initialMaxValue / 4)}</span
-						>
-						<span>0</span>
-					</div>
 					<div class="cyber-activity-scroll">
 						<div
 							class="cyber-activity-chart"
 							data-activity-chart
 							role="group"
-							aria-label={`${metricLabels[initialMetric]}, ${periodLabels[initialPeriod]}`}
+							aria-label={`Development activity, ${periodLabels[initialPeriod]}`}
 						>
 							<div class="cyber-activity-grid" aria-hidden="true">
 								<span></span><span></span><span></span>
@@ -333,36 +284,28 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 							<div class="cyber-activity-bars" data-activity-bars>
 								{
 									initialActivityPoints.map((point, index) => {
-										const value = point[initialMetric];
-										const label = activityPointLabel(point, initialMetric);
-										const labelText =
-											point.granularity === "day"
-												? point.key.slice(5).replace("-", "/")
-												: point.key.replace("-", "/");
+										const blocks = activityBlockCount(point);
+										const label = activityPointLabel(point);
+										const labelText = point.key.slice(5).replace("-", "/");
 										return (
 											<button
 												type="button"
 												class="cyber-activity-bar"
 												data-activity-bar
-												data-activity-value={value}
+												data-activity-blocks={blocks}
 												data-incomplete={
-													point.incomplete?.includes(initialMetric)
-														? "true"
-														: undefined
+													isActivityPartial(point) ? "true" : undefined
 												}
 												data-tooltip={label}
 												aria-label={label}
-												style={`--activity-index: ${index}; --activity-block-count: ${activityBlockCount(value, initialMaxValue)};`}
+												style={`--activity-index: ${index}; --activity-block-count: ${blocks};`}
 											>
 												<span class="cyber-activity-stack" aria-hidden="true">
-													{Array.from({ length: 10 }, (_, level) => (
+													{ACTIVITY_BLOCK_COLORS.map((color, level) => (
 														<span
 															class="cyber-activity-block"
-															data-active={
-																level <
-																activityBlockCount(value, initialMaxValue)
-															}
-															style={`--block-color: ${ACTIVITY_BLOCK_COLORS[level]};`}
+															data-active={level < blocks}
+															style={`--block-color: ${color};`}
 														/>
 													))}
 												</span>
@@ -391,12 +334,10 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 				<p
 					class="cyber-activity-history-note"
 					data-activity-history-note
-					hidden={!initialActivityPoints.some((point) =>
-						point.incomplete?.includes(initialMetric),
-					)}
+					hidden={!initialPartial}
 				>
-					Partial history: counts are the available minimum. Unavailable days
-					are not zero.
+					Partial history: values marked ≥ are minimums from the repositories
+					that report them. Dashed days may have unrecorded activity.
 				</p>
 				<p
 					class="cyber-activity-empty"
@@ -459,28 +400,21 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 
 <script>
 	import {
-		ACTIVITY_METRICS,
-		activityBlockCount,
-		activitySummary,
 		ACTIVITY_BLOCK_COLORS,
-		selectActivityRange,
 		type ActivityData,
-		type ActivityMetric,
 		type ActivityPeriod,
+		activityBlockCount,
+		activityPointLabel,
+		activitySummary,
+		isActivityPartial,
+		selectActivityRange,
 	} from "../../../utils/activity";
 
-	const clientMetricLabels: Record<ActivityMetric, string> = {
-		changedLines: "Changed Lines",
-		commits: "Commits",
-		mergedPRs: "Merged PRs",
-		ciRuns: "CI Runs",
-	};
 	const clientPeriodLabels: Record<ActivityPeriod, string> = {
 		"90d": "Last 90 days",
 		"12m": "Last 12 months",
 		all: "All time",
 	};
-	const clientNumber = new Intl.NumberFormat("ja-JP");
 
 	function isRecord(value: unknown): value is Record<string, unknown> {
 		return typeof value === "object" && value !== null;
@@ -488,101 +422,68 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 
 	function isActivityData(value: unknown): value is ActivityData {
 		if (!isRecord(value) || typeof value.rangeEnd !== "string") return false;
-		return (
-			value.version === 2 &&
-			Array.isArray(value.daily) &&
-			isRecord(value.scaleMax)
-		);
-	}
-
-	function isMetric(value: string | undefined): value is ActivityMetric {
-		return (
-			value !== undefined && ACTIVITY_METRICS.includes(value as ActivityMetric)
-		);
+		return value.version === 2 && Array.isArray(value.daily);
 	}
 
 	function isPeriod(value: string | undefined): value is ActivityPeriod {
 		return value === "90d" || value === "12m" || value === "all";
 	}
 
-	function pointDateLabel(key: string, isDay: boolean): string {
-		return isDay
-			? key.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$2/$3")
-			: key.replace(/^(\d{4})-(\d{2})$/, "$1/$2");
+	function pointDateLabel(key: string, period: ActivityPeriod): string {
+		return period === "90d"
+			? key.slice(5).replace("-", "/")
+			: key.replaceAll("-", "/");
 	}
 
 	function renderActivity(
 		root: HTMLElement,
 		data: ActivityData,
-		metric: ActivityMetric,
 		period: ActivityPeriod,
 	): void {
 		const bars = root.querySelector<HTMLElement>("[data-activity-bars]");
 		const chart = root.querySelector<HTMLElement>("[data-activity-chart]");
 		const empty = root.querySelector<HTMLElement>("[data-activity-empty]");
-		const axisMax = root.querySelector<HTMLElement>("[data-activity-axis-max]");
-		const axisMid = root.querySelector<HTMLElement>("[data-activity-axis-mid]");
-		if (!bars || !chart || !empty || !axisMax || !axisMid) return;
+		if (!bars || !chart || !empty) return;
 
 		const points = selectActivityRange(data, period);
-		const maxValue = Math.max(0, ...points.map((point) => point[metric]));
-		const scaleMax = data.scaleMax[metric];
+		const partial = points.some(isActivityPartial);
 		const summary = root.querySelector<HTMLElement>("[data-activity-summary]");
-		if (summary) summary.textContent = activitySummary(points, metric);
+		if (summary) summary.textContent = activitySummary(points);
 		root
 			.querySelector<HTMLElement>(".cyber-activity-chart-shell")
 			?.style.setProperty("--activity-count", String(points.length));
 		const historyNote = root.querySelector<HTMLElement>(
 			"[data-activity-history-note]",
 		);
-		if (historyNote)
-			historyNote.hidden = !points.some((point) =>
-				point.incomplete?.includes(metric),
-			);
-		axisMax.textContent = `${clientNumber.format(scaleMax)}+`;
-		axisMid.textContent = clientNumber.format(scaleMax / 4);
+		if (historyNote) historyNote.hidden = !partial;
 		chart.setAttribute(
 			"aria-label",
-			`${clientMetricLabels[metric]}, ${clientPeriodLabels[period]}`,
+			`Development activity, ${clientPeriodLabels[period]}`,
 		);
 		bars.replaceChildren();
 
+		let active = 0;
 		for (const [index, point] of points.entries()) {
-			const value = point[metric];
-			const isDay = point.granularity === "day";
-			const dateLabel =
-				period === "90d"
-					? pointDateLabel(point.key, isDay)
-					: point.key.replaceAll("-", "/");
-			const incomplete = point.incomplete?.includes(metric);
-			const displayedValue = incomplete
-				? value > 0
-					? `≥ ${clientNumber.format(value)} (partial history)`
-					: "Unavailable"
-				: clientNumber.format(value);
-			const tooltip = `${point.key} · ${clientMetricLabels[metric]} · ${displayedValue}`;
+			const blocks = activityBlockCount(point);
+			if (blocks > 0) active++;
+			const tooltip = activityPointLabel(point);
 			const bar = document.createElement("button");
 			bar.type = "button";
 			bar.className = "cyber-activity-bar";
 			bar.dataset.activityBar = "true";
-			bar.dataset.activityValue = String(value);
-			if (incomplete) bar.dataset.incomplete = "true";
+			bar.dataset.activityBlocks = String(blocks);
+			if (isActivityPartial(point)) bar.dataset.incomplete = "true";
 			bar.dataset.tooltip = tooltip;
 			bar.setAttribute("aria-label", tooltip);
 			bar.style.setProperty("--activity-index", String(index));
-			bar.style.setProperty(
-				"--activity-block-count",
-				String(activityBlockCount(value, scaleMax)),
-			);
+			bar.style.setProperty("--activity-block-count", String(blocks));
 			const stack = document.createElement("span");
 			stack.className = "cyber-activity-stack";
 			stack.setAttribute("aria-hidden", "true");
 			for (const [level, color] of ACTIVITY_BLOCK_COLORS.entries()) {
 				const block = document.createElement("span");
 				block.className = "cyber-activity-block";
-				block.dataset.active = String(
-					level < activityBlockCount(value, scaleMax),
-				);
+				block.dataset.active = String(level < blocks);
 				block.style.setProperty("--block-color", color);
 				stack.append(block);
 			}
@@ -597,15 +498,13 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 			) {
 				label.dataset.labelVisible = "true";
 			}
-			label.textContent = dateLabel;
+			label.textContent = pointDateLabel(point.key, period);
 			bar.append(label);
 			bars.append(bar);
 		}
 
-		empty.hidden = maxValue > 0;
-		empty.textContent = points.some((point) =>
-			point.incomplete?.includes(metric),
-		)
+		empty.hidden = active > 0;
+		empty.textContent = partial
 			? "Activity data is unavailable for part of this period."
 			: "No activity recorded for this period.";
 	}
@@ -628,18 +527,7 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 			continue;
 		}
 
-		let metric: ActivityMetric = "commits";
 		let period: ActivityPeriod = "90d";
-		const updateMetricButtons = () => {
-			for (const button of root.querySelectorAll<HTMLButtonElement>(
-				"[data-activity-metric]",
-			)) {
-				button.setAttribute(
-					"aria-pressed",
-					String(button.dataset.activityMetric === metric),
-				);
-			}
-		};
 		const updatePeriodButtons = () => {
 			for (const button of root.querySelectorAll<HTMLButtonElement>(
 				"[data-activity-period]",
@@ -652,25 +540,15 @@ function activityLabelIsVisible(index: number, length: number): boolean {
 		};
 
 		for (const button of root.querySelectorAll<HTMLButtonElement>(
-			"[data-activity-metric]",
-		)) {
-			button.addEventListener("click", () => {
-				if (!isMetric(button.dataset.activityMetric)) return;
-				metric = button.dataset.activityMetric;
-				updateMetricButtons();
-				renderActivity(root, data, metric, period);
-			});
-		}
-		for (const button of root.querySelectorAll<HTMLButtonElement>(
 			"[data-activity-period]",
 		)) {
 			button.addEventListener("click", () => {
 				if (!isPeriod(button.dataset.activityPeriod)) return;
 				period = button.dataset.activityPeriod;
 				updatePeriodButtons();
-				renderActivity(root, data, metric, period);
+				renderActivity(root, data, period);
 			});
 		}
-		renderActivity(root, data, metric, period);
+		renderActivity(root, data, period);
 	}
 </script>

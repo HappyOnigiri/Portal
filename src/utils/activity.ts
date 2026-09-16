@@ -7,6 +7,27 @@ export const ACTIVITY_METRICS = [
 export type ActivityMetric = (typeof ACTIVITY_METRICS)[number];
 export type ActivityPeriod = "90d" | "12m" | "all";
 
+// [Intended] CI Runs はスコアに含めない。定期実行の run が毎日の床になって無活動日が消えること、
+// コミット・PR の結果であり二重計上になること、初回取得前が常に未取得扱いになることが理由。
+export const ACTIVITY_SCORE_METRICS = [
+	"commits",
+	"mergedPRs",
+	"changedLines",
+] as const;
+export type ActivityScoreMetric = (typeof ACTIVITY_SCORE_METRICS)[number];
+
+// [Policy] 表示スケールは固定値。活動量の増減で過去の日の高さが変わらないよう、データから再計算しない。
+// 値は 2026-09 時点の全期間の活動日 95 パーセンタイルを切り上げたもの。
+export const ACTIVITY_SCALE_REFERENCE: Readonly<
+	Record<ActivityScoreMetric, number>
+> = {
+	commits: 100,
+	mergedPRs: 50,
+	changedLines: 10000,
+};
+/** 平方根スケール。小さな活動も見えるように圧縮する。 */
+export const ACTIVITY_SCORE_EXPONENT = 0.5;
+
 export const ACTIVITY_BLOCK_COLORS = [
 	"#5794f2",
 	"#469fea",
@@ -19,6 +40,17 @@ export const ACTIVITY_BLOCK_COLORS = [
 	"#ef815e",
 	"#f05e6b",
 ] as const;
+
+export const ACTIVITY_METRIC_UNITS: Record<ActivityMetric, string> = {
+	commits: "commits",
+	mergedPRs: "merged PRs",
+	changedLines: "changed lines",
+	ciRuns: "CI runs",
+};
+
+const numberFormat = new Intl.NumberFormat("en-US");
+export const formatActivityNumber = (value: number): string =>
+	numberFormat.format(value);
 
 export interface ActivityValues {
 	changedLines: number;
@@ -55,8 +87,6 @@ export interface ActivityData {
 	collectedAt: string;
 	repositoryCount: number;
 	daily: ActivityPoint[];
-	/** 全期間共通の平方根スケール。期間切替で同じ日の高さを変えない。 */
-	scaleMax: Record<ActivityMetric, number>;
 }
 
 export const zeroActivity = (): ActivityValues => ({
@@ -89,30 +119,55 @@ export function toActivityDate(timestamp: string): string {
 	return new Date(time + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
-export function activityBlockCount(value: number, scaleMax: number): number {
-	if (!Number.isFinite(value) || value <= 0 || scaleMax <= 0) return 0;
-	// [Intended] 小さな活動も見える平方根スケール。上限超過は実値をツールチップで示す。
-	return Math.min(10, Math.ceil(10 * Math.sqrt(value / scaleMax)));
+/** 3指標を固定基準で 0〜1 に正規化し、平方根をとって平均したスコア。基準超過は 1 に丸める。 */
+export function activityScore(values: ActivityValues): number {
+	let total = 0;
+	for (const metric of ACTIVITY_SCORE_METRICS) {
+		const value = values[metric];
+		if (!Number.isFinite(value) || value <= 0) continue;
+		total +=
+			Math.min(1, value / ACTIVITY_SCALE_REFERENCE[metric]) **
+			ACTIVITY_SCORE_EXPONENT;
+	}
+	return total / ACTIVITY_SCORE_METRICS.length;
 }
 
-function niceCeiling(value: number): number {
-	const magnitude = 10 ** Math.floor(Math.log10(Math.max(1, value)));
-	const fraction = value / magnitude;
-	const step = [1, 2, 5, 10].find((candidate) => candidate >= fraction) ?? 10;
-	return step * magnitude;
+/** 0 は 0 段、活動があれば最低 1 段、最大 10 段。 */
+export function activityBlockCount(values: ActivityValues): number {
+	const score = activityScore(values);
+	if (score <= 0) return 0;
+	return Math.min(10, Math.ceil(10 * score));
 }
 
-/** 観測できた活動日の95パーセンタイルから、全期間共通の上限を決める。 */
-export function activityScaleMax(
-	points: ActivityPoint[],
+/** スコアに使う指標のいずれかが未取得の日。 */
+export function isActivityPartial(point: {
+	incomplete?: ActivityMetric[];
+}): boolean {
+	return ACTIVITY_SCORE_METRICS.some((metric) =>
+		point.incomplete?.includes(metric),
+	);
+}
+
+// [Intended] 未取得の指標は 0 でも「≥ 0」と示す。オンライン収集分では確定した 0 で、
+// ローカル集計分だけが不明という混在があるため、「取得不能」とは言い切れない。
+function formatMetricValue(
+	value: number,
 	metric: ActivityMetric,
-): number {
-	const values = points
-		.map((point) => point[metric])
-		.filter((value) => value > 0)
-		.sort((a, b) => a - b);
-	if (values.length === 0) return 10;
-	return Math.max(10, niceCeiling(values[Math.ceil(values.length * 0.95) - 1]));
+	incomplete: boolean,
+): string {
+	return `${incomplete ? "≥ " : ""}${numberFormat.format(value)} ${ACTIVITY_METRIC_UNITS[metric]}`;
+}
+
+/** ツールチップと読み上げ用。日付と4指標の実値を並べる。 */
+export function activityPointLabel(point: ActivityChartPoint): string {
+	const parts = [...ACTIVITY_SCORE_METRICS, "ciRuns" as const].map((metric) =>
+		formatMetricValue(
+			point[metric],
+			metric,
+			point.incomplete?.includes(metric) ?? false,
+		),
+	);
+	return [point.key, ...parts].join(" · ");
 }
 
 export function buildActivityData(
@@ -147,9 +202,6 @@ export function buildActivityData(
 		if (incomplete.size) point.incomplete = [...incomplete];
 		daily.push(point);
 	}
-	const scaleMax = { changedLines: 10, commits: 10, mergedPRs: 10, ciRuns: 10 };
-	for (const metric of ACTIVITY_METRICS)
-		scaleMax[metric] = activityScaleMax(daily, metric);
 	return {
 		version: 2,
 		rangeStart,
@@ -157,7 +209,6 @@ export function buildActivityData(
 		collectedAt,
 		repositoryCount: repositories.length,
 		daily,
-		scaleMax,
 	};
 }
 
@@ -196,19 +247,14 @@ export function selectActivityRange(
 	return result;
 }
 
-export function activitySummary(
-	points: ActivityChartPoint[],
-	metric: ActivityMetric,
-): string {
-	const units: Record<ActivityMetric, string> = {
-		changedLines: "changed lines",
-		commits: "commits",
-		mergedPRs: "merged PRs",
-		ciRuns: "CI runs",
-	};
-	const partial = points.some((point) => point.incomplete?.includes(metric));
-	const total = points.reduce((sum, point) => sum + point[metric], 0);
-	const active = points.filter((point) => point[metric] > 0).length;
-	const number = new Intl.NumberFormat("en-US");
-	return `${partial ? "≥ " : ""}${number.format(total)} ${units[metric]} · ${partial && active < points.length ? "≥ " : ""}${active} active days / ${points.length} days`;
+/** 期間内の合計と活動日数。未取得を含む合計は下限値として「≥」を付ける。 */
+export function activitySummary(points: ActivityChartPoint[]): string {
+	const totals = ACTIVITY_SCORE_METRICS.map((metric) => {
+		const partial = points.some((point) => point.incomplete?.includes(metric));
+		const total = points.reduce((sum, point) => sum + point[metric], 0);
+		return `${partial ? "≥ " : ""}${numberFormat.format(total)} ${ACTIVITY_METRIC_UNITS[metric]}`;
+	});
+	const partial = points.some(isActivityPartial);
+	const active = points.filter((point) => activityBlockCount(point) > 0).length;
+	return `${totals.join(" · ")} · ${partial && active < points.length ? "≥ " : ""}${active} active days / ${points.length} days`;
 }
