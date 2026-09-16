@@ -1037,6 +1037,312 @@ body {
 }
 
 /* ----------------------------------
+   Cyber Activity Graph
+   累積値とは別に、日々の変化量を読み取れる面として表示する。
+----------------------------------- */
+:root[data-theme="cyber"] .cyber-activity {
+	margin-top: 1rem;
+	padding: 1rem;
+	background: var(--bg-color);
+	border: 1px solid var(--panel-border);
+	border-radius: var(--card-border-radius);
+}
+
+:root[data-theme="cyber"] .cyber-activity-header {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1.25rem;
+	margin-bottom: 1rem;
+}
+
+:root[data-theme="cyber"] .cyber-activity-eyebrow {
+	margin: 0 0 0.2rem;
+	color: var(--accent-main);
+	font-family: var(--font-heading);
+	font-size: 0.7rem;
+	letter-spacing: 0.12em;
+}
+
+:root[data-theme="cyber"] .cyber-activity-title {
+	margin: 0;
+	color: var(--text-main);
+	font-family: var(--font-heading);
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: 0.03em;
+}
+
+:root[data-theme="cyber"] .cyber-activity-controls {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 0.5rem;
+}
+
+:root[data-theme="cyber"] .cyber-activity-control-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+	padding: 0.2rem;
+	border: 1px solid var(--panel-border);
+	border-radius: 6px;
+}
+
+:root[data-theme="cyber"] .cyber-activity-control {
+	min-height: 2rem;
+	padding: 0.3rem 0.55rem;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--text-muted);
+	font-family: var(--font-body);
+	font-size: 0.7rem;
+	line-height: 1.2;
+	cursor: pointer;
+	transition:
+		color 0.2s ease,
+		background-color 0.2s ease,
+		border-color 0.2s ease;
+}
+
+:root[data-theme="cyber"] .cyber-activity-control:hover {
+	color: var(--text-main);
+	border-color: var(--panel-border);
+}
+
+:root[data-theme="cyber"] .cyber-activity-control[aria-pressed="true"] {
+	border-color: rgba(92, 207, 230, 0.55);
+	background: rgba(92, 207, 230, 0.12);
+	color: var(--accent-main);
+}
+
+:root[data-theme="cyber"] .cyber-activity-control:focus-visible,
+:root[data-theme="cyber"] .cyber-activity-bar:focus-visible {
+	outline: 2px solid var(--accent-main);
+	outline-offset: 2px;
+}
+
+:root[data-theme="cyber"] .cyber-activity-summary {
+	margin: 0 0 0.35rem;
+	color: var(--text-main);
+	font-size: 0.75rem;
+}
+
+:root[data-theme="cyber"] .cyber-activity-scale {
+	margin: 0 0 2.5rem;
+	color: var(--text-muted);
+	font-size: 0.65rem;
+}
+
+:root[data-theme="cyber"] .cyber-activity-chart-shell {
+	display: block;
+}
+
+:root[data-theme="cyber"] .cyber-activity-scroll {
+	min-width: 0;
+}
+
+:root[data-theme="cyber"] .cyber-activity-chart {
+	position: relative;
+	height: calc(10 * 18px + 2.25rem);
+}
+
+:root[data-theme="cyber"] .cyber-activity-grid,
+:root[data-theme="cyber"] .cyber-activity-bars {
+	position: absolute;
+	inset: 0 0 2.25rem;
+	display: flex;
+	justify-content: space-between;
+}
+
+:root[data-theme="cyber"] .cyber-activity-grid {
+	flex-direction: column;
+	pointer-events: none;
+}
+
+:root[data-theme="cyber"] .cyber-activity-grid span {
+	border-top: 1px dashed rgba(148, 163, 184, 0.18);
+}
+
+:root[data-theme="cyber"] .cyber-activity-bars {
+	display: grid;
+	grid-auto-columns: minmax(0, 1fr);
+	grid-auto-flow: column;
+	gap: 0;
+}
+
+:root[data-theme="cyber"] .cyber-activity-bar {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	min-width: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--text-muted);
+	cursor: pointer;
+}
+
+:root[data-theme="cyber"] .cyber-activity-stack {
+	position: relative;
+	width: 100%;
+	display: flex;
+	flex-direction: column-reverse;
+	gap: 0;
+}
+
+:root[data-theme="cyber"] .cyber-activity-block {
+	width: 100%;
+	height: 18px;
+	flex: none;
+	background: transparent;
+}
+
+:root[data-theme="cyber"] .cyber-activity-block[data-active="true"] {
+	background: var(--block-color);
+}
+
+:root[data-theme="cyber"]
+	.cyber-activity-bar:not([data-activity-blocks="0"]):hover
+	.cyber-activity-stack::before,
+:root[data-theme="cyber"]
+	.cyber-activity-bar:not([data-activity-blocks="0"]):focus-visible
+	.cyber-activity-stack::before {
+	position: absolute;
+	inset: auto 0 0;
+	height: calc(var(--activity-block-count) * 18px);
+	border: 1px solid var(--text-muted);
+	content: "";
+	pointer-events: none;
+}
+
+:root[data-theme="cyber"] .cyber-activity-bar::after {
+	position: absolute;
+	bottom: calc(var(--activity-block-count) * 18px + 0.5rem);
+	left: clamp(
+		0px,
+		calc((var(--activity-index) + 0.5) * 100% / var(--activity-count) - 9rem),
+		max(0px, calc(100% - 18rem))
+	);
+	z-index: 5;
+	width: max-content;
+	max-width: min(18rem, 100%);
+	padding: 0.35rem 0.5rem;
+	border: 1px solid var(--panel-border);
+	border-radius: 4px;
+	background: var(--bg-color);
+	color: var(--text-main);
+	content: attr(data-tooltip);
+	font-size: 0.65rem;
+	line-height: 1.3;
+	opacity: 0;
+	pointer-events: none;
+	overflow-wrap: anywhere;
+}
+
+:root[data-theme="cyber"] .cyber-activity-bar:hover::after,
+:root[data-theme="cyber"] .cyber-activity-bar:focus-visible::after {
+	opacity: 1;
+}
+
+:root[data-theme="cyber"]
+	.cyber-activity-bars:has(.cyber-activity-bar:focus-visible)
+	.cyber-activity-bar:hover:not(:focus-visible)::after {
+	opacity: 0;
+}
+
+:root[data-theme="cyber"] .cyber-activity-bar-label {
+	display: none;
+	position: absolute;
+	bottom: -1.8rem;
+	left: calc((var(--activity-index) + 0.5) * 100% / var(--activity-count));
+	color: var(--text-muted);
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.6rem;
+	opacity: 0;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+:root[data-theme="cyber"]
+	.cyber-activity-bar:first-child
+	.cyber-activity-bar-label {
+	left: 0;
+	transform: none;
+}
+
+:root[data-theme="cyber"]
+	.cyber-activity-bar:last-child
+	.cyber-activity-bar-label {
+	left: auto;
+	right: 0;
+	transform: none;
+}
+
+:root[data-theme="cyber"] .cyber-activity-bar-label[data-label-visible="true"] {
+	display: block;
+	opacity: 1;
+}
+
+:root[data-theme="cyber"] .cyber-activity-history-note {
+	margin: 0.5rem 0 0;
+	color: var(--text-muted);
+	font-size: 0.65rem;
+}
+
+:root[data-theme="cyber"]
+	.cyber-activity-bar[data-incomplete="true"][data-activity-blocks="0"]
+	.cyber-activity-stack {
+	border-bottom: 1px dashed var(--text-muted);
+}
+
+:root[data-theme="cyber"] .cyber-activity-empty {
+	margin: 0.5rem 0 0;
+	padding: 0.75rem;
+	border: 1px dashed var(--panel-border);
+	color: var(--text-muted);
+	font-size: 0.78rem;
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root[data-theme="cyber"] .cyber-activity-control,
+	:root[data-theme="cyber"] .cyber-activity-bar::after {
+		transition: none;
+	}
+}
+
+@media (max-width: 560px) {
+	:root[data-theme="cyber"] .cyber-activity {
+		padding: 0.5rem;
+	}
+
+	:root[data-theme="cyber"]
+		.cyber-activity-bar:not(:first-child):not(:last-child)
+		.cyber-activity-bar-label {
+		display: none;
+	}
+
+	:root[data-theme="cyber"] .cyber-activity-header {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	:root[data-theme="cyber"] .cyber-activity-controls {
+		justify-content: flex-start;
+	}
+
+	:root[data-theme="cyber"] .cyber-activity-control-group {
+		flex: 1 1 auto;
+	}
+
+	:root[data-theme="cyber"] .cyber-activity-control {
+		flex: 1 1 auto;
+	}
+}
+
+/* ----------------------------------
    Mobile Optimization (Non-Cyber)
 ----------------------------------- */
 @media (max-width: 768px) {

@@ -18,7 +18,12 @@ import {
 	relative,
 	resolve,
 } from "node:path";
+import { pathToFileURL } from "node:url";
 import { parseArgs, promisify } from "node:util";
+
+const isMain = Boolean(
+	process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href,
+);
 
 const execFileAsync = promisify(execFile);
 
@@ -27,7 +32,7 @@ import { parse as parseYaml } from "yaml";
 // [Workaround] pnpm は `pnpm run <script> -- --flag` の `--` を除去せずそのまま渡すため、
 // parseArgs が `--` 以降をすべて positional と解釈してしまう。呼び出し側の書式に依存しないよう除去する
 const { values: args } = parseArgs({
-	args: process.argv.slice(2).filter((arg) => arg !== "--"),
+	args: isMain ? process.argv.slice(2).filter((arg) => arg !== "--") : [],
 	options: {
 		"dry-run": { type: "boolean", default: false },
 		local: { type: "string" },
@@ -41,16 +46,19 @@ const { values: args } = parseArgs({
 const isDryRun = args["dry-run"] ?? false;
 const noCache = args["no-cache"] ?? false;
 
-interface RepoConfig {
+export interface RepoConfig {
 	repo: string; // "owner/name" or "self"
 	alias?: string;
+	activityExcludeCommits?: string[];
+	/** 件名がいずれかの正規表現に一致するコミットを日次活動から除外する（bot の定期コミットなど） */
+	activityExcludeSubjects?: string[];
 }
-interface AuthorConfig {
+export interface AuthorConfig {
 	emails?: string[];
 	names?: string[];
 	github?: string[];
 }
-interface PortalConfig {
+export interface PortalConfig {
 	repositories: RepoConfig[];
 	author?: AuthorConfig;
 	salt?: string;
@@ -165,14 +173,14 @@ const LANGUAGE_GROUPS: LanguageGroup[] = [
 ];
 
 /** ソースコードとしてカウントする拡張子（画像・lock・バイナリを除外） */
-const SOURCE_EXTS = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
+export const SOURCE_EXTS = new Set(LANGUAGE_GROUPS.flatMap((g) => g.exts));
 
 /** git log / git blame の stdout 上限（大規模リポジトリでのバッファ超過を防ぐ） */
 const GIT_OUTPUT_MAX_BUFFER = 64 * 1024 * 1024;
 
 const REPO_DATA_DIR = resolve(process.cwd(), "src/data/repositories");
 
-function loadConfig(): PortalConfig {
+export function loadConfig(): PortalConfig {
 	const defaultConfig: PortalConfig = { repositories: [{ repo: "self" }] };
 
 	let rawYaml: string | undefined;
@@ -251,6 +259,35 @@ function loadConfig(): PortalConfig {
 			);
 			process.exit(1);
 		}
+		if (
+			"activityExcludeCommits" in item &&
+			(!Array.isArray(item.activityExcludeCommits) ||
+				item.activityExcludeCommits.some(
+					(hash: unknown) =>
+						typeof hash !== "string" || !/^[0-9a-f]{40}$/.test(hash),
+				))
+		) {
+			throw new Error(
+				"activityExcludeCommits には完全なコミットSHAの配列が必要です",
+			);
+		}
+		if (
+			"activityExcludeSubjects" in item &&
+			(!Array.isArray(item.activityExcludeSubjects) ||
+				item.activityExcludeSubjects.some((pattern: unknown) => {
+					if (typeof pattern !== "string" || pattern === "") return true;
+					try {
+						new RegExp(pattern);
+						return false;
+					} catch {
+						return true;
+					}
+				}))
+		) {
+			throw new Error(
+				"activityExcludeSubjects には正規表現文字列の配列が必要です",
+			);
+		}
 		if ("alias" in item) {
 			const aliasVal = (item as { alias: unknown }).alias;
 			if (typeof aliasVal !== "string") {
@@ -318,7 +355,7 @@ function loadConfig(): PortalConfig {
 	return parsedConfig;
 }
 
-function repoToFilePath(config: RepoConfig): string {
+export function repoToFilePath(config: RepoConfig): string {
 	const name = config.alias ?? config.repo;
 	const segments = name.split("/");
 	const sanitized = segments.map((s) => {
@@ -451,7 +488,7 @@ function readAllPerRepoFiles(): SingleRepoMetrics[] {
 	return results;
 }
 
-function getExcludedPatterns(repoDir: string): string[] {
+export function getExcludedPatterns(repoDir: string): string[] {
 	const gitattributesPath = resolve(repoDir, ".gitattributes");
 	if (!existsSync(gitattributesPath)) return [];
 	const content = readFileSync(gitattributesPath, "utf-8");
@@ -488,7 +525,7 @@ function patternToRegex(pattern: string): RegExp {
 	return new RegExp(`(^|/)${regexStr}($|/)`);
 }
 
-function isExcluded(filePath: string, patterns: string[]): boolean {
+export function isExcluded(filePath: string, patterns: string[]): boolean {
 	return patterns.some((p) => patternToRegex(p).test(filePath));
 }
 
@@ -614,7 +651,7 @@ function calcLanguages(extLines: Map<string, number>): LanguageResult[] {
 	return sorted.map((g, i) => ({ ...g, color: colors[i] }));
 }
 
-function detectGitHubRepoId(repoDir: string): string | null {
+export function detectGitHubRepoId(repoDir: string): string | null {
 	try {
 		const url = execFileSync("git", ["remote", "get-url", "origin"], {
 			encoding: "utf-8",
@@ -1144,12 +1181,12 @@ async function mainLocal(
 	}
 }
 
-if (args.local) {
+if (isMain && args.local) {
 	mainLocal(args.local, args.output).catch((err) => {
 		console.error(err);
 		process.exit(1);
 	});
-} else {
+} else if (isMain) {
 	main().catch((err) => {
 		console.error(err);
 		process.exit(1);
