@@ -1,8 +1,8 @@
 {
 	"version": 2,
-	"collectedAt": "2026-09-16T21:00:59.457Z",
+	"collectedAt": "2026-09-16T23:55:13.814Z",
 	"startDate": "2018-04-30",
-	"gitCacheKey": "d1f66dcb1a7afbf2caf2acdba1fde7ac74b5b2ec2b43ff91f65a1cfd56945e91:7fffe89bb990e35ecd114210e99da1cf6552d90d53fcfe4a861da864143a7b99",
+	"gitCacheKey": "828259c72e212f9d0b41fcb95c638f9f81e2225bd99bd4a51cb05e51c754afa9:249bf7ad5ae0a0b2569bc3705d1266602b73c50864c0cc5e5de75c74644ff3e1",
 	"metrics": {
 		"changedLines": {
 			"days": {
@@ -212,7 +212,7 @@
 		},
 		"ciRuns": {
 			"days": {},
-			"completeFrom": "2026-09-15",
+			"completeFrom": "2026-09-17",
 			"completeThrough": "2026-09-16"
 		}
 	}
