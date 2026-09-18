@@ -1,6 +1,6 @@
 {
 	"version": 2,
-	"collectedAt": "2026-09-17T17:01:18.024Z",
+	"collectedAt": "2026-09-18T17:01:22.382Z",
 	"startDate": "2026-06-21",
 	"gitCacheKey": "9d6decf86c42673fc61ac08ebc88678ed012a7afa2008b7294ce906e78d7cbb9:b50dee158c11c5696d0c0a367187173ab0f457895fa3f918a4872ad2fbc16108",
 	"metrics": {
@@ -9,26 +9,26 @@
 				"2026-06-21": 860
 			},
 			"completeFrom": "2026-06-21",
-			"completeThrough": "2026-09-17"
+			"completeThrough": "2026-09-18"
 		},
 		"commits": {
 			"days": {
 				"2026-06-21": 7
 			},
 			"completeFrom": "2026-06-21",
-			"completeThrough": "2026-09-17"
+			"completeThrough": "2026-09-18"
 		},
 		"mergedPRs": {
 			"days": {
 				"2026-06-21": 2
 			},
 			"completeFrom": "2026-06-21",
-			"completeThrough": "2026-09-17"
+			"completeThrough": "2026-09-18"
 		},
 		"ciRuns": {
 			"days": {},
 			"completeFrom": "2026-09-17",
-			"completeThrough": "2026-09-17"
+			"completeThrough": "2026-09-18"
 		}
 	}
 }
