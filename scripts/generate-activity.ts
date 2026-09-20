@@ -149,7 +149,7 @@ const authorMatches = (login: string | null, authors: string[]): boolean =>
 		authors.some((author) => author.toLowerCase() === login.toLowerCase()));
 
 const dayStart = (date: string): string =>
-	new Date(date + "T00:00:00+09:00").toISOString();
+	new Date(`${date}T00:00:00+09:00`).toISOString();
 const dayEnd = (date: string): string =>
 	new Date(Date.parse(dayStart(addDays(date, 1))) - 1000).toISOString();
 function prefixDays(
@@ -214,7 +214,7 @@ export async function fetchRuns(
 	to: string,
 ): Promise<Run[]> {
 	const endpoint = (page: number) =>
-		`repos/${repo}/actions/runs?per_page=100&page=${page}&created=${encodeURIComponent(from + ".." + to)}`;
+		`repos/${repo}/actions/runs?per_page=100&page=${page}&created=${encodeURIComponent(`${from}..${to}`)}`;
 	const query =
 		"{total_count, runs: [.workflow_runs[] | {id, created_at, login: .actor.login}]}";
 	const first = await request<RunsPage>(endpoint(1), query);
@@ -365,7 +365,7 @@ async function collectRepository(
 		.update(scope + gitScope + head.sha)
 		.digest("hex");
 	// 集計範囲が変わった場合はPR・CIのアーカイブも再計算する。
-	const compatible = previous?.gitCacheKey.startsWith(scopeKey + ":")
+	const compatible = previous?.gitCacheKey.startsWith(`${scopeKey}:`)
 		? previous
 		: undefined;
 	const cached = compatible;
@@ -383,7 +383,7 @@ async function collectRepository(
 					ciRuns: emptySeries(),
 				},
 			};
-	if (!cached || cached.gitCacheKey !== scopeKey + ":" + gitCacheKey) {
+	if (!cached || cached.gitCacheKey !== `${scopeKey}:${gitCacheKey}`) {
 		const directory = mkdtempSync(join(tmpdir(), "portal-daily-"));
 		try {
 			await exec(
@@ -530,7 +530,7 @@ export async function generateActivity(
 					);
 		if (!options.aggregateOnly) {
 			mkdirSync(dirname(path), { recursive: true });
-			writeFileSync(path, JSON.stringify(record, null, "\t") + "\n");
+			writeFileSync(path, `${JSON.stringify(record, null, "\t")}\n`);
 		}
 		records.push(record);
 	}
@@ -568,7 +568,7 @@ export async function generateActivity(
 	const data = buildActivityData(records, latestCollection);
 	const output = resolve(options.output ?? "src/data/activity.json");
 	mkdirSync(dirname(output), { recursive: true });
-	writeFileSync(output, JSON.stringify(data, null, "\t") + "\n");
+	writeFileSync(output, `${JSON.stringify(data, null, "\t")}\n`);
 	console.log(
 		`日次データを生成しました: ${records.length}リポジトリ / ${data.daily.length}日`,
 	);

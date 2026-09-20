@@ -21,9 +21,11 @@ import re
 import subprocess
 import sys
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import date as date_type, datetime, timedelta, timezone
 from functools import lru_cache
+from math import ceil
 from pathlib import Path, PurePosixPath
+from urllib.parse import quote
 
 SOURCE_EXTS: set[str] = {
     ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
@@ -136,6 +138,7 @@ def count_numstat(
     ga_patterns: list[str],
     author_emails: list[str],
     author_names: list[str],
+    revision: str = "HEAD",
 ) -> tuple[int, int, dict[str, int]]:
     author_flags: list[str] = []
     for e in author_emails:
@@ -144,7 +147,8 @@ def count_numstat(
         author_flags += ["--author", n]
 
     out = git(
-        repo, "log", "--numstat", "--format=", "--no-renames", "--fixed-strings",
+        repo, "log", revision,
+        "--numstat", "--format=", "--no-renames", "--fixed-strings",
         *author_flags,
         check=False,
     )
@@ -186,6 +190,7 @@ def count_commits(
     repo: Path,
     author_emails: list[str],
     author_names: list[str],
+    revision: str = "HEAD",
 ) -> int:
     author_flags: list[str] = []
     for e in author_emails:
@@ -193,7 +198,7 @@ def count_commits(
     for n in author_names:
         author_flags += ["--author", n]
     out = git(
-        repo, "rev-list", "--count", "--fixed-strings", "HEAD", *author_flags,
+        repo, "rev-list", "--count", "--fixed-strings", revision, *author_flags,
     )
     return int(out.strip())
 
@@ -354,11 +359,172 @@ def collect_daily_activity(
         "metrics": {
             **{metric: {"days": dict(values), "completeFrom": start, "completeThrough": through}
                for metric, values in days.items()},
-            # 累積PR・CI数から日次実績は復元できないため、未取得として明示する。
+            # PR・CIはGitだけでは日次を復元できない。GitHubから取得できた場合は
+            # collect_daily_github_activity() がこの未取得の値を置き換える。
             "mergedPRs": {"days": {}, "completeFrom": None, "completeThrough": None},
             "ciRuns": {"days": {}, "completeFrom": None, "completeThrough": None},
         },
     }
+
+
+# --- 日次PR・CI（GitHub） ---
+
+JST = timezone(timedelta(hours=9))
+
+PR_SEARCH_QUERY = """query($q: String!, $after: String) {
+  search(query: $q, type: ISSUE, first: 100, after: $after) {
+    issueCount
+    pageInfo { hasNextPage endCursor }
+    nodes { ... on PullRequest { mergedAt } }
+  }
+}"""
+
+# 検索APIが1クエリで返せる上限。超えた区間は分割して取得する。
+SEARCH_RESULT_LIMIT = 1000
+
+
+def add_days(day: str, offset: int) -> str:
+    return (date_type.fromisoformat(day) + timedelta(days=offset)).isoformat()
+
+
+def jst_date(timestamp: str) -> str:
+    """イベントの実日時をJSTの日付に変換する。"""
+    return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).astimezone(JST).date().isoformat()
+
+
+def read_previous_activity(path: Path) -> dict | None:
+    """既存の日次活動JSONを読む。壊れている場合は未収集として扱う。"""
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+    return data if isinstance(data, dict) and data.get("version") == 2 else None
+
+
+def previous_series(previous: dict | None, metric: str) -> dict:
+    series = (previous or {}).get("metrics", {}).get(metric)
+    if not isinstance(series, dict) or not isinstance(series.get("days"), dict):
+        return {"days": {}, "completeFrom": None, "completeThrough": None}
+    return series
+
+
+def fetch_merged_pr_dates(repo_id: str, author: str | None, since: str, until: str) -> list[str]:
+    """since〜until（JSTの日付）にマージされたPRのマージ日（JST）を列挙する。"""
+    query = (
+        f"repo:{repo_id} is:pr is:merged "
+        f"merged:{since}T00:00:00+09:00..{until}T23:59:59+09:00"
+    )
+    if author:
+        query += f" author:{author}"
+    dates: list[str] = []
+    after: str | None = None
+    while True:
+        argv = ["api", "graphql", "-f", f"query={PR_SEARCH_QUERY}", "-f", f"q={query}"]
+        if after:
+            argv += ["-f", f"after={after}"]
+        search = json.loads(gh(*argv))["data"]["search"]
+        # 検索APIは上限を超えると打ち切られるため、区間を分割して取り直す。
+        if search["issueCount"] > SEARCH_RESULT_LIMIT:
+            if since == until:
+                raise RuntimeError(f"1日に{SEARCH_RESULT_LIMIT}件を超えるPRがあり、完全取得できません: {since}")
+            span = (date_type.fromisoformat(until) - date_type.fromisoformat(since)).days
+            middle = add_days(since, span // 2)
+            return (
+                fetch_merged_pr_dates(repo_id, author, since, middle)
+                + fetch_merged_pr_dates(repo_id, author, add_days(middle, 1), until)
+            )
+        dates += [
+            jst_date(node["mergedAt"])
+            for node in search["nodes"]
+            if node.get("mergedAt")
+        ]
+        if not search["pageInfo"]["hasNextPage"]:
+            return dates
+        after = search["pageInfo"]["endCursor"]
+
+
+def fetch_workflow_runs(repo_id: str, actor: str | None, since: int, until: int) -> dict[int, str]:
+    """since〜until（UTCのエポック秒）に作成されたCI実行を {id: 作成日時} で返す。"""
+    owner, name = repo_id.split("/")
+    created = f"{_utc_iso(since)}..{_utc_iso(until)}"
+    endpoint = f"repos/{owner}/{name}/actions/runs?per_page=100&created={quote(created)}"
+    if actor:
+        endpoint += f"&actor={quote(actor)}"
+    jq = "{total_count, runs: [.workflow_runs[] | {id, created_at}]}"
+    first = json.loads(gh("api", f"{endpoint}&page=1", "--jq", jq))
+    total = first["total_count"]
+    # [Workaround] REST APIは1クエリ1000件までしか辿れないため、超える区間は秒単位で分割する。
+    if total > SEARCH_RESULT_LIMIT:
+        if since >= until:
+            raise RuntimeError(f"同一秒に{SEARCH_RESULT_LIMIT}件を超えるCIがあり、完全取得できません")
+        middle = (since + until) // 2
+        return {
+            **fetch_workflow_runs(repo_id, actor, since, middle),
+            **fetch_workflow_runs(repo_id, actor, middle + 1, until),
+        }
+    runs = {run["id"]: run["created_at"] for run in first["runs"]}
+    for page in range(2, ceil(total / 100) + 1):
+        runs.update({
+            run["id"]: run["created_at"]
+            for run in json.loads(gh("api", f"{endpoint}&page={page}", "--jq", jq))["runs"]
+        })
+    if len(runs) != total:
+        raise RuntimeError("CI取得中に件数が変化しました。次回再取得します")
+    return runs
+
+
+def _utc_iso(epoch: int) -> str:
+    return datetime.fromtimestamp(epoch, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _day_bounds(since: str, until: str) -> tuple[int, int]:
+    """JSTの日付範囲を、その範囲に対応するUTCエポック秒の開始・終了に変換する。"""
+    start = datetime.fromisoformat(f"{since}T00:00:00+09:00")
+    end = datetime.fromisoformat(f"{until}T23:59:59+09:00")
+    return int(start.timestamp()), int(end.timestamp())
+
+
+def collect_daily_github_activity(
+    repo_id: str,
+    author_githubs: list[str],
+    start_date: str,
+    through: str,
+    today: str,
+    previous: dict | None,
+) -> dict[str, dict]:
+    """PR・CIの日次実績をGitHubから取得する。前回の取得済み範囲より後だけを取り直す。"""
+    authors: list[str | None] = [*sorted(set(author_githubs))] or [None]
+    metrics: dict[str, dict] = {}
+
+    for metric in ("mergedPRs", "ciRuns"):
+        before = previous_series(previous, metric)
+        since = add_days(before["completeThrough"], 1) if before["completeThrough"] else start_date
+        if since > through:
+            metrics[metric] = before
+            continue
+        # 取得し直す範囲より前の実績は、前回の値をそのまま引き継ぐ。
+        days: dict[str, int] = {
+            day: count for day, count in before["days"].items() if day < since
+        }
+        for author in authors:
+            if metric == "mergedPRs":
+                dates = fetch_merged_pr_dates(repo_id, author, since, through)
+            else:
+                runs = fetch_workflow_runs(repo_id, author, *_day_bounds(since, through))
+                dates = [jst_date(created) for created in runs.values()]
+            for day in dates:
+                if since <= day <= through:
+                    days[day] = days.get(day, 0) + 1
+        metrics[metric] = {
+            "days": days,
+            # [Intended] 削除されたCI実行は復元できない。初回取得より前は下限値でしかないため、
+            # 完全な期間は初回取得日からとして0との区別を残す。PRはマージ日で遡って取得できる。
+            "completeFrom": before["completeFrom"] or (start_date if metric == "mergedPRs" else today),
+            "completeThrough": through,
+        }
+    return metrics
 
 
 # --- main ---
@@ -380,7 +546,7 @@ def main() -> None:
     parser.add_argument("--activity-output",
                         help="日次活動JSONの出力先（Portalのsrc/data/activity-repositories/へコピー）")
     parser.add_argument("--ref", default="HEAD",
-                        help="日次集計するブランチまたはコミット（デフォルト: HEAD）")
+                        help="集計するブランチまたはコミット（累積・日次の両方に適用。デフォルト: HEAD）")
     parser.add_argument("--exclude-commit", action="append", default=[],
                         help="日次集計から除外する初期投入などの完全なコミットSHA（複数可）")
     parser.add_argument("--allow-shallow", action="store_true",
@@ -401,16 +567,25 @@ def main() -> None:
 
     ga_patterns = parse_gitattributes(repo)
 
+    # [Policy] 累積・日次とも公開対象のブランチだけを集計する。チェックアウト中の
+    # 作業ブランチが混ざらないよう、--ref を解決したコミットを両方で使う。
+    try:
+        revision = git(repo, "rev-parse", "--verify", args.ref + "^{commit}").strip()
+    except RuntimeError:
+        err(f"エラー: --ref のコミットが見つかりません: {args.ref}")
+        sys.exit(1)
+    err(f"集計対象: {args.ref} ({revision[:12]})")
+
     # addedLines / deletedLines / extLines
     err("git log --numstat を集計中...")
     added, deleted, ext_lines = count_numstat(
-        repo, ga_patterns, args.author_email, args.author_name,
+        repo, ga_patterns, args.author_email, args.author_name, revision,
     )
     err(f"  added={added}, deleted={deleted}")
 
     # commits
     err("コミット数を集計中...")
-    commits = count_commits(repo, args.author_email, args.author_name)
+    commits = count_commits(repo, args.author_email, args.author_name, revision)
     err(f"  commits={commits}")
 
     # merged PRs / CI runs (GitHub)
@@ -442,6 +617,24 @@ def main() -> None:
             args.ref, args.exclude_commit, args.allow_shallow,
         )
         activity_path = Path(args.activity_output).resolve()
+        previous_activity = read_previous_activity(activity_path)
+        if repo_id and not args.offline:
+            err("日次のPR・CI数を集計中...")
+            try:
+                activity["metrics"].update(collect_daily_github_activity(
+                    repo_id, args.author_github, activity["startDate"],
+                    activity["metrics"]["commits"]["completeThrough"],
+                    datetime.now(JST).date().isoformat(), previous_activity,
+                ))
+                for metric in ("mergedPRs", "ciRuns"):
+                    series = activity["metrics"][metric]
+                    err(f"  {metric}: {len(series['days'])}日 / 計{sum(series['days'].values())}件")
+            except Exception as e:
+                err(f"  Warning: 日次のPR・CI数の取得に失敗しました: {e}")
+        # 取得できなかった場合も、前回までに取得済みの日次実績は捨てずに引き継ぐ。
+        for metric in ("mergedPRs", "ciRuns"):
+            if activity["metrics"][metric]["completeThrough"] is None:
+                activity["metrics"][metric] = previous_series(previous_activity, metric)
         activity_path.parent.mkdir(parents=True, exist_ok=True)
         activity_path.write_text(json.dumps(activity, indent=2, ensure_ascii=False) + "\n")
         err(f"日次活動を書き出しました: {activity_path}")
