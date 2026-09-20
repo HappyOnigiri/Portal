@@ -98,7 +98,7 @@ export const zeroActivity = (): ActivityValues => ({
 
 export function isCalendarDate(value: string): boolean {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-	const parsed = new Date(value + "T00:00:00Z");
+	const parsed = new Date(`${value}T00:00:00Z`);
 	return (
 		Number.isFinite(parsed.getTime()) &&
 		parsed.toISOString().slice(0, 10) === value
@@ -107,7 +107,7 @@ export function isCalendarDate(value: string): boolean {
 
 export function addDays(date: string, offset: number): string {
 	if (!isCalendarDate(date)) throw new Error("日付が不正です");
-	const parsed = new Date(date + "T00:00:00Z");
+	const parsed = new Date(`${date}T00:00:00Z`);
 	parsed.setUTCDate(parsed.getUTCDate() + offset);
 	return parsed.toISOString().slice(0, 10);
 }
@@ -220,7 +220,7 @@ export function selectActivityRange(
 	let start = data.rangeStart;
 	if (period === "90d") start = addDays(data.rangeEnd, -89);
 	if (period === "12m") {
-		const date = new Date(data.rangeEnd.slice(0, 7) + "-01T00:00:00Z");
+		const date = new Date(`${data.rangeEnd.slice(0, 7)}-01T00:00:00Z`);
 		date.setUTCMonth(date.getUTCMonth() - 11);
 		start = date.toISOString().slice(0, 10);
 	}
