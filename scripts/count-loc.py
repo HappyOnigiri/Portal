@@ -138,6 +138,7 @@ def count_numstat(
     ga_patterns: list[str],
     author_emails: list[str],
     author_names: list[str],
+    revision: str = "HEAD",
 ) -> tuple[int, int, dict[str, int]]:
     author_flags: list[str] = []
     for e in author_emails:
@@ -146,7 +147,8 @@ def count_numstat(
         author_flags += ["--author", n]
 
     out = git(
-        repo, "log", "--numstat", "--format=", "--no-renames", "--fixed-strings",
+        repo, "log", revision,
+        "--numstat", "--format=", "--no-renames", "--fixed-strings",
         *author_flags,
         check=False,
     )
@@ -188,6 +190,7 @@ def count_commits(
     repo: Path,
     author_emails: list[str],
     author_names: list[str],
+    revision: str = "HEAD",
 ) -> int:
     author_flags: list[str] = []
     for e in author_emails:
@@ -195,7 +198,7 @@ def count_commits(
     for n in author_names:
         author_flags += ["--author", n]
     out = git(
-        repo, "rev-list", "--count", "--fixed-strings", "HEAD", *author_flags,
+        repo, "rev-list", "--count", "--fixed-strings", revision, *author_flags,
     )
     return int(out.strip())
 
@@ -543,7 +546,7 @@ def main() -> None:
     parser.add_argument("--activity-output",
                         help="日次活動JSONの出力先（Portalのsrc/data/activity-repositories/へコピー）")
     parser.add_argument("--ref", default="HEAD",
-                        help="日次集計するブランチまたはコミット（デフォルト: HEAD）")
+                        help="集計するブランチまたはコミット（累積・日次の両方に適用。デフォルト: HEAD）")
     parser.add_argument("--exclude-commit", action="append", default=[],
                         help="日次集計から除外する初期投入などの完全なコミットSHA（複数可）")
     parser.add_argument("--allow-shallow", action="store_true",
@@ -564,16 +567,25 @@ def main() -> None:
 
     ga_patterns = parse_gitattributes(repo)
 
+    # [Policy] 累積・日次とも公開対象のブランチだけを集計する。チェックアウト中の
+    # 作業ブランチが混ざらないよう、--ref を解決したコミットを両方で使う。
+    try:
+        revision = git(repo, "rev-parse", "--verify", args.ref + "^{commit}").strip()
+    except RuntimeError:
+        err(f"エラー: --ref のコミットが見つかりません: {args.ref}")
+        sys.exit(1)
+    err(f"集計対象: {args.ref} ({revision[:12]})")
+
     # addedLines / deletedLines / extLines
     err("git log --numstat を集計中...")
     added, deleted, ext_lines = count_numstat(
-        repo, ga_patterns, args.author_email, args.author_name,
+        repo, ga_patterns, args.author_email, args.author_name, revision,
     )
     err(f"  added={added}, deleted={deleted}")
 
     # commits
     err("コミット数を集計中...")
-    commits = count_commits(repo, args.author_email, args.author_name)
+    commits = count_commits(repo, args.author_email, args.author_name, revision)
     err(f"  commits={commits}")
 
     # merged PRs / CI runs (GitHub)
