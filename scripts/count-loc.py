@@ -383,6 +383,13 @@ PR_SEARCH_QUERY = """query($q: String!, $after: String) {
 SEARCH_RESULT_LIMIT = 1000
 
 
+def sort_activity_days(activity: dict) -> dict:
+    """days のキーを日付の昇順に揃える。git log やAPIの取得順のままでは順序が安定しないため。"""
+    for series in activity["metrics"].values():
+        series["days"] = dict(sorted(series["days"].items()))
+    return activity
+
+
 def add_days(day: str, offset: int) -> str:
     return (date_type.fromisoformat(day) + timedelta(days=offset)).isoformat()
 
@@ -636,7 +643,7 @@ def main() -> None:
             if activity["metrics"][metric]["completeThrough"] is None:
                 activity["metrics"][metric] = previous_series(previous_activity, metric)
         activity_path.parent.mkdir(parents=True, exist_ok=True)
-        activity_path.write_text(json.dumps(activity, indent=2, ensure_ascii=False) + "\n")
+        activity_path.write_text(json.dumps(sort_activity_days(activity), indent=2, ensure_ascii=False) + "\n")
         err(f"日次活動を書き出しました: {activity_path}")
 
     result = {
