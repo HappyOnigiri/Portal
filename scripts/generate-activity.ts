@@ -78,6 +78,26 @@ function increment(
 	days[date] = (days[date] ?? 0) + value;
 }
 
+/**
+ * days のキー順はgit logやAPIの取得順のままでは安定しないため、保存前に日付の昇順へ揃える。
+ * 値は変えないので集計結果には影響せず、差分が日付順で読めるようになるだけ。
+ */
+export function sortActivityDays(
+	record: RepositoryActivity,
+): RepositoryActivity {
+	const metrics = { ...record.metrics };
+	for (const metric of ACTIVITY_METRICS) {
+		const series = metrics[metric];
+		metrics[metric] = {
+			...series,
+			days: Object.fromEntries(
+				Object.entries(series.days).sort(([a], [b]) => (a < b ? -1 : 1)),
+			),
+		};
+	}
+	return { ...record, metrics };
+}
+
 /** -z形式のnumstatを読み、リネームの旧・新パスもNUL区切りで扱う。 */
 export function parseGitActivity(
 	log: string,
@@ -530,7 +550,10 @@ export async function generateActivity(
 					);
 		if (!options.aggregateOnly) {
 			mkdirSync(dirname(path), { recursive: true });
-			writeFileSync(path, `${JSON.stringify(record, null, "\t")}\n`);
+			writeFileSync(
+				path,
+				`${JSON.stringify(sortActivityDays(record), null, "\t")}\n`,
+			);
 		}
 		records.push(record);
 	}

@@ -17,6 +17,7 @@ import {
 	fetchRuns,
 	parseGitActivity,
 	readRepositoryActivity,
+	sortActivityDays,
 } from "../../scripts/generate-activity";
 
 describe("集計元のGit履歴", () => {
@@ -365,5 +366,40 @@ describe("CIの日次履歴", () => {
 				previous,
 			),
 		).toBe(previous);
+	});
+});
+
+describe("日次履歴の保存形式", () => {
+	it("取得順によらず日付の昇順でdaysを並べ、件数は変えない", () => {
+		const series = (days: Record<string, number>) => ({
+			days,
+			completeFrom: "2026-01-01",
+			completeThrough: "2026-01-03",
+		});
+		const sorted = sortActivityDays({
+			version: 2,
+			collectedAt: "2026-01-04T00:00:00.000Z",
+			startDate: "2026-01-01",
+			gitCacheKey: "",
+			metrics: {
+				changedLines: series({ "2026-01-03": 3, "2026-01-01": 1 }),
+				commits: series({ "2026-01-02": 2, "2026-01-01": 1 }),
+				mergedPRs: series({}),
+				ciRuns: series({ "2026-01-10": 1, "2026-01-02": 1, "2026-01-09": 1 }),
+			},
+		});
+		expect(Object.keys(sorted.metrics.changedLines.days)).toEqual([
+			"2026-01-01",
+			"2026-01-03",
+		]);
+		expect(Object.keys(sorted.metrics.ciRuns.days)).toEqual([
+			"2026-01-02",
+			"2026-01-09",
+			"2026-01-10",
+		]);
+		expect(sorted.metrics.commits.days).toEqual({
+			"2026-01-01": 1,
+			"2026-01-02": 2,
+		});
 	});
 });
