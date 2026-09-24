@@ -4,10 +4,10 @@
 	"deletedLines": 32411,
 	"commits": 935,
 	"mergedPRs": 209,
-	"ciRuns": 8490,
+	"ciRuns": 8373,
 	"extLines": {
 		".py": 35736,
 		".sh": 314
 	},
-	"collectedAt": "2026-09-22T17:01:11.526Z"
+	"collectedAt": "2026-09-24T21:45:00.746Z"
 }

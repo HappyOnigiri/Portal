@@ -2,7 +2,7 @@
 	"version": 2,
 	"rangeStart": "2018-04-30",
 	"rangeEnd": "2026-09-24",
-	"collectedAt": "2026-09-24T17:01:55.943Z",
+	"collectedAt": "2026-09-24T21:46:54.857Z",
 	"repositoryCount": 29,
 	"daily": [
 		{
@@ -24531,7 +24531,7 @@
 			"commits": 60,
 			"mergedPRs": 33,
 			"ciRuns": 283,
-			"incomplete": ["mergedPRs", "ciRuns", "changedLines", "commits"]
+			"incomplete": ["ciRuns", "mergedPRs", "changedLines", "commits"]
 		},
 		{
 			"date": "2026-09-21",
@@ -24539,7 +24539,7 @@
 			"commits": 48,
 			"mergedPRs": 33,
 			"ciRuns": 467,
-			"incomplete": ["mergedPRs", "ciRuns", "changedLines", "commits"]
+			"incomplete": ["ciRuns", "mergedPRs", "changedLines", "commits"]
 		},
 		{
 			"date": "2026-09-22",
@@ -24547,7 +24547,7 @@
 			"commits": 51,
 			"mergedPRs": 52,
 			"ciRuns": 293,
-			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
+			"incomplete": ["ciRuns", "changedLines", "commits", "mergedPRs"]
 		},
 		{
 			"date": "2026-09-23",
@@ -24555,7 +24555,7 @@
 			"commits": 129,
 			"mergedPRs": 33,
 			"ciRuns": 223,
-			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
+			"incomplete": ["ciRuns", "changedLines", "commits", "mergedPRs"]
 		},
 		{
 			"date": "2026-09-24",
@@ -24563,7 +24563,7 @@
 			"commits": 13,
 			"mergedPRs": 5,
 			"ciRuns": 46,
-			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
+			"incomplete": ["ciRuns", "changedLines", "commits", "mergedPRs"]
 		}
 	]
 }
