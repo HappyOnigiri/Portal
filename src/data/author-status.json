@@ -1,52 +1,58 @@
 {
-	"addedLines": 1827584,
-	"deletedLines": 783404,
-	"commits": 21441,
-	"mergedPRs": 3745,
-	"ciRuns": 47986,
-	"lastUpdated": "2026-09-24T21:51:14.457Z",
+	"addedLines": 1471835,
+	"deletedLines": 691190,
+	"commits": 18962,
+	"mergedPRs": 3119,
+	"ciRuns": 43642,
+	"lastUpdated": "2026-09-25T17:01:24.818Z",
 	"languages": [
 		{
 			"id": "Go",
 			"label": "Go",
-			"value": 53,
+			"value": 46,
 			"color": "#e06952"
 		},
 		{
 			"id": "TypeScript",
 			"label": "TypeScript",
-			"value": 17,
-			"color": "#dde052"
+			"value": 18,
+			"color": "#e0d552"
 		},
 		{
 			"id": "Dart",
 			"label": "Dart",
-			"value": 9,
-			"color": "#63e052"
+			"value": 11,
+			"color": "#81e052"
 		},
 		{
 			"id": "Ruby",
 			"label": "Ruby",
-			"value": 9,
-			"color": "#52e0bb"
+			"value": 11,
+			"color": "#52e08d"
 		},
 		{
 			"id": "Python",
 			"label": "Python",
-			"value": 6,
-			"color": "#528be0"
+			"value": 7,
+			"color": "#52c9e0"
 		},
 		{
 			"id": "JavaScript",
 			"label": "JavaScript",
 			"value": 5,
-			"color": "#9252e0"
+			"color": "#525ee0"
 		},
 		{
 			"id": "Swift",
 			"label": "Swift",
 			"value": 1,
-			"color": "#e052b4"
+			"color": "#b152e0"
+		},
+		{
+			"id": "Shell",
+			"label": "Shell",
+			"value": 1,
+			"color": "#e052a5"
 		}
 	],
 	"aiUsage": [],
