@@ -3,8 +3,8 @@
 	"deletedLines": 691825,
 	"commits": 19126,
 	"mergedPRs": 3147,
-	"ciRuns": 42301,
-	"lastUpdated": "2026-10-04T17:01:20.235Z",
+	"ciRuns": 41698,
+	"lastUpdated": "2026-10-05T17:01:17.102Z",
 	"languages": [
 		{
 			"id": "Go",
