@@ -1,6 +1,6 @@
 {
 	"version": 2,
-	"collectedAt": "2026-09-22T05:47:43.489058+00:00",
+	"collectedAt": "2026-11-01T14:02:32.286274+00:00",
 	"startDate": "2023-04-09",
 	"gitCacheKey": "",
 	"metrics": {
@@ -13,7 +13,7 @@
 				"2026-05-30": 111
 			},
 			"completeFrom": "2023-04-09",
-			"completeThrough": "2026-09-21"
+			"completeThrough": "2026-10-31"
 		},
 		"commits": {
 			"days": {
@@ -24,7 +24,7 @@
 				"2026-05-30": 1
 			},
 			"completeFrom": "2023-04-09",
-			"completeThrough": "2026-09-21"
+			"completeThrough": "2026-10-31"
 		},
 		"mergedPRs": {
 			"days": {
