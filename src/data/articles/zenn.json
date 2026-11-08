@@ -1,7 +1,7 @@
 [
 	{
 		"id": 683799,
-		"title": "worktree の管理を任せて AI エージェントで開発する「Worktree Xelith」",
+		"title": "Claude Code / Codex の worktree 準備と後片付けを自動化する「Worktree Xelith」",
 		"slug": "c23d9fc90f3ca0",
 		"emoji": "🌳",
 		"article_type": "tech",

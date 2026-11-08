@@ -1,8 +1,8 @@
 {
 	"version": 2,
-	"collectedAt": "2026-11-08T17:01:30.198Z",
+	"collectedAt": "2026-11-08T21:34:31.238Z",
 	"startDate": "2026-09-01",
-	"gitCacheKey": "710b959d63d6cb69a44d51ec17ca6a1d6bcfb501e67b3bea0f27f26efc4fa763:02cc47f150a7d20e28161c784dad271e2611375db69af4b3f7584dafc997859b",
+	"gitCacheKey": "710b959d63d6cb69a44d51ec17ca6a1d6bcfb501e67b3bea0f27f26efc4fa763:e21932830483a0ba1093d977ae348cce733674f22d85916c807485f7bda6bebf",
 	"metrics": {
 		"changedLines": {
 			"days": {
@@ -43,7 +43,7 @@
 				"2026-11-01": 1644,
 				"2026-11-04": 1312,
 				"2026-11-07": 525,
-				"2026-11-08": 139
+				"2026-11-08": 15913
 			},
 			"completeFrom": "2026-09-01",
 			"completeThrough": "2026-11-08"
@@ -88,7 +88,7 @@
 				"2026-11-01": 7,
 				"2026-11-04": 2,
 				"2026-11-07": 4,
-				"2026-11-08": 12
+				"2026-11-08": 15
 			},
 			"completeFrom": "2026-09-01",
 			"completeThrough": "2026-11-08"
