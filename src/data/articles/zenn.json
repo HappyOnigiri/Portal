@@ -1,5 +1,15 @@
 [
 	{
+		"id": 683799,
+		"title": "worktree の管理を任せて AI エージェントで開発する「Worktree Xelith」",
+		"slug": "c23d9fc90f3ca0",
+		"emoji": "🌳",
+		"article_type": "tech",
+		"published_at": "2026-11-08T21:38:47.603+09:00",
+		"platform": "zenn",
+		"url": "https://zenn.dev/happy_onigiri/articles/c23d9fc90f3ca0"
+	},
+	{
 		"id": 635468,
 		"title": "AI が作る「ドット絵風」を本物のドット絵に変換する Web ツール「Pixel Refiner」を作りました",
 		"slug": "1a0601d2afec2c",
