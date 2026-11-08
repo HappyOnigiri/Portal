@@ -24,6 +24,16 @@
   category: "TOOL"
   category_color: "cyan"
 
+- id: "worktree-xelith"
+  title: "Worktree Xelith"
+  title_en: "Worktree Xelith"
+  description: "Claude Code や Codex を専用の Git worktree で起動する、macOS 向け CLI ツールです。"
+  description_en: "A macOS CLI tool that launches Claude Code or Codex in a dedicated Git worktree."
+  image: "/images/thumbnails/worktree-xelith.webp"
+  url: "https://github.com/HappyOnigiri/WorktreeXelith"
+  category: "TOOL"
+  category_color: "cyan"
+
 - id: "comfyui-meld"
   title: "ComfyUI-Meld"
   title_en: "ComfyUI-Meld"
