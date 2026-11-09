@@ -7,7 +7,8 @@
 		"article_type": "tech",
 		"published_at": "2026-11-08T21:38:47.603+09:00",
 		"platform": "zenn",
-		"url": "https://zenn.dev/happy_onigiri/articles/c23d9fc90f3ca0"
+		"url": "https://zenn.dev/happy_onigiri/articles/c23d9fc90f3ca0",
+		"title_en": "Automating Git Worktree Setup and Cleanup for Claude Code / Codex with \"Worktree Xelith\""
 	},
 	{
 		"id": 635468,
