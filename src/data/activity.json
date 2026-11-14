@@ -1,8 +1,8 @@
 {
 	"version": 2,
 	"rangeStart": "2018-04-30",
-	"rangeEnd": "2026-11-13",
-	"collectedAt": "2026-11-13T17:01:43.640Z",
+	"rangeEnd": "2026-11-14",
+	"collectedAt": "2026-11-14T17:01:45.693Z",
 	"repositoryCount": 33,
 	"daily": [
 		{
@@ -24963,6 +24963,14 @@
 			"commits": 2,
 			"mergedPRs": 4,
 			"ciRuns": 35,
+			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
+		},
+		{
+			"date": "2026-11-14",
+			"changedLines": 0,
+			"commits": 0,
+			"mergedPRs": 2,
+			"ciRuns": 25,
 			"incomplete": ["changedLines", "commits", "mergedPRs", "ciRuns"]
 		}
 	]
