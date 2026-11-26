@@ -1,8 +1,8 @@
 {
 	"version": 2,
-	"collectedAt": "2026-11-25T17:01:32.988Z",
+	"collectedAt": "2026-11-26T17:01:29.544Z",
 	"startDate": "2026-03-11",
-	"gitCacheKey": "3c7cc7428fd5a581bdc225d7e990a200e4b0ed18c1b49f265807cf0f984f651a:773f2b282b3d0f828b91b2d372a62525b9ed6bf3d3ab1bf2f473997d81885486",
+	"gitCacheKey": "3c7cc7428fd5a581bdc225d7e990a200e4b0ed18c1b49f265807cf0f984f651a:9ef334f64a9ae827d832bf2071312f2d6c2c7e2126c2799e9ecfbc609395b0a9",
 	"metrics": {
 		"changedLines": {
 			"days": {
@@ -32,7 +32,7 @@
 				"2026-09-22": 70
 			},
 			"completeFrom": "2026-03-11",
-			"completeThrough": "2026-11-25"
+			"completeThrough": "2026-11-26"
 		},
 		"commits": {
 			"days": {
@@ -80,7 +80,7 @@
 				"2026-11-09": 1
 			},
 			"completeFrom": "2026-03-11",
-			"completeThrough": "2026-11-25"
+			"completeThrough": "2026-11-26"
 		},
 		"mergedPRs": {
 			"days": {
@@ -126,7 +126,7 @@
 				"2026-11-09": 2
 			},
 			"completeFrom": "2026-03-11",
-			"completeThrough": "2026-11-25"
+			"completeThrough": "2026-11-26"
 		},
 		"ciRuns": {
 			"days": {
@@ -364,10 +364,11 @@
 				"2026-11-22": 2,
 				"2026-11-23": 2,
 				"2026-11-24": 2,
-				"2026-11-25": 2
+				"2026-11-25": 2,
+				"2026-11-26": 2
 			},
 			"completeFrom": "2026-09-17",
-			"completeThrough": "2026-11-25"
+			"completeThrough": "2026-11-26"
 		}
 	}
 }
